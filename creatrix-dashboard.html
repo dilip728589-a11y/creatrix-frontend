@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Creatrix AI — Creator Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
 :root {
   --bg: #04040A;
@@ -1032,7 +1033,8 @@ async function buyCredits(packType) {
       await loadTransactionHistory();
     });
   } catch (err) {
-    showToast('Something went wrong. Try again.', 'error');
+    console.error('buyCredits ERROR:', err);
+    showToast('Error: ' + (err.message || JSON.stringify(err)), 'error');
   }
 }
 
