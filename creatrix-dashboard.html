@@ -28,8 +28,19 @@
   --topbar-h: 64px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
-body { background: var(--bg); color: var(--white); font-family: var(--font-b); display: flex; }
+html { height: 100%; }
+body {
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font-b);
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  position: relative;
+}
 
 /* ── SIDEBAR ── */
 .sidebar {
@@ -40,8 +51,12 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  position: relative;
-  z-index: 10;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+  overflow: hidden;
 }
 .sidebar-logo {
   padding: 0 1.5rem;
@@ -114,7 +129,16 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
 .user-more { margin-left: auto; color: var(--muted); font-size: 0.8rem; }
 
 /* ── MAIN ── */
-.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-left: var(--sidebar-w);
+  height: 100vh;
+  width: calc(100% - var(--sidebar-w));
+  min-width: 0;
+}
 
 /* TOPBAR */
 .topbar {
@@ -126,6 +150,10 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
   padding: 0 2rem;
   gap: 1rem;
   flex-shrink: 0;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 .topbar-title { font-family: var(--font-h); font-size: 1.1rem; font-weight: 700; flex: 1; }
 .topbar-search {
@@ -149,7 +177,7 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
 .tb-new-btn:hover { opacity: 0.88; }
 
 /* CONTENT AREA */
-.content { flex: 1; overflow-y: auto; padding: 2rem; background: var(--bg); }
+.content { flex: 1; overflow-y: auto; padding: 2rem; background: var(--bg); height: calc(100vh - var(--topbar-h)); }
 
 /* PAGE SWITCHING */
 .page { display: none; }
@@ -400,41 +428,6 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--muted2); border-radius: 2px; }
-
-/* ── TODAY'S PLAN ── */
-.todays-plan{background:linear-gradient(135deg,rgba(120,76,254,0.12),rgba(255,60,172,0.08));border:1.5px solid rgba(120,76,254,0.3);border-radius:22px;padding:1.75rem 2rem;margin-bottom:1.75rem;position:relative;overflow:hidden;}
-.todays-plan::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(120,76,254,0.15),transparent 70%);pointer-events:none;}
-.tp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;}
-.tp-title-wrap{display:flex;align-items:center;gap:10px;}
-.tp-title{font-family:var(--font-h);font-size:1.15rem;font-weight:800;}
-.tp-date{font-size:0.72rem;color:var(--muted);background:var(--card2);padding:3px 10px;border-radius:100px;border:1px solid var(--border2);}
-.tp-niche-badge{font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:100px;background:rgba(0,245,212,0.1);color:var(--accent3);border:1px solid rgba(0,245,212,0.2);cursor:pointer;}
-.tp-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
-.tp-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1rem;}
-.tp-card-icon{font-size:1.4rem;margin-bottom:0.5rem;}
-.tp-card-type{font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem;}
-.tp-card-idea{font-size:0.85rem;font-weight:600;color:var(--white);line-height:1.45;margin-bottom:0.5rem;}
-.tp-card-caption{font-size:0.72rem;color:var(--muted);font-style:italic;line-height:1.4;}
-.tp-actions{display:flex;gap:0.75rem;flex-wrap:wrap;}
-.tp-btn{display:flex;align-items:center;gap:7px;padding:0.6rem 1.25rem;border-radius:100px;font-family:var(--font-h);font-size:0.82rem;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;text-decoration:none;}
-.tp-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
-.tp-btn.primary:hover{opacity:0.88;transform:translateY(-1px);}
-.tp-btn.secondary{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--muted);}
-.tp-btn.secondary:hover{color:var(--white);border-color:rgba(255,255,255,0.2);}
-.tp-refresh{position:absolute;top:1.25rem;right:1.25rem;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.85rem;transition:all 0.3s;}
-.tp-refresh:hover{background:rgba(120,76,254,0.2);transform:rotate(180deg);}
-
-
-/* CREDITS EXPIRY BANNER */
-.expiry-banner{background:linear-gradient(135deg,rgba(255,209,102,0.12),rgba(255,60,172,0.08));border:1.5px solid rgba(255,209,102,0.35);border-radius:18px;padding:1rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
-.eb-left{display:flex;align-items:center;gap:10px;}
-.eb-icon{font-size:1.5rem;}
-.eb-title{font-family:var(--font-h);font-size:0.92rem;font-weight:700;color:var(--gold);margin-bottom:2px;}
-.eb-sub{font-size:0.75rem;color:rgba(255,255,255,0.6);}
-.eb-countdown{font-family:var(--font-h);font-size:1.35rem;font-weight:800;color:var(--gold);letter-spacing:0.05em;}
-.eb-btn{background:linear-gradient(135deg,var(--gold),#f0a500);color:#1a1000;font-family:var(--font-h);font-size:0.82rem;font-weight:800;padding:0.55rem 1.25rem;border-radius:100px;border:none;cursor:pointer;white-space:nowrap;text-decoration:none;transition:opacity 0.2s;flex-shrink:0;}
-.eb-btn:hover{opacity:0.88;}
-
 </style>
 </head>
 <body>
@@ -444,737 +437,22 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
   <a href="creatrix-ai-v3.html" class="sidebar-logo">Creatrix <span>AI</span></a>
 
   <nav class="sidebar-nav">
-
     <div class="nav-section-label">Main</div>
-    <a class="nav-item active" href="creatrix-dashboard.html">
-      <span class="nav-icon">🏠</span> Dashboard
+    <a class="nav-item active" onclick="showPage('overview', this)">
+      <span class="nav-icon">🏠</span> Overview
     </a>
-    <a class="nav-item" href="creatrix-my-influencers.html">
-      <span class="nav-icon">🧑‍🎤</span> My Influencers
+    <a class="nav-item" onclick="showPage('tools', this)">
+      <span class="nav-icon">🛠️</span> AI Tools
     </a>
-    <a class="nav-item" href="creatrix-my-creations.html">
+    <a class="nav-item" onclick="window.location='creatrix-my-influencers.html'">
+      <span class="nav-icon">👥</span> My Influencers
+    </a>
+    <a class="nav-item" onclick="window.location='creatrix-my-creations.html'">
       <span class="nav-icon">🎬</span> My Creations
-      <span class="nav-badge green">18</span>
+      <span class="nav-badge green">12</span>
     </a>
 
     <div class="nav-section-label">Create</div>
-    <a class="nav-item" href="creatrix-create-influencer.html">
-      <span class="nav-icon">✨</span> Create Influencer
-    </a>
-    <a class="nav-item" href="creatrix-video-generator.html">
-      <span class="nav-icon">🎥</span> AI Video
-    </a>
-    <a class="nav-item" href="creatrix-lipsync.html">
-      <span class="nav-icon">👄</span> Lip Sync
-    </a>
-    <a class="nav-item" href="creatrix-motion-control.html">
-      <span class="nav-icon">🕹️</span> Motion Control
-    </a>
-    <a class="nav-item" href="creatrix-ugc-creator.html">
-      <span class="nav-icon">🎥</span> UGC Creator
-      <span class="nav-badge">New</span>
-    </a>
-
-    <div class="nav-section-label">Earn 💰</div>
-    <a class="nav-item" href="creatrix-monetize.html">
-      <span class="nav-icon">💰</span> Monetize
-    </a>
-    <a class="nav-item" href="creatrix-monetize.html#earnings">
-      <span class="nav-icon">📊</span> Earnings
-    </a>
-    <a class="nav-item" href="creatrix-biolink.html" target="_blank">
-      <span class="nav-icon">🔗</span> My Bio Link
-    </a>
-
-    <div class="nav-section-label">Account</div>
-    <a class="nav-item" href="creatrix-payment.html">
-      <span class="nav-icon">💎</span> Buy Credits
-    </a>
-    <a class="nav-item" href="creatrix-terms.html">
-      <span class="nav-icon">📄</span> Terms
-    </a>
-
-  </nav>
-
-  <div class="sidebar-bottom">
-    <div class="credits-box">
-      <div class="credits-label">Credits Remaining</div>
-      <div class="credits-val">38 <span>/ 100 credits</span></div>
-      <div class="credits-bar-bg"><div class="credits-bar-fill"></div></div>
-      <div class="credits-note">62 credits used this month</div>
-    </div>
-    <button class="buy-btn" onclick="showPage('credits', document.querySelector('.nav-item'))">+ Buy More Credits</button>
-    <div class="user-row">
-      <div class="user-av">R</div>
-      <div>
-        <div class="user-name">Rahul Shah</div>
-        <div class="user-plan">Creator Pack</div>
-      </div>
-      <div class="user-more">⋯</div>
-    </div>
-  </div>
-</aside>
-
-<!-- MAIN -->
-<div class="main">
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <div class="topbar-title" id="topbarTitle">Overview</div>
-    <div class="topbar-search">🔍 Search tools, creations...</div>
-    <div class="topbar-btns">
-      <a href="creatrix-ai-v3.html" class="tb-btn" title="Go to Homepage" style="text-decoration:none;">🏠</a>
-      <div class="tb-btn tb-notif">🔔</div>
-      <div class="tb-btn">❓</div>
-      <button class="tb-new-btn" onclick="window.location='creatrix-create-influencer.html'">✨ Create New</button>
-    </div>
-  </div>
-
-  <!-- CONTENT -->
-  <div class="content">
-
-    <!-- ── OVERVIEW PAGE ── -->
-    <div class="page active" id="page-overview">
-      <div class="welcome-banner">
-        <div>
-          <div class="wb-title">Good afternoon, Rahul! 👋</div>
-          <div class="wb-sub">You have 38 credits left. Create a new AI influencer or generate a video today.</div>
-        </div>
-        <div class="wb-emoji">🚀</div>
-      </div>
-
-      
-
-      <!-- CREDITS EXPIRY BANNER -->
-      <div class="expiry-banner" id="expiryBanner">
-        <div class="eb-left">
-          <div class="eb-icon">⏰</div>
-          <div>
-            <div class="eb-title">Your free credits expire soon!</div>
-            <div class="eb-sub">Use your 20 free credits or upgrade before they're gone forever</div>
-          </div>
-        </div>
-        <div class="eb-countdown" id="expiryCountdown">47:59:59</div>
-        <a href="creatrix-payment.html" class="eb-btn">Upgrade Now 🔥</a>
-      </div>
-
-      <!-- TODAY'S PLAN -->
-      <div class="todays-plan" id="todaysPlan">
-        <div class="tp-refresh" onclick="refreshPlan()" title="Get new ideas">🔄</div>
-        <div class="tp-header">
-          <div class="tp-title-wrap">
-            <div class="tp-title">🔥 Today's Plan</div>
-            <div class="tp-date" id="tpDate"></div>
-          </div>
-          <div class="tp-niche-badge" onclick="changeNiche()" id="tpNiche">✨ Fashion</div>
-        </div>
-        <div class="tp-body" id="tpBody">
-          <!-- populated by JS -->
-        </div>
-        <div class="tp-actions">
-          <a href="creatrix-create-influencer.html" class="tp-btn primary">🧑‍🎤 Generate Image</a>
-          <a href="creatrix-video-generator.html" class="tp-btn primary">🎬 Generate Video</a>
-          <div class="tp-btn secondary" onclick="refreshPlan()">💡 New Ideas</div>
-        </div>
-      </div>
-
-<div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label"><span>🧑‍🎤</span> AI Influencers</div>
-          <div class="stat-num">3</div>
-          <div class="stat-change stat-up">↑ +1 this week</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label"><span>🎬</span> Videos Created</div>
-          <div class="stat-num">24</div>
-          <div class="stat-change stat-up">↑ +8 this month</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label"><span>💎</span> Credits Used</div>
-          <div class="stat-num">62</div>
-          <div class="stat-change stat-down">↓ 38 remaining</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label"><span>👁️</span> Total Views</div>
-          <div class="stat-num">1.2M</div>
-          <div class="stat-change stat-up">↑ +340K this week</div>
-        </div>
-      </div>
-
-      <div class="two-col">
-        <div class="section-card">
-          <div class="sc-header">
-            <div class="sc-title">Recent Creations</div>
-            <a class="sc-action" onclick="showPage('creations', document.querySelectorAll('.nav-item')[3])">View all →</a>
-          </div>
-          <div class="creation-list">
-            <div class="creation-item">
-              <div class="creation-thumb" style="background:linear-gradient(135deg,rgba(255,60,172,0.2),rgba(120,76,254,0.2))">🧑‍🎤</div>
-              <div class="creation-info">
-                <div class="creation-name">Aria Fashion Reel #12</div>
-                <div class="creation-meta">AI Video · Kling v3 · 2h ago</div>
-              </div>
-              <div class="creation-status status-done">Done</div>
-            </div>
-            <div class="creation-item">
-              <div class="creation-thumb" style="background:linear-gradient(135deg,rgba(0,245,212,0.15),rgba(120,76,254,0.1))">👄</div>
-              <div class="creation-info">
-                <div class="creation-name">TechGuru Lip Sync v3</div>
-                <div class="creation-meta">Lip Sync · 5h ago</div>
-              </div>
-              <div class="creation-status status-done">Done</div>
-            </div>
-            <div class="creation-item">
-              <div class="creation-thumb" style="background:linear-gradient(135deg,rgba(120,76,254,0.2),rgba(0,245,212,0.1))">😶</div>
-              <div class="creation-info">
-                <div class="creation-name">FitBot Face Swap #5</div>
-                <div class="creation-meta">Face Swap · Processing...</div>
-              </div>
-              <div class="creation-status status-proc">Processing</div>
-            </div>
-            <div class="creation-item">
-              <div class="creation-thumb" style="background:linear-gradient(135deg,rgba(255,209,102,0.15),rgba(255,60,172,0.1))">📸</div>
-              <div class="creation-info">
-                <div class="creation-name">Luna AI Headshots Pack</div>
-                <div class="creation-meta">Headshots · Yesterday</div>
-              </div>
-              <div class="creation-status status-done">Done</div>
-            </div>
-            <div class="creation-item">
-              <div class="creation-thumb" style="background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(120,76,254,0.1))">🎥</div>
-              <div class="creation-info">
-                <div class="creation-name">Untitled UGC Draft</div>
-                <div class="creation-meta">UGC Creator · 2 days ago</div>
-              </div>
-              <div class="creation-status status-draft">Draft</div>
-            </div>
-          </div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:1.25rem;">
-          <div class="section-card">
-            <div class="sc-header">
-              <div class="sc-title">Quick Create</div>
-            </div>
-            <div class="quick-tools">
-              <div class="qt-card" onclick="showPage('tools', document.querySelectorAll('.nav-item')[1])">
-                <div class="qt-icon">🧑‍🎤</div>
-                <div class="qt-name">AI Influencer</div>
-                <div class="qt-credits">3 credits</div>
-              </div>
-              <div class="qt-card" onclick="showPage('tools', document.querySelectorAll('.nav-item')[1])">
-                <div class="qt-icon">🎬</div>
-                <div class="qt-name">Video Gen</div>
-                <div class="qt-credits">5 credits</div>
-              </div>
-              <div class="qt-card" onclick="showPage('tools', document.querySelectorAll('.nav-item')[1])">
-                <div class="qt-icon">😶</div>
-                <div class="qt-name">Face Swap</div>
-                <div class="qt-credits">3 credits</div>
-              </div>
-              <div class="qt-card" onclick="showPage('tools', document.querySelectorAll('.nav-item')[1])">
-                <div class="qt-icon">👄</div>
-                <div class="qt-name">Lip Sync</div>
-                <div class="qt-credits">4 credits</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="section-card">
-            <div class="sc-header"><div class="sc-title">Credits Used (This Week)</div></div>
-            <div class="chart-area">
-              <div class="bar-chart" id="barChart"></div>
-              <div class="bar-labels" id="barLabels"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="sc-header">
-          <div class="sc-title">Recent Activity</div>
-          <a class="sc-action" href="creatrix-my-creations.html">View all</a>
-        </div>
-        <div class="activity-list">
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--accent3)"></div>
-            <div class="activity-text"><span>Aria Fashion Reel #12</span> was generated successfully using Kling v3.0</div>
-            <div class="activity-time">2h ago</div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--accent2)"></div>
-            <div class="activity-text">You spent <span>5 credits</span> on AI Video generation</div>
-            <div class="activity-time">2h ago</div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--accent)"></div>
-            <div class="activity-text"><span>New AI Influencer</span> "FitBot Maya" was created</div>
-            <div class="activity-time">Yesterday</div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot" style="background:var(--gold)"></div>
-            <div class="activity-text">You purchased <span>100 credits</span> — Creator Pack</div>
-            <div class="activity-time">3 days ago</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── TOOLS PAGE ── -->
-    <div class="page" id="page-tools">
-      <div class="page-header">
-        <h1>AI Tools</h1>
-        <p>Choose a tool to start creating. Each tool uses a set amount of credits.</p>
-      </div>
-      <div class="tools-page-grid">
-        <div class="tool-big-card">
-          <div class="tool-card-banner tb1">🧑‍🎤</div>
-          <div onclick="window.location='creatrix-create-influencer.html'" style="cursor:pointer;"  class="tool-card-body">
-            <div class="tool-card-name">AI Influencer Generator</div>
-            <p class="tool-card-desc">Design a fully custom AI avatar. Choose face, body, style, and personality. Your virtual influencer, no camera needed.</p>
-            <div class="tool-card-footer">
-              <div class="tool-cost">Uses <strong>3 credits</strong></div>
-              <button class="tool-use-btn">Use Tool</button>
-            </div>
-          </div>
-        </div>
-        <div class="tool-big-card">
-          <div class="tool-card-banner tb2" style="position:relative">🎬<span class="tool-new-badge">10+ Models</span></div>
-          <div onclick="window.location='creatrix-video-generator.html'" style="cursor:pointer;"  onclick="window.location='creatrix-video-generator.html'" style="cursor:pointer;"  class="tool-card-body">
-            <div class="tool-card-name">AI Video Generator</div>
-            <p class="tool-card-desc">Generate cinematic videos with Sora 2, Veo 3, Kling v3 and more. Choose your model, enter a prompt, get your video.</p>
-            <div class="tool-card-footer">
-              <div class="tool-cost">Uses <strong>5 credits</strong></div>
-              <button class="tool-use-btn">Use Tool</button>
-            </div>
-          </div>
-        </div>
-        <div class="tool-big-card">
-          <div class="tool-card-banner tb3">🖼️</div>
-          <div class="tool-card-body">
-            <div class="tool-card-name">AI Image Generator</div>
-            <p class="tool-card-desc">Generate photorealistic images of your AI influencer in any pose, outfit, or setting. Consistent face every time.</p>
-            <div class="tool-card-footer">
-              <div class="tool-cost">Uses <strong>2 credits</strong></div>
-              <button class="tool-use-btn">Use Tool</button>
-            </div>
-          </div>
-        </div>
-        <div class="tool-big-card">
-          <div class="tool-card-banner tb4">😶</div>
-          <div class="tool-card-body">
-            <div class="tool-card-name">Face Swap</div>
-            <p class="tool-card-desc">Swap faces in photos or videos with impressive accuracy. Create diverse content with your AI persona effortlessly.</p>
-            <div class="tool-card-footer">
-              <div class="tool-cost">Uses <strong>3 credits</strong></div>
-              <button class="tool-use-btn">Use Tool</button>
-            </div>
-          </div>
-        </div>
-        <div class="tool-big-card">
-          <div class="tool-card-banner tb5" style="position:relative">👄<span class="tool-new-badge">New</span></div>
-          <div onclick="window.location='creatrix-lipsync.html'" style="cursor:pointer;"  class="tool-card-body">
-            <div class="tool-card-name">Lip Sync</div>
-            <p class="tool-card-desc">Make your AI influencer speak any audio. Upload a voice or audio clip and watch your avatar sync perfectly.</p>
-            <div class="tool-card-footer">
-              <div class="tool-cost">Uses <strong>4 credits</strong></div>
-              <button class="tool-use-btn">Use Tool</button>
-            </div>
-          </div>
-        </div>
-        <div class="tool-big-card">
-          <div class="tool-card-banner tb6" style="position:relative">🕹️<span class="tool-new-badge">New</span></div>
-          <div onclick="window.location='creatrix-motion-control.html'" style="cursor:pointer;"  class="tool-card-body">
-            <div class="tool-card-name">Motion Control</div>
-            <p class="tool-card-desc">Animate your influencer with natural human movements — walking, dancing, workout demos. No motion capture needed.</p>
-            <div class="tool-card-footer">
-              <div class="tool-cost">Uses <strong>5 credits</strong></div>
-              <button class="tool-use-btn">Use Tool</button>
-            </div>
-          </div>
-        </div>
-        <div class="tool-big-card">
-          <div class="tool-card-banner tb7">📸</div>
-          <div class="tool-card-body">
-            <div class="tool-card-name">AI Headshot Generator</div>
-            <p class="tool-card-desc">Generate ultra-realistic professional headshots for your AI persona. Perfect for profiles, brand pages, and campaigns.</p>
-            <div class="tool-card-footer">
-              <div class="tool-cost">Uses <strong>2 credits</strong></div>
-              <button class="tool-use-btn">Use Tool</button>
-            </div>
-          </div>
-        </div>
-        <div class="tool-big-card">
-          <div class="tool-card-banner tb8">🎥</div>
-          <div onclick="window.location='creatrix-ugc-creator.html'" style="cursor:pointer;"  onclick="window.location='creatrix-ugc-creator.html'" style="cursor:pointer;"  class="tool-card-body">
-            <div class="tool-card-name">AI UGC Creator</div>
-            <p class="tool-card-desc">Create user-generated style content automatically. Brands pay big for UGC — now you can produce it with AI.</p>
-            <div class="tool-card-footer">
-              <div class="tool-cost">Uses <strong>4 credits</strong></div>
-              <button class="tool-use-btn">Use Tool</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── MY INFLUENCERS PAGE ── -->
-    <div class="page" id="page-influencers">
-      <div class="page-header">
-        <h1>My AI Influencers</h1>
-        <p>Manage and grow your AI influencer personas.</p>
-      </div>
-      <div class="influencer-grid">
-        <div class="influencer-card">
-          <div class="inf-banner" style="background:linear-gradient(160deg,#1a0533,#3d0966,#7928ca)">
-            🧑‍🎤
-            <div class="inf-status-dot dot-active"></div>
-          </div>
-          <div class="inf-body">
-            <div class="inf-name">Aria</div>
-            <div class="inf-niche">Fashion & Lifestyle</div>
-            <div class="inf-stats">
-              <div><div class="inf-stat-val">80K</div><div class="inf-stat-label">Followers</div></div>
-              <div><div class="inf-stat-val">12</div><div class="inf-stat-label">Videos</div></div>
-              <div><div class="inf-stat-val">2.1M</div><div class="inf-stat-label">Views</div></div>
-            </div>
-          </div>
-          <div class="inf-actions">
-            <button class="inf-btn">Edit</button>
-            <button class="inf-btn primary">Create →</button>
-          </div>
-        </div>
-        <div class="influencer-card">
-          <div class="inf-banner" style="background:linear-gradient(160deg,#0a1628,#112244,#1a3a6e)">
-            👩‍💼
-            <div class="inf-status-dot dot-active"></div>
-          </div>
-          <div class="inf-body">
-            <div class="inf-name">TechGuru</div>
-            <div class="inf-niche">Tech & Reviews</div>
-            <div class="inf-stats">
-              <div><div class="inf-stat-val">42K</div><div class="inf-stat-label">Followers</div></div>
-              <div><div class="inf-stat-val">8</div><div class="inf-stat-label">Videos</div></div>
-              <div><div class="inf-stat-val">890K</div><div class="inf-stat-label">Views</div></div>
-            </div>
-          </div>
-          <div class="inf-actions">
-            <button class="inf-btn">Edit</button>
-            <button class="inf-btn primary">Create →</button>
-          </div>
-        </div>
-        <div class="influencer-card">
-          <div class="inf-banner" style="background:linear-gradient(160deg,#1a0e00,#3d2200,#7a4400)">
-            🏋️
-            <div class="inf-status-dot dot-draft"></div>
-          </div>
-          <div class="inf-body">
-            <div class="inf-name">FitBot Maya</div>
-            <div class="inf-niche">Fitness & Wellness</div>
-            <div class="inf-stats">
-              <div><div class="inf-stat-val">5K</div><div class="inf-stat-label">Followers</div></div>
-              <div><div class="inf-stat-val">4</div><div class="inf-stat-label">Videos</div></div>
-              <div><div class="inf-stat-val">120K</div><div class="inf-stat-label">Views</div></div>
-            </div>
-          </div>
-          <div class="inf-actions">
-            <button class="inf-btn">Edit</button>
-            <button class="inf-btn primary">Create →</button>
-          </div>
-        </div>
-        <div class="create-new-card" onclick="showPage('tools', document.querySelectorAll('.nav-item')[1])">
-          <div class="create-new-icon">➕</div>
-          <div class="create-new-text">Create New Influencer</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── CREATIONS PAGE ── -->
-    <div class="page" id="page-creations">
-      <div class="page-header">
-        <h1>My Creations</h1>
-        <p>All your AI-generated videos, images and content in one place.</p>
-      </div>
-      <div class="section-card">
-        <div class="sc-header">
-          <div class="sc-title">All Creations (24)</div>
-          <a class="sc-action">Filter ▾</a>
-        </div>
-        <div class="creation-list">
-          <div class="creation-item"><div class="creation-thumb" style="background:linear-gradient(135deg,rgba(255,60,172,0.2),rgba(120,76,254,0.2))">🧑‍🎤</div><div class="creation-info"><div class="creation-name">Aria Fashion Reel #12</div><div class="creation-meta">AI Video · Kling v3 · 5 credits · 2h ago</div></div><div class="creation-status status-done">Done</div></div>
-          <div class="creation-item"><div class="creation-thumb" style="background:linear-gradient(135deg,rgba(0,245,212,0.15),rgba(120,76,254,0.1))">👄</div><div class="creation-info"><div class="creation-name">TechGuru Lip Sync v3</div><div class="creation-meta">Lip Sync · 4 credits · 5h ago</div></div><div class="creation-status status-done">Done</div></div>
-          <div class="creation-item"><div class="creation-thumb" style="background:linear-gradient(135deg,rgba(120,76,254,0.2),rgba(0,245,212,0.1))">😶</div><div class="creation-info"><div class="creation-name">FitBot Face Swap #5</div><div class="creation-meta">Face Swap · 3 credits · Processing...</div></div><div class="creation-status status-proc">Processing</div></div>
-          <div class="creation-item"><div class="creation-thumb" style="background:linear-gradient(135deg,rgba(255,209,102,0.15),rgba(255,60,172,0.1))">📸</div><div class="creation-info"><div class="creation-name">Luna AI Headshots Pack</div><div class="creation-meta">Headshots · 2 credits · Yesterday</div></div><div class="creation-status status-done">Done</div></div>
-          <div class="creation-item"><div class="creation-thumb" style="background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(120,76,254,0.1))">🎥</div><div class="creation-info"><div class="creation-name">Untitled UGC Draft</div><div class="creation-meta">UGC Creator · 4 credits · 2 days ago</div></div><div class="creation-status status-draft">Draft</div></div>
-          <div class="creation-item"><div class="creation-thumb" style="background:linear-gradient(135deg,rgba(52,211,153,0.15),rgba(0,245,212,0.1))">🕹️</div><div class="creation-info"><div class="creation-name">Aria Dancing Motion Clip</div><div class="creation-meta">Motion Control · 5 credits · 3 days ago</div></div><div class="creation-status status-done">Done</div></div>
-          <div class="creation-item"><div class="creation-thumb" style="background:linear-gradient(135deg,rgba(255,60,172,0.15),rgba(255,209,102,0.1))">🖼️</div><div class="creation-info"><div class="creation-name">TechGuru Studio Shots</div><div class="creation-meta">Image Gen · 2 credits · 4 days ago</div></div><div class="creation-status status-done">Done</div></div>
-          <div class="creation-item"><div class="creation-thumb" style="background:linear-gradient(135deg,rgba(120,76,254,0.2),rgba(255,60,172,0.15))">🎬</div><div class="creation-info"><div class="creation-name">Aria Lifestyle Reel #11</div><div class="creation-meta">AI Video · Sora 2.0 · 5 credits · 5 days ago</div></div><div class="creation-status status-done">Done</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── CREDITS PAGE ── -->
-    <div class="page" id="page-credits">
-      <div class="page-header">
-        <h1>Credits & Billing</h1>
-        <p>Buy credits and track your usage. Credits never expire.</p>
-      </div>
-      <div class="credits-page-wrap">
-        <div class="credits-hero-card">
-          <div>
-            <div class="credits-info-label">Current Balance</div>
-            <div class="credits-big">38 <span>credits</span></div>
-            <div class="credits-breakdown">
-              <div class="cb-item"><strong>62</strong> used this month</div>
-              <div class="cb-item"><strong>100</strong> last purchased</div>
-            </div>
-          </div>
-          <button class="buy-btn" style="width:auto;padding:0.75rem 2rem;font-size:1rem;">+ Buy More Credits</button>
-        </div>
-
-        <div class="pack-grid">
-          <div class="pack-card">
-            <div class="pack-credits">20 <span>credits</span></div>
-            <div class="pack-price">Free</div>
-            <p class="pack-per">One-time on signup</p>
-            <ul class="pack-features">
-              <li>Access all tools</li>
-              <li>720p exports</li>
-              <li>Watermarked</li>
-            </ul>
-            <button class="pack-buy-btn outline" disabled style="opacity:0.4;cursor:not-allowed;">Current Plan</button>
-          </div>
-          <div class="pack-card featured">
-            <div class="pack-ribbon">Most Popular</div>
-            <div class="pack-credits">100 <span>credits</span></div>
-            <div class="pack-price">₹299</div>
-            <p class="pack-per">~₹3 per credit</p>
-            <ul class="pack-features">
-              <li>1080p HD exports</li>
-              <li>No watermark</li>
-              <li>All 10+ AI models</li>
-              <li>Commercial license</li>
-            </ul>
-            <button class="pack-buy-btn grad">Buy Now</button>
-          </div>
-          <div class="pack-card">
-            <div class="pack-credits">300 <span>credits</span></div>
-            <div class="pack-price">₹799</div>
-            <p class="pack-per">~₹2.6 per credit · Save 15%</p>
-            <ul class="pack-features">
-              <li>4K ultra exports</li>
-              <li>API access</li>
-              <li>Multiple influencers</li>
-              <li>Dedicated support</li>
-            </ul>
-            <button class="pack-buy-btn outline">Buy Now</button>
-          </div>
-        </div>
-
-        <div class="usage-table">
-          <div class="sc-header" style="padding:1.25rem 1.5rem;">
-            <div class="sc-title">Credit Usage History</div>
-          </div>
-          <div class="table-head">
-            <div>Action</div><div>Credits</div><div>Date</div><div>Status</div>
-          </div>
-          <div class="table-row"><div><span class="tr-icon">🎬</span>AI Video Generation · Kling v3</div><div class="tr-credit">-5</div><div class="tr-date">Today, 2:14 PM</div><div><span class="tr-status ts-done">Done</span></div></div>
-          <div class="table-row"><div><span class="tr-icon">👄</span>Lip Sync · TechGuru</div><div class="tr-credit">-4</div><div class="tr-date">Today, 9:30 AM</div><div><span class="tr-status ts-done">Done</span></div></div>
-          <div class="table-row"><div><span class="tr-icon">😶</span>Face Swap · FitBot</div><div class="tr-credit">-3</div><div class="tr-date">Yesterday</div><div><span class="tr-status ts-done">Done</span></div></div>
-          <div class="table-row"><div><span class="tr-icon">📸</span>Headshot Generator · Luna</div><div class="tr-credit">-2</div><div class="tr-date">Yesterday</div><div><span class="tr-status ts-done">Done</span></div></div>
-          <div class="table-row"><div><span class="tr-icon">💎</span>Purchased 100 Credits — Creator Pack</div><div class="tr-credit" style="color:var(--accent3)">+100</div><div class="tr-date">3 days ago</div><div><span class="tr-status ts-done">Paid</span></div></div>
-          <div class="table-row"><div><span class="tr-icon">🕹️</span>Motion Control · Aria</div><div class="tr-credit">-5</div><div class="tr-date">4 days ago</div><div><span class="tr-status ts-done">Done</span></div></div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<script src="api.js"></script>
-<script>
-var pageTitles = {
-  overview: 'Overview',
-  tools: 'AI Tools',
-  influencers: 'My Influencers',
-  creations: 'My Creations',
-  credits: 'Credits & Billing'
-};
-
-function showPage(name, navEl) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  document.getElementById('topbarTitle').textContent = pageTitles[name] || name;
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (navEl) navEl.classList.add('active');
-}
-
-// Bar chart
-var days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-var vals = [8, 12, 5, 15, 10, 6, 6];
-var max = Math.max(...vals);
-var chart = document.getElementById('barChart');
-var labels = document.getElementById('barLabels');
-var colors = ['#784CFE','#FF3CAC','#00F5D4','#FFD166','#784CFE','#FF3CAC','#00F5D4'];
-days.forEach((d, i) => {
-  var bar = document.createElement('div');
-  bar.className = 'bar';
-  bar.style.height = '4px';
-  bar.style.background = `linear-gradient(to top, ${colors[i]}, ${colors[(i+1)%colors.length]})`;
-  bar.style.opacity = '0.8';
-  chart.appendChild(bar);
-  setTimeout(() => { bar.style.height = Math.round((vals[i]/max)*76) + 'px'; }, 100 + i*60);
-  var lbl = document.createElement('div');
-  lbl.className = 'bar-lbl';
-  lbl.textContent = d;
-  labels.appendChild(lbl);
-});
-
-// ── PAGE NAVIGATION TO TOOL PAGES ──
-function goToPage(url) { window.location.href = url; }
-
-// Quick navigation helpers
-var toolPages = {
-  'video': 'creatrix-video-generator.html',
-  'lipsync': 'creatrix-lipsync.html', 
-  'motion': 'creatrix-motion-control.html',
-  'ugc': 'creatrix-ugc-creator.html',
-  'influencer': 'creatrix-create-influencer.html',
-  'myinfluencers': 'creatrix-my-influencers.html',
-  'mycreations': 'creatrix-my-creations.html',
-};
-function goTool(key) { if(toolPages[key]) window.location=toolPages[key]; }
-
-
-
-// ── TODAY'S PLAN ──
-var nichePlans = {
-  fashion: [
-    {icon:'📸', type:'Post Idea', idea:'Mirror selfie in your best outfit — confident pose', caption:'"Outfit speaks louder than words 👗✨"'},
-    {icon:'🎬', type:'Reel Idea', idea:'Outfit transition reel — before & after styling', caption:'"From basic to iconic in 3 seconds 🔥"'},
-    {icon:'✍️', type:'Caption Hook', idea:'Use this hook to stop the scroll', caption:'"POV: you finally found your style era 💅"'},
-  ],
-  fitness: [
-    {icon:'📸', type:'Post Idea', idea:'Gym mirror selfie — flex and confidence pose', caption:'"No days off 💪🔥"'},
-    {icon:'🎬', type:'Reel Idea', idea:'Slow-motion workout + trending music', caption:'"The grind never stops 🏋️‍♀️"'},
-    {icon:'✍️', type:'Caption Hook', idea:'Motivational hook for fitness audience', caption:'"Your future self will thank you 🙌"'},
-  ],
-  beauty: [
-    {icon:'📸', type:'Post Idea', idea:'Close-up glam makeup look — bold lighting', caption:'"Glow different ✨💄"'},
-    {icon:'🎬', type:'Reel Idea', idea:'Get Ready With Me — skincare + makeup routine', caption:'"Self care is not selfish 🌸"'},
-    {icon:'✍️', type:'Caption Hook', idea:'Beauty tip hook to drive saves', caption:'"Save this if you want glass skin in 7 days 🫧"'},
-  ],
-  lifestyle: [
-    {icon:'📸', type:'Post Idea', idea:'Aesthetic morning routine flat lay — coffee + journal', caption:'"Morning rituals that change everything ☀️"'},
-    {icon:'🎬', type:'Reel Idea', idea:'Day in my life vlog — aesthetic transitions', caption:'"Living slow, growing fast 🌿"'},
-    {icon:'✍️', type:'Caption Hook', idea:'Lifestyle aspirational hook', caption:'"She is not lucky. She is disciplined 💎"'},
-  ],
-  food: [
-    {icon:'📸', type:'Post Idea', idea:'Aesthetic food flat lay — top angle shot', caption:'"Eat pretty, live pretty 🍓✨"'},
-    {icon:'🎬', type:'Reel Idea', idea:'Quick recipe reel — satisfying cuts', caption:'"5 ingredients. 10 minutes. Pure magic 👨‍🍳"'},
-    {icon:'✍️', type:'Caption Hook', idea:'Food hook to drive saves', caption:'"Save this recipe before I delete it 😅🍕"'},
-  ],
-};
-
-var niches = ['fashion','fitness','beauty','lifestyle','food'];
-var nicheEmojis = {fashion:'👗 Fashion',fitness:'💪 Fitness',beauty:'💄 Beauty',lifestyle:'🌿 Lifestyle',food:'🍓 Food'};
-var currentNiche = 'fashion';
-var currentPlanIndex = 0;
-
-function renderPlan() {
-  var plans = nichePlans[currentNiche];
-  var plan = plans[currentPlanIndex % plans.length];
-  var body = document.getElementById('tpBody');
-  if (!body) return;
-  body.innerHTML = plans.map(item => `
-    <div class="tp-card">
-      <div class="tp-card-icon">${item.icon}</div>
-      <div class="tp-card-type">${item.type}</div>
-      <div class="tp-card-idea">${item.idea}</div>
-      <div class="tp-card-caption">${item.caption}</div>
-    </div>`).join('');
-  document.getElementById('tpNiche').textContent = nicheEmojis[currentNiche];
-  // Set date
-  var dateEl = document.getElementById('tpDate');
-  if (dateEl) {
-    var now = new Date();
-    dateEl.textContent = now.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
-  }
-}
-
-function refreshPlan() {
-  var niches_list = Object.keys(nichePlans[currentNiche] ? nichePlans : nichePlans);
-  currentPlanIndex++;
-  // Rotate through different ideas
-  plans = nichePlans[currentNiche];
-  body = document.getElementById('tpBody');
-  if (!body) return;
-  // Shuffle plans array
-  var shuffled = [...plans].sort(() => Math.random() - 0.5);
-  body.style.opacity = '0';
-  body.style.transform = 'translateY(8px)';
-  setTimeout(() => {
-    body.innerHTML = shuffled.map(item => `
-      <div class="tp-card">
-        <div class="tp-card-icon">${item.icon}</div>
-        <div class="tp-card-type">${item.type}</div>
-        <div class="tp-card-idea">${item.idea}</div>
-        <div class="tp-card-caption">${item.caption}</div>
-      </div>`).join('');
-    body.style.opacity = '1';
-    body.style.transform = 'translateY(0)';
-    body.style.transition = 'all 0.3s ease';
-  }, 200);
-}
-
-function changeNiche() {
-  var idx = niches.indexOf(currentNiche);
-  currentNiche = niches[(idx + 1) % niches.length];
-  renderPlan();
-}
-
-// Init
-renderPlan();
-
-</script>
-
-<script>
-// Require login on dashboard
-// API calls moved to bottom
-// Update user name
-(function() {
-  var currentUser = CreatrixAPI.Auth.getUser();
-  if (currentUser) {
-    document.querySelectorAll('#userName, .user-name, .wb-title').forEach(function(el) {
-      if (el && currentUser.name) el.textContent = 'Good morning, ' + currentUser.name.split(' ')[0] + '! 👋';
-    });
-  }
-})();
-</script>
-<script>
-// Init after all scripts loaded
-if (typeof requireLogin !== 'undefined') {
-  requireLogin();
-}
-if (typeof updateCreditsDisplay !== 'undefined') {
-  updateCreditsDisplay();
-}
-(function() {
-  try {
-    var u = CreatrixAPI.Auth.getUser();
-    if (u && u.name) {
-      document.querySelectorAll('.wb-title').forEach(function(el) {
-        el.textContent = 'Good morning, ' + u.name.split(' ')[0] + '! 👋';
-      });
-    }
-  } catch(e) {}
-})();
-</script>
-</body>
-</html>
-        <div class="nav-item" onclick="window.location='creatrix-monetize.html'">
-          <span class="nav-icon">💰</span>
-          <span class="nav-label">Monetize</span>
-        </div>
     <a class="nav-item" onclick="showPage('tools', this)">
       <span class="nav-icon">🎥</span> Video Generator
     </a>
@@ -1244,42 +522,7 @@ if (typeof updateCreditsDisplay !== 'undefined') {
         <div class="wb-emoji">🚀</div>
       </div>
 
-      
-
-      <!-- CREDITS EXPIRY BANNER -->
-      <div class="expiry-banner" id="expiryBanner">
-        <div class="eb-left">
-          <div class="eb-icon">⏰</div>
-          <div>
-            <div class="eb-title">Your free credits expire soon!</div>
-            <div class="eb-sub">Use your 20 free credits or upgrade before they're gone forever</div>
-          </div>
-        </div>
-        <div class="eb-countdown" id="expiryCountdown">47:59:59</div>
-        <a href="creatrix-payment.html" class="eb-btn">Upgrade Now 🔥</a>
-      </div>
-
-      <!-- TODAY'S PLAN -->
-      <div class="todays-plan" id="todaysPlan">
-        <div class="tp-refresh" onclick="refreshPlan()" title="Get new ideas">🔄</div>
-        <div class="tp-header">
-          <div class="tp-title-wrap">
-            <div class="tp-title">🔥 Today's Plan</div>
-            <div class="tp-date" id="tpDate"></div>
-          </div>
-          <div class="tp-niche-badge" onclick="changeNiche()" id="tpNiche">✨ Fashion</div>
-        </div>
-        <div class="tp-body" id="tpBody">
-          <!-- populated by JS -->
-        </div>
-        <div class="tp-actions">
-          <a href="creatrix-create-influencer.html" class="tp-btn primary">🧑‍🎤 Generate Image</a>
-          <a href="creatrix-video-generator.html" class="tp-btn primary">🎬 Generate Video</a>
-          <div class="tp-btn secondary" onclick="refreshPlan()">💡 New Ideas</div>
-        </div>
-      </div>
-
-<div class="stats-grid">
+      <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-label"><span>🧑‍🎤</span> AI Influencers</div>
           <div class="stat-num">3</div>
@@ -1693,7 +936,7 @@ if (typeof updateCreditsDisplay !== 'undefined') {
 </div>
 
 <script>
-pageTitles =  {
+const pageTitles = {
   overview: 'Overview',
   tools: 'AI Tools',
   influencers: 'My Influencers',
@@ -1710,21 +953,21 @@ function showPage(name, navEl) {
 }
 
 // Bar chart
-days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-vals = [8, 12, 5, 15, 10, 6, 6];
-max = Math.max(...vals);
-chart = document.getElementById('barChart');
-labels = document.getElementById('barLabels');
-colors = ['#784CFE','#FF3CAC','#00F5D4','#FFD166','#784CFE','#FF3CAC','#00F5D4'];
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const vals = [8, 12, 5, 15, 10, 6, 6];
+const max = Math.max(...vals);
+const chart = document.getElementById('barChart');
+const labels = document.getElementById('barLabels');
+const colors = ['#784CFE','#FF3CAC','#00F5D4','#FFD166','#784CFE','#FF3CAC','#00F5D4'];
 days.forEach((d, i) => {
-  bar = document.createElement('div');
+  const bar = document.createElement('div');
   bar.className = 'bar';
   bar.style.height = '4px';
   bar.style.background = `linear-gradient(to top, ${colors[i]}, ${colors[(i+1)%colors.length]})`;
   bar.style.opacity = '0.8';
   chart.appendChild(bar);
   setTimeout(() => { bar.style.height = Math.round((vals[i]/max)*76) + 'px'; }, 100 + i*60);
-  lbl = document.createElement('div');
+  const lbl = document.createElement('div');
   lbl.className = 'bar-lbl';
   lbl.textContent = d;
   labels.appendChild(lbl);
@@ -1734,7 +977,7 @@ days.forEach((d, i) => {
 function goToPage(url) { window.location.href = url; }
 
 // Quick navigation helpers
-toolPages = {
+const toolPages = {
   'video': 'creatrix-video-generator.html',
   'lipsync': 'creatrix-lipsync.html', 
   'motion': 'creatrix-motion-control.html',
@@ -1746,176 +989,6 @@ toolPages = {
 function goTool(key) { if(toolPages[key]) window.location=toolPages[key]; }
 
 
-
-// ── TODAY'S PLAN ──
-nichePlans = {
-  fashion: [
-    {icon:'📸', type:'Post Idea', idea:'Mirror selfie in your best outfit — confident pose', caption:'"Outfit speaks louder than words 👗✨"'},
-    {icon:'🎬', type:'Reel Idea', idea:'Outfit transition reel — before & after styling', caption:'"From basic to iconic in 3 seconds 🔥"'},
-    {icon:'✍️', type:'Caption Hook', idea:'Use this hook to stop the scroll', caption:'"POV: you finally found your style era 💅"'},
-  ],
-  fitness: [
-    {icon:'📸', type:'Post Idea', idea:'Gym mirror selfie — flex and confidence pose', caption:'"No days off 💪🔥"'},
-    {icon:'🎬', type:'Reel Idea', idea:'Slow-motion workout + trending music', caption:'"The grind never stops 🏋️‍♀️"'},
-    {icon:'✍️', type:'Caption Hook', idea:'Motivational hook for fitness audience', caption:'"Your future self will thank you 🙌"'},
-  ],
-  beauty: [
-    {icon:'📸', type:'Post Idea', idea:'Close-up glam makeup look — bold lighting', caption:'"Glow different ✨💄"'},
-    {icon:'🎬', type:'Reel Idea', idea:'Get Ready With Me — skincare + makeup routine', caption:'"Self care is not selfish 🌸"'},
-    {icon:'✍️', type:'Caption Hook', idea:'Beauty tip hook to drive saves', caption:'"Save this if you want glass skin in 7 days 🫧"'},
-  ],
-  lifestyle: [
-    {icon:'📸', type:'Post Idea', idea:'Aesthetic morning routine flat lay — coffee + journal', caption:'"Morning rituals that change everything ☀️"'},
-    {icon:'🎬', type:'Reel Idea', idea:'Day in my life vlog — aesthetic transitions', caption:'"Living slow, growing fast 🌿"'},
-    {icon:'✍️', type:'Caption Hook', idea:'Lifestyle aspirational hook', caption:'"She is not lucky. She is disciplined 💎"'},
-  ],
-  food: [
-    {icon:'📸', type:'Post Idea', idea:'Aesthetic food flat lay — top angle shot', caption:'"Eat pretty, live pretty 🍓✨"'},
-    {icon:'🎬', type:'Reel Idea', idea:'Quick recipe reel — satisfying cuts', caption:'"5 ingredients. 10 minutes. Pure magic 👨‍🍳"'},
-    {icon:'✍️', type:'Caption Hook', idea:'Food hook to drive saves', caption:'"Save this recipe before I delete it 😅🍕"'},
-  ],
-};
-
-niches = ['fashion','fitness','beauty','lifestyle','food'];
-nicheEmojis = {fashion:'👗 Fashion',fitness:'💪 Fitness',beauty:'💄 Beauty',lifestyle:'🌿 Lifestyle',food:'🍓 Food'};
-currentNiche = 'fashion';
-currentPlanIndex = 0;
-
-function renderPlan() {
-  var plans = nichePlans[currentNiche];
-  plan = plans[currentPlanIndex % plans.length];
-  var body = document.getElementById('tpBody');
-  if (!body) return;
-  body.innerHTML = plans.map(item => `
-    <div class="tp-card">
-      <div class="tp-card-icon">${item.icon}</div>
-      <div class="tp-card-type">${item.type}</div>
-      <div class="tp-card-idea">${item.idea}</div>
-      <div class="tp-card-caption">${item.caption}</div>
-    </div>`).join('');
-  document.getElementById('tpNiche').textContent = nicheEmojis[currentNiche];
-  // Set date
-  dateEl = document.getElementById('tpDate');
-  if (dateEl) {
-    now = new Date();
-    dateEl.textContent = now.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
-  }
-}
-
-function refreshPlan() {
-  niches_list = Object.keys(nichePlans[currentNiche] ? nichePlans : nichePlans);
-  currentPlanIndex++;
-  // Rotate through different ideas
-  var plans = nichePlans[currentNiche];
-  var body = document.getElementById('tpBody');
-  if (!body) return;
-  // Shuffle plans array
-  shuffled = [...plans].sort(() => Math.random() - 0.5);
-  body.style.opacity = '0';
-  body.style.transform = 'translateY(8px)';
-  setTimeout(() => {
-    body.innerHTML = shuffled.map(item => `
-      <div class="tp-card">
-        <div class="tp-card-icon">${item.icon}</div>
-        <div class="tp-card-type">${item.type}</div>
-        <div class="tp-card-idea">${item.idea}</div>
-        <div class="tp-card-caption">${item.caption}</div>
-      </div>`).join('');
-    body.style.opacity = '1';
-    body.style.transform = 'translateY(0)';
-    body.style.transition = 'all 0.3s ease';
-  }, 200);
-}
-
-function changeNiche() {
-  idx = niches.indexOf(currentNiche);
-  currentNiche = niches[(idx + 1) % niches.length];
-  renderPlan();
-}
-
-// Init
-renderPlan();
-
-
-// ── CREDITS EXPIRY COUNTDOWN ──
-function startExpiryCountdown() {
-  // In production: use actual signup time from backend
-  // For demo: countdown from 48 hours
-  var signupKey = 'creatrix_signup_time';
-  if (!localStorage.getItem(signupKey)) {
-    localStorage.setItem(signupKey, Date.now());
-  }
-  var signupTime = parseInt(localStorage.getItem(signupKey));
-  var expiryTime = signupTime + (48 * 60 * 60 * 1000);
-
-  function updateCountdown() {
-    var now = new Date();
-    var remaining = expiryTime - Date.now();
-    var banner = document.getElementById('expiryBanner');
-    var countdownEl = document.getElementById('expiryCountdown');
-
-    if (remaining <= 0) {
-      if (banner) banner.style.display = 'none';
-      return;
-    }
-
-    var hrs = Math.floor(remaining / (1000 * 60 * 60));
-    var mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-    var secs = Math.floor((remaining % (1000 * 60)) / 1000);
-
-    if (countdownEl) {
-      countdownEl.textContent =
-        String(hrs).padStart(2,'0') + ':' +
-        String(mins).padStart(2,'0') + ':' +
-        String(secs).padStart(2,'0');
-    }
-
-    // Turn red when less than 6 hours left
-    if (remaining < 6 * 60 * 60 * 1000 && countdownEl) {
-      countdownEl.style.color = 'var(--accent)';
-      if (banner) banner.style.borderColor = 'rgba(255,60,172,0.4)';
-    }
-  }
-
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-}
-
-startExpiryCountdown();
-
-</script>
-
-<script>
-// Require login on dashboard
-// API calls moved to bottom
-// Update user name
-(function() {
-  var currentUser = CreatrixAPI.Auth.getUser();
-  if (currentUser) {
-    document.querySelectorAll('#userName, .user-name, .wb-title').forEach(function(el) {
-      if (el && currentUser.name) el.textContent = 'Good morning, ' + currentUser.name.split(' ')[0] + '! 👋';
-    });
-  }
-})();
-</script>
-<script>
-// Init after all scripts loaded
-if (typeof requireLogin !== 'undefined') {
-  requireLogin();
-}
-if (typeof updateCreditsDisplay !== 'undefined') {
-  updateCreditsDisplay();
-}
-(function() {
-  try {
-    var u = CreatrixAPI.Auth.getUser();
-    if (u && u.name) {
-      document.querySelectorAll('.wb-title').forEach(function(el) {
-        el.textContent = 'Good morning, ' + u.name.split(' ')[0] + '! 👋';
-      });
-    }
-  } catch(e) {}
-})();
 </script>
 </body>
 </html>
