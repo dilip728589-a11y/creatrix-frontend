@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creatrix AI — Login & Sign Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #04040A;
+  --bg2: #0A0A14;
+  --card: #0F0F1E;
+  --card2: #161628;
+  --white: #F0EEF8;
+  --muted: #7070A0;
+  --muted2: #3A3A5C;
+  --accent: #FF3CAC;
+  --accent2: #784CFE;
+  --accent3: #00F5D4;
+  --gold: #FFD166;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --font-h: 'Clash Display', sans-serif;
+  --font-b: 'Cabinet Grotesk', sans-serif;
+  --danger: #FF5757;
+  --success: #00F5D4;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--white); font-family: var(--font-b); overflow: hidden; display: flex; }
+
+/* LEFT PANEL */
+.left-panel {
+  width: 48%;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem 3rem;
+  overflow: hidden;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+}
+
+/* Animated orbs */
+.orb { position: absolute; border-radius: 50%; pointer-events: none; }
+.orb1 { width: 500px; height: 500px; top: -150px; left: -150px; background: radial-gradient(circle, rgba(120,76,254,0.3) 0%, transparent 70%); animation: drift1 8s ease-in-out infinite alternate; }
+.orb2 { width: 400px; height: 400px; bottom: -100px; right: -100px; background: radial-gradient(circle, rgba(255,60,172,0.25) 0%, transparent 70%); animation: drift2 10s ease-in-out infinite alternate; }
+.orb3 { width: 250px; height: 250px; top: 40%; left: 40%; background: radial-gradient(circle, rgba(0,245,212,0.12) 0%, transparent 70%); animation: drift1 6s ease-in-out infinite alternate-reverse; }
+@keyframes drift1 { from{transform:translate(0,0)} to{transform:translate(30px,20px)} }
+@keyframes drift2 { from{transform:translate(0,0)} to{transform:translate(-25px,15px)} }
+
+/* Grid lines */
+.grid-lines { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 50px 50px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%); }
+
+.left-logo { font-family: var(--font-h); font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; text-decoration: none; color: var(--white); position: relative; z-index: 2; }
+.left-logo span { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+.left-center { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.left-center h2 { font-family: var(--font-h); font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.25rem; }
+.left-center h2 .grad { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.left-center p { color: var(--muted); font-size: 1rem; line-height: 1.75; max-width: 380px; margin-bottom: 2.5rem; }
+
+/* Social proof cards */
+.proof-cards { display: flex; flex-direction: column; gap: 0.75rem; }
+.proof-card { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1.25rem; backdrop-filter: blur(8px); animation: slideIn 0.5s ease both; }
+.proof-card:nth-child(2) { animation-delay: 0.1s; }
+.proof-card:nth-child(3) { animation-delay: 0.2s; }
+@keyframes slideIn { from{opacity:0;transform:translateX(-16px)} to{opacity:1;transform:translateX(0)} }
+.proof-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.pi-pink { background: rgba(255,60,172,0.15); }
+.pi-teal { background: rgba(0,245,212,0.1); }
+.pi-gold { background: rgba(255,209,102,0.1); }
+.proof-text { font-size: 0.88rem; font-weight: 500; color: var(--white); }
+.proof-sub { font-size: 0.76rem; color: var(--muted); margin-top: 1px; }
+
+.left-bottom { position: relative; z-index: 2; }
+.avatar-row { display: flex; align-items: center; gap: 12px; }
+.av-stack { display: flex; }
+.av { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--bg2); margin-left: -8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.av:first-child { margin-left: 0; }
+.av-text { font-size: 0.82rem; color: var(--muted); }
+.av-text strong { color: var(--white); }
+
+/* RIGHT PANEL */
+.right-panel {
+  width: 52%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 3rem;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+.auth-box { width: 100%; max-width: 420px; }
+
+/* Tab switcher */
+.tab-wrap { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 5px; margin-bottom: 2rem; }
+.tab-btn { flex: 1; padding: 0.65rem; border: none; background: none; color: var(--muted); font-family: var(--font-h); font-size: 0.9rem; font-weight: 600; cursor: pointer; border-radius: 10px; transition: all 0.25s; }
+.tab-btn.active { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+
+.auth-title { font-family: var(--font-h); font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+.auth-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+.auth-sub a { color: var(--accent2); text-decoration: none; }
+
+/* Social login */
+.social-btns { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+.social-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0.75rem; background: var(--card); border: 1px solid var(--border2); border-radius: 12px; color: var(--white); font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: border-color 0.2s, background 0.2s; text-decoration: none; }
+.social-btn:hover { border-color: rgba(255,255,255,0.25); background: var(--card2); }
+.social-icon { font-size: 1rem; }
+
+.divider { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; }
+.div-line { flex: 1; height: 1px; background: var(--border); }
+.div-text { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+
+/* Form */
+.form-panel { display: none; }
+.form-panel.active { display: block; }
+
+.field { margin-bottom: 1.1rem; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.45rem; }
+.input-wrap { position: relative; }
+input[type="text"], input[type="email"], input[type="password"] {
+  width: 100%; background: var(--card); border: 1px solid var(--border2); color: var(--white);
+  padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.95rem; outline: none;
+  font-family: var(--font-b); transition: border-color 0.2s, background 0.2s;
+}
+input::placeholder { color: var(--muted2); }
+input:focus { border-color: var(--accent2); background: var(--card2); }
+input.error { border-color: var(--danger); }
+input.valid { border-color: var(--success); }
+.input-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; cursor: pointer; color: var(--muted); }
+.field-error { font-size: 0.76rem; color: var(--danger); margin-top: 5px; display: none; }
+.field-error.show { display: block; }
+
+/* Password strength */
+.strength-bar { display: flex; gap: 4px; margin-top: 8px; }
+.strength-seg { flex: 1; height: 3px; border-radius: 2px; background: var(--muted2); transition: background 0.3s; }
+.strength-seg.weak { background: var(--danger); }
+.strength-seg.medium { background: var(--gold); }
+.strength-seg.strong { background: var(--success); }
+.strength-label { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+
+/* Checkbox */
+.check-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1.5rem; }
+.check-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent2); margin-top: 2px; flex-shrink: 0; cursor: pointer; }
+.check-row label { font-size: 0.82rem; color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 400; cursor: pointer; }
+.check-row label a { color: var(--accent2); text-decoration: none; }
+
+/* Submit btn */
+.submit-btn {
+  width: 100%; padding: 0.95rem; border: none; border-radius: 12px; cursor: pointer;
+  font-family: var(--font-h); font-weight: 700; font-size: 1rem; color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  transition: opacity 0.2s, transform 0.15s;
+  position: relative; overflow: hidden;
+}
+.submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.submit-btn:active { transform: scale(0.98); }
+.submit-btn .btn-loader { display: none; }
+.submit-btn.loading .btn-text { display: none; }
+.submit-btn.loading .btn-loader { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* Forgot password */
+.forgot-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem; }
+.forgot-link { font-size: 0.78rem; color: var(--accent2); text-decoration: none; }
+.forgot-link:hover { text-decoration: underline; }
+
+/* Success state */
+.success-box { display: none; text-align: center; padding: 2rem 0; }
+.success-box.show { display: block; animation: fadeUp 0.4s ease both; }
+.success-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+.success-title { font-family: var(--font-h); font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+.success-sub { color: var(--muted); font-size: 0.9rem; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+/* Bottom note */
+.bottom-note { text-align: center; margin-top: 1.5rem; font-size: 0.82rem; color: var(--muted); }
+.bottom-note a { color: var(--accent2); text-decoration: none; font-weight: 600; }
+
+/* Google style */
+.g-icon { width: 18px; height: 18px; }
+
+/* Responsive */
+@media (max-width: 800px) {
+  body { overflow-y: auto; overflow-x: hidden; flex-direction: column; }
+  .left-panel { width: 100%; min-height: auto; padding: 2rem; border-right: none; border-bottom: 1px solid var(--border); }
+  .left-center h2 { font-size: 1.8rem; }
+  .proof-cards { display: none; }
+  .right-panel { width: 100%; padding: 2rem; }
+  .left-bottom { display: none; }
+}
+
+/* ── AGE GATE POPUP ── */
+.age-gate {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(4,4,10,0.97);
+  backdrop-filter: blur(20px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.3s ease;
+}
+.age-gate.hidden { display: none; }
+.age-gate-box {
+  background: var(--card);
+  border: 1px solid rgba(255,60,172,0.3);
+  border-radius: 28px;
+  padding: 3rem 2.5rem;
+  max-width: 480px; width: 100%;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.age-gate-box::before {
+  content: '';
+  position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+  width: 300px; height: 300px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,60,172,0.15), transparent 70%);
+  pointer-events: none;
+}
+.age-gate-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+.age-gate-title {
+  font-family: var(--font-h); font-size: 1.7rem; font-weight: 800;
+  letter-spacing: -0.02em; margin-bottom: 0.5rem;
+}
+.age-gate-title span { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.age-gate-sub { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 2rem; }
+.age-gate-checks { display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 2rem; text-align: left; }
+.age-check-row { display: flex; align-items: flex-start; gap: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 0.85rem 1rem; cursor: pointer; transition: border-color 0.2s; }
+.age-check-row:hover { border-color: rgba(255,60,172,0.3); }
+.age-check-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); margin-top: 1px; flex-shrink: 0; cursor: pointer; }
+.age-check-label { font-size: 0.84rem; line-height: 1.55; color: var(--white); font-weight: 500; }
+.age-check-label a { color: var(--accent2); text-decoration: none; font-weight: 700; }
+.age-check-label a:hover { text-decoration: underline; }
+.age-check-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; display: block; }
+.age-gate-btn {
+  width: 100%; padding: 1rem; border: none; border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; font-family: var(--font-h); font-weight: 800; font-size: 1rem;
+  cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+  margin-bottom: 0.85rem;
+}
+.age-gate-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
+.age-gate-btn:not(:disabled):hover { opacity: 0.9; transform: translateY(-2px); }
+.age-gate-decline { background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--muted); width: 100%; padding: 0.75rem; border-radius: 12px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-family: var(--font-b); }
+.age-gate-decline:hover { border-color: rgba(255,255,255,0.2); color: var(--white); }
+.age-gate-warning { font-size: 0.72rem; color: var(--muted); margin-top: 1.25rem; line-height: 1.6; }
+.age-gate-warning strong { color: var(--accent); }
+/* Blocked screen */
+.blocked-screen {
+  position: fixed; inset: 0; z-index: 99999;
+  background: var(--bg);
+  display: none; align-items: center; justify-content: center;
+  text-align: center; padding: 2rem; flex-direction: column; gap: 1rem;
+}
+.blocked-screen.show { display: flex; }
+.blocked-icon { font-size: 4rem; }
+.blocked-title { font-family: var(--font-h); font-size: 1.5rem; font-weight: 800; color: var(--accent); }
+.blocked-sub { color: var(--muted); font-size: 0.9rem; max-width: 380px; }
+@keyframes fadeIn { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} }
+
+</style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="grid-lines"></div>
+
+  <a href="creatrix-ai-v3.html" class="left-logo">Creatrix <span>AI</span></a>
+
+  <div class="left-center">
+    <h2>Your AI Influencer<br>empire starts <span class="grad">here.</span></h2>
+    <p>Join 50,000+ creators building viral AI influencers on Instagram & TikTok — and earning real money doing it.</p>
+
+    <div class="proof-cards">
+      <div class="proof-card">
+        <div class="proof-icon pi-pink">🧑‍🎤</div>
+        <div>
+          <div class="proof-text">Create AI Influencers in seconds</div>
+          <div class="proof-sub">No camera. No editing skills needed.</div>
+        </div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-icon pi-teal">🎬</div>
+        <div>
+          <div class="proof-text">10+ AI video models included</div>
+          <div class="proof-sub">Sora 2.0, Veo 3.1, Kling v3 & more</div>
+        </div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-icon pi-gold">💰</div>
+        <div>
+          <div class="proof-text">Earn ₹20K–₹1L+ per month</div>
+          <div class="proof-sub">Brand deals, affiliate & UGC sales</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="left-bottom">
+    <div class="avatar-row">
+      <div class="av-stack">
+        <div class="av" style="background:#2d1b69;">🧑‍🎤</div>
+        <div class="av" style="background:#1a2d1b;">👩‍🦰</div>
+        <div class="av" style="background:#2d1b1b;">🧑‍💼</div>
+        <div class="av" style="background:#1b1b2d;">👩‍🎨</div>
+        <div class="av" style="background:#2d2b1b;">🧑‍🍳</div>
+      </div>
+      <div class="av-text"><strong>2,400+</strong> influencers created today</div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+  <div class="auth-box">
+
+    <!-- Tab switcher -->
+    <div class="tab-wrap">
+      <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
+      <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div class="form-panel active" id="loginPanel">
+      <div class="auth-title">Welcome back 👋</div>
+      <p class="auth-sub">Don't have an account? <a href="creatrix-ai-v3.html" onclick="switchTab('signup');return false;">Sign up free</a></p>
+
+      <div class="social-btns">
+        <a href="creatrix-ai-v3.html" class="social-btn">
+          <svg class="g-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </a>
+      </div>
+
+      <div class="divider"><div class="div-line"></div><span class="div-text">or continue with email</span><div class="div-line"></div></div>
+
+      <form onsubmit="handleLogin(event)" novalidate>
+        <div class="field">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <input type="email" id="loginEmail" placeholder="you@example.com" oninput="clearErr('loginEmail')">
+            <span class="input-icon" id="loginEmailIcon"></span>
+          </div>
+          <div class="field-error" id="loginEmailErr">Please enter a valid email address.</div>
+        </div>
+
+        <div class="field">
+          <div class="forgot-row">
+            <label style="margin:0;">Password</label>
+            <a href="creatrix-ai-v3.html" class="forgot-link" onclick="showForgot();return false;">Forgot password?</a>
+          </div>
+          <div class="input-wrap">
+            <input type="password" id="loginPass" placeholder="Enter your password" oninput="clearErr('loginPass')">
+            <span class="input-icon" onclick="togglePass('loginPass', this)">👁️</span>
+          </div>
+          <div class="field-error" id="loginPassErr">Password is required.</div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="loginBtn">
+          <span class="btn-text">Log In to Creatrix AI</span>
+          <span class="btn-loader"></span>
+        </button>
+      </form>
+
+      <!-- Forgot password notice -->
+      <div id="forgotMsg" style="display:none;margin-top:1rem;background:rgba(120,76,254,0.1);border:1px solid rgba(120,76,254,0.25);border-radius:12px;padding:1rem;font-size:0.85rem;color:var(--muted);">
+        🔑 Enter your email above and we'll send a reset link to your inbox.
+      </div>
+
+      <!-- Success -->
+      <div class="success-box" id="loginSuccess">
+        <div class="success-icon">🎉</div>
+        <div class="success-title">Welcome back!</div>
+        <p class="success-sub">Redirecting you to your dashboard...</p>
+      </div>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div class="form-panel" id="signupPanel">
+      <div class="auth-title">Create your account ✨</div>
+      <p class="auth-sub">Already have an account? <a href="creatrix-ai-v3.html" onclick="switchTab('login');return false;">Log in</a></p>
+
+      <div class="social-btns">
+        <a href="creatrix-ai-v3.html" class="social-btn">
+          <svg class="g-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Sign up with Google
+        </a>
+      </div>
+
+      <div class="divider"><div class="div-line"></div><span class="div-text">or sign up with email</span><div class="div-line"></div></div>
+
+      <form onsubmit="handleSignup(event)" novalidate>
+        <div class="field field-row">
+          <div>
+            <label>First Name</label>
+            <input type="text" id="signupFirst" placeholder="Rahul" oninput="clearErr('signupFirst')">
+            <div class="field-error" id="signupFirstErr">Required.</div>
+          </div>
+          <div>
+            <label>Last Name</label>
+            <input type="text" id="signupLast" placeholder="Shah" oninput="clearErr('signupLast')">
+            <div class="field-error" id="signupLastErr">Required.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <input type="email" id="signupEmail" placeholder="you@example.com" oninput="validateEmail()">
+            <span class="input-icon" id="signupEmailIcon"></span>
+          </div>
+          <div class="field-error" id="signupEmailErr">Please enter a valid email address.</div>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <input type="password" id="signupPass" placeholder="Min 8 characters" oninput="checkStrength()">
+            <span class="input-icon" onclick="togglePass('signupPass', this)">👁️</span>
+          </div>
+          <div class="strength-bar">
+            <div class="strength-seg" id="s1"></div>
+            <div class="strength-seg" id="s2"></div>
+            <div class="strength-seg" id="s3"></div>
+            <div class="strength-seg" id="s4"></div>
+          </div>
+          <div class="strength-label" id="strengthLabel">Enter a password</div>
+          <div class="field-error" id="signupPassErr">Password must be at least 8 characters.</div>
+        </div>
+
+        <div class="check-row">
+          <input type="checkbox" id="terms">
+          <label for="terms">I agree to the <a href="creatrix-ai-v3.html">Terms of Service</a>, <a href="creatrix-ai-v3.html">Privacy Policy</a> and confirm I am <strong style="color:var(--accent);">18+ years old</strong></label>
+        </div>
+        <div class="field-error" id="termsErr" style="margin-top:-0.75rem;margin-bottom:1rem;">Please accept the terms to continue.</div>
+
+        <button type="submit" class="submit-btn" id="signupBtn">
+          <span class="btn-text">Create Free Account — Get 20 Credits</span>
+          <span class="btn-loader"></span>
+        </button>
+      </form>
+
+      <!-- Success -->
+      <div class="success-box" id="signupSuccess">
+        <div class="success-icon">🚀</div>
+        <div class="success-title">Account created!</div>
+        <p class="success-sub">Welcome to Creatrix AI. Your 20 free credits are ready.<br>Redirecting to your dashboard...</p>
+      </div>
+    </div>
+
+    <p class="bottom-note">Protected by reCAPTCHA · <a href="creatrix-ai-v3.html">Privacy</a> · <a href="creatrix-ai-v3.html">Terms</a></p>
+  </div>
+</div>
+
+<script>
+// Tab switch
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+  if (tab === 'login') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('loginPanel').classList.add('active');
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('signupPanel').classList.add('active');
+  }
+}
+
+// Toggle password visibility
+function togglePass(id, icon) {
+  const inp = document.getElementById(id);
+  if (inp.type === 'password') { inp.type = 'text'; icon.textContent = '🙈'; }
+  else { inp.type = 'password'; icon.textContent = '👁️'; }
+}
+
+// Clear error
+function clearErr(id) {
+  const el = document.getElementById(id);
+  if (el) { el.classList.remove('error'); el.classList.remove('valid'); }
+  const err = document.getElementById(id + 'Err');
+  if (err) err.classList.remove('show');
+}
+
+// Validate email live
+function validateEmail() {
+  const val = document.getElementById('signupEmail').value;
+  const el = document.getElementById('signupEmail');
+  const icon = document.getElementById('signupEmailIcon');
+  const err = document.getElementById('signupEmailErr');
+  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  if (val.length > 3) {
+    el.classList.toggle('valid', valid);
+    el.classList.toggle('error', !valid);
+    icon.textContent = valid ? '✅' : '❌';
+    err.classList.toggle('show', !valid);
+  }
+}
+
+// Password strength
+function checkStrength() {
+  const val = document.getElementById('signupPass').value;
+  const segs = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3'), document.getElementById('s4')];
+  const label = document.getElementById('strengthLabel');
+  segs.forEach(s => { s.className = 'strength-seg'; });
+  if (!val) { label.textContent = 'Enter a password'; return; }
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const cls = score <= 1 ? 'weak' : score <= 2 ? 'medium' : 'strong';
+  const labels = ['', 'Weak', 'Weak', 'Medium', 'Strong'];
+  for (let i = 0; i < score; i++) segs[i].classList.add(cls);
+  label.textContent = labels[score] || '';
+  label.style.color = score <= 1 ? 'var(--danger)' : score <= 2 ? 'var(--gold)' : 'var(--success)';
+}
+
+// Forgot password
+function showForgot() {
+  const msg = document.getElementById('forgotMsg');
+  msg.style.display = msg.style.display === 'none' ? 'block' : 'none';
+}
+
+// Login handler
+function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!email || !pass) return;
+
+  const btn = e.target.querySelector('button[type=submit]') || document.querySelector('.auth-btn');
+  if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+
+  CreatrixAPI.Auth.login(email, pass).then(data => {
+    if (data.error) {
+      if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+      showError(data.error);
+    } else {
+      setTimeout(() => { window.location.href = 'creatrix-dashboard.html'; }, 800);
+    }
+  }).catch(() => {
+    if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+    showError('Something went wrong. Please try again.');
+  });
+}
+
+// Signup handler
+function handleSignup(e) {
+  e.preventDefault();
+  const first = document.getElementById('signupFirst').value.trim();
+  const last = document.getElementById('signupLast').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const pass = document.getElementById('signupPass').value;
+  if (!first || !email || !pass) return;
+
+  const btn = e.target.querySelector('button[type=submit]') || document.querySelector('.auth-btn');
+  if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+
+  const name = first + (last ? ' ' + last : '');
+
+  CreatrixAPI.Auth.signup(name, email, pass).then(data => {
+    if (data.error) {
+      if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+      showError(data.error);
+    } else {
+      setTimeout(() => { window.location.href = 'creatrix-dashboard.html'; }, 800);
+    }
+  }).catch(() => {
+    if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+    showError('Something went wrong. Please try again.');
+  });
+}
+
+// ── AGE GATE LOGIC ──
+function checkAgeGate() {
+  const age = document.getElementById('ageCheck').checked;
+  const terms = document.getElementById('termsCheck').checked;
+  const content = document.getElementById('contentCheck').checked;
+  const btn = document.getElementById('ageGateBtn');
+  btn.disabled = !(age && terms && content);
+  if (age && terms && content) {
+    btn.style.animation = 'none';
+    btn.offsetHeight; // reflow
+    btn.style.animation = 'fadeIn 0.3s ease';
+  }
+}
+
+function acceptAgeGate() {
+  // Save to sessionStorage so they don't see it again this session
+  sessionStorage.setItem('creatrix_age_verified', '1');
+  const gate = document.getElementById('ageGate');
+  gate.style.animation = 'none';
+  gate.style.opacity = '0';
+  gate.style.transform = 'scale(1.05)';
+  gate.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+  setTimeout(() => gate.classList.add('hidden'), 400);
+}
+
+function declineAgeGate() {
+  document.getElementById('ageGate').classList.add('hidden');
+  document.getElementById('blockedScreen').classList.add('show');
+}
+
+// Check if already verified this session
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('creatrix_age_verified') === '1') {
+    document.getElementById('ageGate').classList.add('hidden');
+  }
+});
+</script>
+
+<!-- ── BLOCKED SCREEN ── -->
+<div class="blocked-screen" id="blockedScreen">
+  <div class="blocked-icon">🔞</div>
+  <div class="blocked-title">Access Denied</div>
+  <p class="blocked-sub">You must be 18 years or older to access Creatrix AI. This platform contains AI-generated content intended for adults only.</p>
+  <a href="https://www.google.com" style="margin-top:1rem;padding:0.7rem 2rem;background:var(--card);border:1px solid var(--border2);border-radius:100px;color:var(--muted);text-decoration:none;font-size:0.85rem;">← Leave this site</a>
+</div>
+
+<!-- ── AGE GATE POPUP ── -->
+<div class="age-gate" id="ageGate">
+  <div class="age-gate-box">
+    <div class="age-gate-icon">🔞</div>
+    <h2 class="age-gate-title">Age <span>Verification</span> Required</h2>
+    <p class="age-gate-sub">Creatrix AI contains AI-generated content that may include mature themes. You must confirm your age and agree to our terms before continuing.</p>
+
+    <div class="age-gate-checks">
+      <!-- 18+ Checkbox -->
+      <label class="age-check-row" for="ageCheck">
+        <input type="checkbox" id="ageCheck" onchange="checkAgeGate()">
+        <div>
+          <span class="age-check-label">✅ I confirm I am <strong>18 years of age or older</strong></span>
+          <span class="age-check-sub">By checking this box you confirm your age under applicable law.</span>
+        </div>
+      </label>
+
+      <!-- Terms Checkbox -->
+      <label class="age-check-row" for="termsCheck">
+        <input type="checkbox" id="termsCheck" onchange="checkAgeGate()">
+        <div>
+          <span class="age-check-label">📋 I agree to the <a href="creatrix-terms.html" target="_blank">Terms of Service</a>, <a href="creatrix-terms.html" target="_blank">Privacy Policy</a> & <a href="creatrix-terms.html" target="_blank">Content Policy</a></span>
+          <span class="age-check-sub">Including our rules on AI-generated content usage.</span>
+        </div>
+      </label>
+
+      <!-- Content Checkbox -->
+      <label class="age-check-row" for="contentCheck">
+        <input type="checkbox" id="contentCheck" onchange="checkAgeGate()">
+        <div>
+          <span class="age-check-label">🤖 I understand this platform generates <strong>AI content</strong> and I will use it responsibly</span>
+          <span class="age-check-sub">Content must not be used to harm, harass or impersonate real people.</span>
+        </div>
+      </label>
+    </div>
+
+    <button class="age-gate-btn" id="ageGateBtn" disabled onclick="acceptAgeGate()">
+      ✅ I Confirm — Enter Creatrix AI
+    </button>
+    <button class="age-gate-decline" onclick="declineAgeGate()">
+      I am under 18 — Leave this site
+    </button>
+
+    <p class="age-gate-warning">
+      <strong>⚠️ Warning:</strong> If you are under 18 or if it is illegal to view adult-themed AI content in your region, you must leave now. Creatrix AI uses cookies to remember your age verification for 30 days.
+    </p>
+  </div>
+</div>
+
+
+<script src="api.js"></script>
+<script>
+function showError(msg) {
+  let el = document.getElementById('authError');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'authError';
+    el.style.cssText = 'background:rgba(255,60,172,0.1);border:1px solid rgba(255,60,172,0.3);border-radius:10px;padding:0.75rem 1rem;font-size:0.82rem;color:#ff8cd0;margin-bottom:1rem;text-align:center;';
+    const form = document.querySelector('.auth-form, form');
+    if (form) form.prepend(el);
+  }
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+</script>
+</body>
+</html>

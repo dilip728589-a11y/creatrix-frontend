@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Creations — Creatrix AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700;800&family=Cabinet+Grotesk:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04040A;--bg2:#080812;--card:#0F0F1E;--card2:#161628;--white:#F0EEF8;--muted:#7070A0;--muted2:#3A3A5C;--accent:#FF3CAC;--accent2:#784CFE;--accent3:#00F5D4;--gold:#FFD166;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--font-h:'Clash Display',sans-serif;--font-b:'Cabinet Grotesk',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;}
+body{background:var(--bg);color:var(--white);font-family:var(--font-b);}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;background:rgba(4,4,10,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;}
+.tb-left{display:flex;align-items:center;gap:1.25rem;}
+.back-btn{color:var(--muted);font-size:0.85rem;font-weight:500;text-decoration:none;transition:color 0.2s;}
+.back-btn:hover{color:var(--white);}
+.tb-div{width:1px;height:18px;background:var(--border2);}
+.tb-logo{font-family:var(--font-h);font-size:1.15rem;font-weight:700;text-decoration:none;color:var(--white);}
+.tb-logo span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.tb-right{display:flex;align-items:center;gap:0.85rem;}
+.credits-pill{display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border2);border-radius:100px;padding:0.38rem 1rem;font-size:0.8rem;}
+.credits-pill .cv{font-family:var(--font-h);font-weight:700;color:var(--accent3);}
+.credits-pill .cl{color:var(--muted);}
+.btn-create{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;text-decoration:none;font-family:var(--font-h);font-size:0.85rem;font-weight:700;padding:0.5rem 1.25rem;border-radius:100px;transition:opacity 0.2s;}
+.btn-create:hover{opacity:0.88;}
+
+/* PAGE */
+.page{padding:62px 0 4rem;}
+.page-header{padding:2.5rem 3rem 1.5rem;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.page-eyebrow{font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:0.4rem;}
+.page-title{font-family:var(--font-h);font-size:2.25rem;font-weight:800;letter-spacing:-0.03em;}
+.page-count{font-size:0.85rem;color:var(--muted);margin-top:0.35rem;}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:1rem;padding:0 3rem 1.75rem;flex-wrap:wrap;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;flex:1;min-width:140px;}
+.stat-icon{font-size:1.75rem;}
+.stat-val{font-family:var(--font-h);font-size:1.5rem;font-weight:800;}
+.stat-lbl{font-size:0.72rem;color:var(--muted);margin-top:1px;}
+
+/* FILTER BAR */
+.filter-bar{padding:0 3rem 1.75rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
+.filter-chip{padding:0.45rem 1.1rem;border-radius:100px;border:1.5px solid var(--border2);background:var(--card);color:var(--muted);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.18s;user-select:none;display:flex;align-items:center;gap:5px;}
+.filter-chip:hover{border-color:rgba(255,255,255,0.2);color:var(--white);}
+.filter-chip.active{background:rgba(120,76,254,0.15);border-color:var(--accent2);color:var(--white);}
+.filter-sep{width:1px;height:20px;background:var(--border2);margin:0 0.25rem;}
+.sort-select{background:var(--card);border:1.5px solid var(--border2);color:var(--muted);font-size:0.8rem;font-weight:600;padding:0.45rem 1rem;border-radius:100px;cursor:pointer;outline:none;font-family:var(--font-b);}
+.view-toggle{display:flex;background:var(--card);border:1px solid var(--border2);border-radius:100px;padding:3px;gap:2px;margin-left:auto;}
+.vt-btn{padding:0.35rem 0.75rem;border-radius:100px;font-size:0.75rem;cursor:pointer;transition:all 0.18s;color:var(--muted);}
+.vt-btn.active{background:var(--card2);color:var(--white);}
+.search-wrap{position:relative;}
+.search-input{background:var(--card);border:1.5px solid var(--border2);color:var(--white);font-size:0.82rem;padding:0.45rem 1rem 0.45rem 2.25rem;border-radius:100px;outline:none;font-family:var(--font-b);width:190px;transition:border-color 0.2s,width 0.3s;}
+.search-input:focus{border-color:var(--accent2);width:240px;}
+.search-input::placeholder{color:var(--muted2);}
+.search-icon{position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.8rem;pointer-events:none;}
+
+/* GRID */
+.grid-wrap{padding:0 3rem;}
+.creations-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem;}
+.creations-grid.list-view{grid-template-columns:1fr;}
+
+/* CREATION CARD */
+.creation-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s;cursor:pointer;}
+.creation-card:hover{transform:translateY(-4px);box-shadow:0 18px 45px rgba(0,0,0,0.45);border-color:var(--border2);}
+
+/* Thumbnail */
+.cc-thumb{position:relative;overflow:hidden;}
+.cc-thumb-img{width:100%;aspect-ratio:9/16;object-fit:cover;object-position:top;display:block;transition:transform 0.5s;}
+.cc-thumb.landscape .cc-thumb-img{aspect-ratio:16/9;}
+.cc-thumb.square .cc-thumb-img{aspect-ratio:1;}
+.creation-card:hover .cc-thumb-img{transform:scale(1.05);}
+.cc-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);opacity:0;transition:opacity 0.25s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.creation-card:hover .cc-overlay{opacity:1;}
+.cc-action-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:0.85rem;cursor:pointer;transition:background 0.18s;color:#fff;text-decoration:none;}
+.cc-action-btn:hover{background:rgba(120,76,254,0.5);}
+.cc-action-btn.del:hover{background:rgba(255,60,172,0.5);}
+
+/* Badges */
+.cc-type-badge{position:absolute;top:10px;left:10px;font-size:0.6rem;font-weight:700;padding:3px 8px;border-radius:100px;backdrop-filter:blur(6px);letter-spacing:0.04em;}
+.badge-video{background:rgba(120,76,254,0.8);color:#fff;}
+.badge-lipsync{background:rgba(255,60,172,0.8);color:#fff;}
+.badge-motion{background:rgba(0,245,212,0.8);color:#000;}
+.badge-ugc{background:rgba(255,209,102,0.85);color:#1a1000;}
+.badge-image{background:rgba(59,130,246,0.8);color:#fff;}
+.cc-dur{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);font-size:0.62rem;font-weight:700;padding:2px 7px;border-radius:100px;font-family:var(--font-h);}
+.cc-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:1rem;opacity:0;transition:opacity 0.25s;}
+.creation-card:hover .cc-play{opacity:1;}
+
+/* Card info */
+.cc-info{padding:0.9rem 1rem;}
+.cc-title{font-family:var(--font-h);font-size:0.88rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
+.cc-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:0.65rem;}
+.cc-tag{font-size:0.62rem;padding:2px 7px;border-radius:100px;background:var(--card2);color:var(--muted);font-weight:600;}
+.cc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:0.65rem;border-top:1px solid var(--border);}
+.cc-date{font-size:0.68rem;color:var(--muted2);}
+.cc-btns{display:flex;gap:5px;}
+.ccb{padding:4px 9px;background:var(--card2);border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-size:0.65rem;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.ccb:hover{color:var(--white);border-color:rgba(255,255,255,0.2);}
+.ccb.download{background:rgba(0,245,212,0.08);border-color:rgba(0,245,212,0.2);color:var(--accent3);}
+.ccb.download:hover{background:rgba(0,245,212,0.15);}
+
+/* LIST VIEW */
+.creations-grid.list-view .creation-card{display:grid;grid-template-columns:120px 1fr;border-radius:16px;}
+.creations-grid.list-view .cc-thumb{border-radius:16px 0 0 16px;}
+.creations-grid.list-view .cc-thumb-img{aspect-ratio:1;height:120px;width:120px;}
+.creations-grid.list-view .cc-thumb.landscape .cc-thumb-img{aspect-ratio:1;height:120px;}
+.creations-grid.list-view .cc-info{display:flex;flex-direction:column;justify-content:center;padding:1rem 1.25rem;}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:5rem 2rem;display:none;}
+.empty-state.show{display:block;}
+.empty-icon{font-size:4rem;opacity:0.25;margin-bottom:1.25rem;}
+.empty-title{font-family:var(--font-h);font-size:1.5rem;font-weight:700;margin-bottom:0.5rem;}
+.empty-sub{color:var(--muted);font-size:0.9rem;margin-bottom:2rem;line-height:1.7;}
+.empty-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;text-decoration:none;font-family:var(--font-h);font-size:0.88rem;font-weight:700;padding:0.8rem 2rem;border-radius:12px;}
+
+/* DELETE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(4,4,10,0.88);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:2rem;max-width:380px;width:90%;text-align:center;animation:popIn 0.25s ease both;}
+@keyframes popIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
+.modal-icon{font-size:2.5rem;margin-bottom:1rem;}
+.modal-title{font-family:var(--font-h);font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;}
+.modal-sub{color:var(--muted);font-size:0.85rem;margin-bottom:1.75rem;line-height:1.65;}
+.modal-btns{display:flex;gap:0.75rem;}
+.modal-cancel{flex:1;padding:0.72rem;background:var(--card2);border:1px solid var(--border2);color:var(--muted);border-radius:12px;font-family:var(--font-b);font-size:0.88rem;font-weight:600;cursor:pointer;}
+.modal-cancel:hover{color:var(--white);}
+.modal-delete{flex:1;padding:0.72rem;background:linear-gradient(135deg,#ff3c3c,#c01c1c);border:none;color:#fff;border-radius:12px;font-family:var(--font-h);font-size:0.88rem;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
+.modal-delete:hover{opacity:0.88;}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;z-index:999;background:var(--card2);border:1px solid var(--accent3);border-radius:14px;padding:0.9rem 1.1rem;display:flex;align-items:center;gap:10px;font-size:0.86rem;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast-icon{font-size:1.2rem;}
+.toast-t{font-weight:700;color:var(--accent3);display:block;margin-bottom:1px;}
+.toast-s{color:var(--muted);font-size:0.75rem;}
+
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
+@media(max-width:768px){.page-header,.filter-bar,.grid-wrap{padding-left:1.5rem;padding-right:1.5rem;}.stats-row{padding:0 1.5rem 1.5rem;}.creations-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <a href="creatrix-dashboard.html" class="back-btn">← Dashboard</a>
+    <div class="tb-div"></div>
+    <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
+  </div>
+  <div class="tb-right">
+    <div class="credits-pill"><span class="cv">38</span><span class="cl">credits</span></div>
+    <a href="creatrix-video-generator.html" class="btn-create">✨ Create New</a>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="page-eyebrow">Your Library</div>
+      <h1 class="page-title">My Creations</h1>
+      <div class="page-count" id="pageCount">18 creations</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-icon">🎬</div><div><div class="stat-val" id="statVideos">8</div><div class="stat-lbl">AI Videos</div></div></div>
+    <div class="stat-card"><div class="stat-icon">👄</div><div><div class="stat-val" id="statLipsync">4</div><div class="stat-lbl">Lip Syncs</div></div></div>
+    <div class="stat-card"><div class="stat-icon">🕹️</div><div><div class="stat-val" id="statMotion">3</div><div class="stat-lbl">Motion Videos</div></div></div>
+    <div class="stat-card"><div class="stat-icon">🎥</div><div><div class="stat-val" id="statUGC">3</div><div class="stat-lbl">UGC Videos</div></div></div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-chip active" onclick="filterBy(this,'all')">All</div>
+    <div class="filter-chip" onclick="filterBy(this,'video')">🎬 AI Video</div>
+    <div class="filter-chip" onclick="filterBy(this,'lipsync')">👄 Lip Sync</div>
+    <div class="filter-chip" onclick="filterBy(this,'motion')">🕹️ Motion</div>
+    <div class="filter-chip" onclick="filterBy(this,'ugc')">🎥 UGC</div>
+    <div class="filter-sep"></div>
+    <select class="sort-select" onchange="sortBy(this.value)">
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+      <option value="name">Name A–Z</option>
+    </select>
+    <div class="view-toggle">
+      <div class="vt-btn active" id="gridViewBtn" onclick="setView('grid')">⊞ Grid</div>
+      <div class="vt-btn" id="listViewBtn" onclick="setView('list')">☰ List</div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" placeholder="Search creations..." oninput="searchCreations(this.value)">
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid-wrap">
+    <div class="creations-grid" id="grid"></div>
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🎬</div>
+      <div class="empty-title">No creations found</div>
+      <div class="empty-sub">No results match your filter.<br>Try a different category or create something new.</div>
+      <a href="creatrix-video-generator.html" class="empty-btn">✨ Create Your First Video</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-icon">🗑️</div>
+    <div class="modal-title">Delete Creation?</div>
+    <div class="modal-sub">This will permanently delete <strong id="deleteName"></strong>. This action cannot be undone.</div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeDelete()">Cancel</button>
+      <button class="modal-delete" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toastIcon">✅</div>
+  <div><span class="toast-t" id="toastT">Done!</span><span class="toast-s" id="toastS"></span></div>
+</div>
+
+<script>
+const creations = [
+  {id:1,title:'Aria — Fashion Walk',type:'video',influencer:'Aria Nova',style:'Fashion Walk',dur:'0:15',format:'portrait',date:'2025-04-29',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
+  {id:2,title:'Luna — Talking Head',type:'video',influencer:'Luna Ray',style:'Talking Head',dur:'0:30',format:'portrait',date:'2025-04-29',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&q=80&fit=crop&crop=top'},
+  {id:3,title:'Aria — Hindi Script',type:'lipsync',influencer:'Aria Nova',style:'Lip Sync',dur:'0:22',format:'portrait',date:'2025-04-28',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
+  {id:4,title:'Zara — English Audio',type:'lipsync',influencer:'Zara Khan',style:'Lip Sync',dur:'0:15',format:'portrait',date:'2025-04-28',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80&fit=crop&crop=top'},
+  {id:5,title:'Kai — Fitness Demo',type:'video',influencer:'Kai Storm',style:'Fitness Demo',dur:'0:20',format:'portrait',date:'2025-04-27',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80&fit=crop&crop=top'},
+  {id:6,title:'Maya — Outfit Reveal',type:'video',influencer:'Maya Singh',style:'Outfit Reveal',dur:'0:12',format:'portrait',date:'2025-04-27',img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80&fit=crop&crop=top'},
+  {id:7,title:'Aria — Dancing',type:'motion',influencer:'Aria Nova',style:'Motion',dur:'0:08',format:'portrait',date:'2025-04-26',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
+  {id:8,title:'Luna — Walking',type:'motion',influencer:'Luna Ray',style:'Motion',dur:'0:10',format:'portrait',date:'2025-04-26',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&q=80&fit=crop&crop=top'},
+  {id:9,title:'Aria — Luxe Skin Co.',type:'ugc',influencer:'Aria Nova',style:'UGC Review',dur:'0:30',format:'portrait',date:'2025-04-25',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
+  {id:10,title:'Zara — Luxury Lifestyle',type:'video',influencer:'Zara Khan',style:'Luxury Lifestyle',dur:'0:15',format:'landscape',date:'2025-04-25',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80&fit=crop&crop=top'},
+  {id:11,title:'Luna — Spanish Sync',type:'lipsync',influencer:'Luna Ray',style:'Lip Sync',dur:'0:30',format:'portrait',date:'2025-04-24',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&q=80&fit=crop&crop=top'},
+  {id:12,title:'Kai — Product Review',type:'video',influencer:'Kai Storm',style:'Product Review',dur:'0:45',format:'portrait',date:'2025-04-24',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80&fit=crop&crop=top'},
+  {id:13,title:'Rohan — Walking Motion',type:'motion',influencer:'Rohan Dev',style:'Motion',dur:'0:08',format:'portrait',date:'2025-04-23',img:'https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=300&q=80&fit=crop&crop=top'},
+  {id:14,title:'Maya — FitWear UGC',type:'ugc',influencer:'Maya Singh',style:'UGC Tutorial',dur:'0:45',format:'portrait',date:'2025-04-23',img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80&fit=crop&crop=top'},
+  {id:15,title:'Aria — Story Vlog',type:'video',influencer:'Aria Nova',style:'Story / Vlog',dur:'0:60',format:'portrait',date:'2025-04-22',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
+  {id:16,title:'Zara — Kai Audio Sync',type:'lipsync',influencer:'Zara Khan',style:'Lip Sync',dur:'0:18',format:'portrait',date:'2025-04-22',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80&fit=crop&crop=top'},
+  {id:17,title:'Luna — Dance Motion',type:'motion',influencer:'Luna Ray',style:'Motion',dur:'0:10',format:'portrait',date:'2025-04-21',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&q=80&fit=crop&crop=top'},
+  {id:18,title:'Kai — Protein Plus UGC',type:'ugc',influencer:'Kai Storm',style:'UGC Testimonial',dur:'0:60',format:'portrait',date:'2025-04-21',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80&fit=crop&crop=top'},
+];
+
+const typeBadge = {
+  video:'<span class="cc-type-badge badge-video">🎬 AI Video</span>',
+  lipsync:'<span class="cc-type-badge badge-lipsync">👄 Lip Sync</span>',
+  motion:'<span class="cc-type-badge badge-motion">🕹️ Motion</span>',
+  ugc:'<span class="cc-type-badge badge-ugc">🎥 UGC</span>',
+};
+
+let filtered = [...creations];
+let currentFilter = 'all';
+let currentView = 'grid';
+let deleteTargetId = null;
+
+function buildCard(c) {
+  const fmtClass = c.format === 'landscape' ? 'landscape' : c.format === 'square' ? 'square' : '';
+  return `
+  <div class="creation-card" data-id="${c.id}" data-type="${c.type}">
+    <div class="cc-thumb ${fmtClass}">
+      <img class="cc-thumb-img" src="${c.img}" alt="${c.title}" loading="lazy">
+      ${typeBadge[c.type] || ''}
+      <div class="cc-dur">${c.dur}</div>
+      <div class="cc-play">▶</div>
+      <div class="cc-overlay">
+        <div class="cc-action-btn" onclick="event.stopPropagation();downloadItem(${c.id})" title="Download">⬇</div>
+        <div class="cc-action-btn" onclick="event.stopPropagation();shareItem(${c.id})" title="Share">📤</div>
+        <div class="cc-action-btn del" onclick="event.stopPropagation();openDelete(${c.id})" title="Delete">🗑️</div>
+      </div>
+    </div>
+    <div class="cc-info">
+      <div class="cc-title">${c.title}</div>
+      <div class="cc-meta">
+        <span class="cc-tag">${c.influencer}</span>
+        <span class="cc-tag">${c.style}</span>
+      </div>
+      <div class="cc-footer">
+        <span class="cc-date">${formatDate(c.date)}</span>
+        <div class="cc-btns">
+          <div class="ccb download" onclick="event.stopPropagation();downloadItem(${c.id})">⬇ Download</div>
+          <div class="ccb" onclick="event.stopPropagation();shareItem(${c.id})">📤 Share</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function formatDate(d) {
+  const date = new Date(d);
+  return date.toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'});
+}
+
+function render(list) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  if (list.length === 0) {
+    document.getElementById('emptyState').classList.add('show');
+  } else {
+    document.getElementById('emptyState').classList.remove('show');
+    list.forEach(c => grid.insertAdjacentHTML('beforeend', buildCard(c)));
+  }
+  document.getElementById('pageCount').textContent = creations.length + ' creations';
+}
+
+function filterBy(el, type) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = type;
+  applyFilters();
+}
+
+function applyFilters() {
+  filtered = currentFilter === 'all' ? [...creations] : creations.filter(c => c.type === currentFilter);
+  render(filtered);
+}
+
+function sortBy(val) {
+  if (val === 'newest') filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+  else if (val === 'oldest') filtered.sort((a,b) => new Date(a.date) - new Date(b.date));
+  else if (val === 'name') filtered.sort((a,b) => a.title.localeCompare(b.title));
+  render(filtered);
+}
+
+function searchCreations(q) {
+  const query = q.toLowerCase();
+  const list = creations.filter(c =>
+    c.title.toLowerCase().includes(query) ||
+    c.influencer.toLowerCase().includes(query) ||
+    c.style.toLowerCase().includes(query)
+  );
+  render(list);
+}
+
+function setView(view) {
+  currentView = view;
+  const grid = document.getElementById('grid');
+  document.getElementById('gridViewBtn').classList.toggle('active', view === 'grid');
+  document.getElementById('listViewBtn').classList.toggle('active', view === 'list');
+  grid.classList.toggle('list-view', view === 'list');
+}
+
+// Actions
+function downloadItem(id) {
+  const c = creations.find(i => i.id === id);
+  showToast('⬇️', 'Downloading...', c?.title + ' is being prepared');
+}
+function shareItem(id) {
+  const c = creations.find(i => i.id === id);
+  showToast('📤', 'Link Copied!', 'Share link for ' + c?.title);
+}
+function openDelete(id) {
+  deleteTargetId = id;
+  const c = creations.find(i => i.id === id);
+  document.getElementById('deleteName').textContent = c?.title || 'this creation';
+  document.getElementById('deleteModal').classList.add('show');
+}
+function closeDelete() {
+  document.getElementById('deleteModal').classList.remove('show');
+  deleteTargetId = null;
+}
+function confirmDelete() {
+  const idx = creations.findIndex(i => i.id === deleteTargetId);
+  if (idx !== -1) {
+    const name = creations[idx].title;
+    creations.splice(idx, 1);
+    filtered = filtered.filter(i => i.id !== deleteTargetId);
+    render(filtered);
+    closeDelete();
+    showToast('🗑️', 'Deleted!', name + ' removed');
+    updateStats();
+  }
+}
+function updateStats() {
+  document.getElementById('statVideos').textContent = creations.filter(c=>c.type==='video').length;
+  document.getElementById('statLipsync').textContent = creations.filter(c=>c.type==='lipsync').length;
+  document.getElementById('statMotion').textContent = creations.filter(c=>c.type==='motion').length;
+  document.getElementById('statUGC').textContent = creations.filter(c=>c.type==='ugc').length;
+}
+
+function showToast(icon, title, sub) {
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastT').textContent = title;
+  document.getElementById('toastS').textContent = sub;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDelete();
+});
+
+render(creations);
+</script>
+</body>
+</html>

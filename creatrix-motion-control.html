@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motion Control — Creatrix AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700;800&family=Cabinet+Grotesk:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04040A;--bg2:#080812;--card:#0F0F1E;--card2:#161628;--white:#F0EEF8;--muted:#7070A0;--muted2:#3A3A5C;--accent:#FF3CAC;--accent2:#784CFE;--accent3:#00F5D4;--gold:#FFD166;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--font-h:'Clash Display',sans-serif;--font-b:'Cabinet Grotesk',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-x:hidden;}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;background:rgba(4,4,10,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;}
+.tb-left{display:flex;align-items:center;gap:1.25rem;}
+.back-btn{color:var(--muted);font-size:0.85rem;font-weight:500;text-decoration:none;transition:color 0.2s;}
+.back-btn:hover{color:var(--white);}
+.tb-div{width:1px;height:18px;background:var(--border2);}
+.tb-logo{font-family:var(--font-h);font-size:1.15rem;font-weight:700;text-decoration:none;color:var(--white);}
+.tb-logo span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.credits-pill{display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border2);border-radius:100px;padding:0.38rem 1rem;font-size:0.8rem;}
+.credits-pill .cv{font-family:var(--font-h);font-weight:700;color:var(--accent3);}
+.credits-pill .cl{color:var(--muted);}
+
+/* TAB BAR */
+.tab-bar{position:fixed;top:62px;left:0;right:0;z-index:100;background:rgba(4,4,10,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 2.5rem;overflow-x:auto;}
+.tab{padding:0.9rem 1.4rem;font-size:0.85rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;text-decoration:none;display:flex;align-items:center;gap:7px;}
+.tab:hover{color:var(--white);}
+.tab.active{color:var(--white);border-bottom-color:var(--accent2);}
+
+/* PAGE LAYOUT */
+.page-wrap{padding-top:110px;min-height:100vh;display:grid;grid-template-columns:1fr;max-width:1300px;margin:0 auto;padding-left:2.5rem;padding-right:2.5rem;padding-bottom:4rem;}
+
+/* LEFT */
+.left-panel{padding-right:0;padding-top:2rem;max-width:780px;}
+.section-title{font-family:var(--font-h);font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.35rem;}
+.section-sub{color:var(--muted);font-size:0.88rem;margin-bottom:0.85rem;line-height:1.6;}
+
+/* INFO BOX */
+.info-box{background:rgba(120,76,254,0.07);border:1px solid rgba(120,76,254,0.2);border-radius:14px;padding:1rem 1.25rem;margin-bottom:2rem;}
+.ib-title{font-size:0.75rem;font-weight:700;color:var(--accent2);margin-bottom:0.5rem;display:flex;align-items:center;gap:6px;}
+.ib-list{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.ib-list li{font-size:0.75rem;color:var(--muted);display:flex;align-items:flex-start;gap:7px;line-height:1.5;}
+.ib-list li::before{content:'•';color:var(--accent2);flex-shrink:0;margin-top:1px;}
+
+/* FORM */
+.form-group{margin-bottom:1.75rem;}
+.form-label{font-size:0.7rem;font-weight:700;letter-spacing:0.11em;text-transform:uppercase;color:var(--muted);margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;}
+.form-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.req{font-size:0.68rem;color:var(--accent);font-weight:700;text-transform:none;letter-spacing:0;}
+
+/* IMAGE UPLOAD - 2 slots */
+.image-slots{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.img-slot{border:2px dashed var(--muted2);border-radius:18px;aspect-ratio:4/5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;background:var(--card);}
+.img-slot:hover{border-color:var(--accent2);background:rgba(120,76,254,0.05);}
+.img-slot.has-img{border-style:solid;border-color:var(--accent2);}
+.img-slot.optional{border-color:var(--muted2);}
+.slot-icon{font-size:1.75rem;transition:transform 0.2s;}
+.img-slot:hover .slot-icon{transform:scale(1.1);}
+.slot-label{font-family:var(--font-h);font-size:0.82rem;font-weight:700;color:var(--white);}
+.slot-sub{font-size:0.68rem;color:var(--muted);text-align:center;line-height:1.4;padding:0 0.5rem;}
+.slot-badge{position:absolute;top:8px;left:8px;font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:100px;backdrop-filter:blur(6px);}
+.slot-badge.required{background:rgba(255,60,172,0.2);color:var(--accent);border:1px solid rgba(255,60,172,0.3);}
+.slot-badge.optional{background:rgba(255,255,255,0.08);color:var(--muted);border:1px solid rgba(255,255,255,0.1);}
+.slot-preview{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;display:block;}
+.slot-overlay{position:absolute;inset:0;background:rgba(4,4,10,0.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;}
+.img-slot:hover .slot-overlay{opacity:1;}
+.slot-change{font-size:0.75rem;font-weight:700;color:#fff;background:rgba(0,0,0,0.6);padding:5px 12px;border-radius:100px;}
+.slot-remove{position:absolute;top:8px;right:8px;width:22px;height:22px;background:rgba(255,60,172,0.7);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:0.6rem;color:#fff;cursor:pointer;z-index:2;}
+.img-slot.has-img .slot-remove{display:flex;}
+input[type=file]{display:none;}
+
+/* MOTION AMOUNT SLIDER */
+.motion-slider-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.25rem;}
+.ms-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.ms-title{font-size:0.85rem;font-weight:600;}
+.ms-value{font-family:var(--font-h);font-size:1.1rem;font-weight:800;color:var(--accent3);}
+input[type=range]{width:100%;height:5px;border-radius:3px;-webkit-appearance:none;appearance:none;outline:none;cursor:pointer;background:linear-gradient(90deg,var(--accent2) 0%,var(--accent2) var(--pct,50%),rgba(255,255,255,0.1) var(--pct,50%));}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--white);box-shadow:0 0 0 3px rgba(120,76,254,0.3);transition:box-shadow 0.2s;}
+input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 5px rgba(120,76,254,0.3);}
+.ms-labels{display:flex;justify-content:space-between;margin-top:6px;}
+.ms-lbl{font-size:0.68rem;color:var(--muted2);}
+.ms-desc{font-size:0.75rem;color:var(--muted);margin-top:0.75rem;text-align:center;min-height:18px;transition:all 0.2s;}
+
+/* MOTION TYPE CHIPS */
+.chip-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{padding:0.42rem 0.95rem;border-radius:100px;border:1.5px solid var(--border2);background:var(--card);color:var(--muted);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.18s;user-select:none;}
+.chip:hover{border-color:rgba(255,255,255,0.2);color:var(--white);}
+.chip.sel{background:rgba(120,76,254,0.15);border-color:var(--accent2);color:var(--white);}
+
+/* MOTION PREVIEW CARDS */
+.motion-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:0.85rem;}
+.mc{background:var(--card);border:2px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all 0.2s;position:relative;}
+.mc:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-2px);}
+.mc.sel{border-color:var(--accent2);background:rgba(120,76,254,0.08);}
+.mc-thumb{aspect-ratio:1;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:1.75rem;position:relative;overflow:hidden;}
+.mc-anim{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;}
+.mc:hover .mc-anim,.mc.sel .mc-anim{opacity:1;}
+.mc-label{padding:7px 8px;font-size:0.72rem;font-weight:600;text-align:center;}
+.mc-check{position:absolute;top:6px;right:6px;width:18px;height:18px;background:var(--accent2);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:0.55rem;color:#fff;}
+.mc.sel .mc-check{display:flex;}
+
+/* CAMERA CONTROLS */
+.camera-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;}
+.cam-btn{background:var(--card);border:1.5px solid var(--border2);border-radius:12px;padding:0.75rem 0.5rem;text-align:center;cursor:pointer;transition:all 0.18s;}
+.cam-btn:hover{border-color:rgba(255,255,255,0.2);background:var(--card2);}
+.cam-btn.sel{border-color:var(--accent2);background:rgba(120,76,254,0.1);}
+.cam-icon{font-size:1.2rem;margin-bottom:4px;}
+.cam-label{font-size:0.7rem;font-weight:600;color:var(--muted);}
+.cam-btn.sel .cam-label{color:var(--white);}
+
+/* DURATION */
+.dur-grid{display:flex;gap:8px;}
+.dur-chip{padding:0.45rem 1.1rem;border-radius:100px;border:1.5px solid var(--border2);background:var(--card);color:var(--muted);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.18s;}
+.dur-chip:hover{border-color:rgba(255,255,255,0.2);color:var(--white);}
+.dur-chip.sel{background:rgba(120,76,254,0.15);border-color:var(--accent2);color:var(--white);}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:0.6rem;}
+.ti-name{font-size:0.85rem;font-weight:600;}
+.ti-sub{font-size:0.7rem;color:var(--muted);margin-top:1px;}
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.tslider{position:absolute;inset:0;background:var(--muted2);border-radius:100px;cursor:pointer;transition:background 0.25s;}
+.tslider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform 0.25s;}
+.toggle input:checked+.tslider{background:linear-gradient(90deg,var(--accent2),var(--accent));}
+.toggle input:checked+.tslider::before{transform:translateX(18px);}
+
+/* RIGHT PANEL */
+.right-panel{display:none !important;}
+
+/* PREVIEW */
+.preview-box{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+.preview-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ph-title{font-family:var(--font-h);font-size:0.88rem;font-weight:700;}
+.ph-badge{font-size:0.65rem;font-weight:700;padding:2px 9px;border-radius:100px;background:rgba(0,245,212,0.12);color:var(--accent3);border:1px solid rgba(0,245,212,0.2);}
+
+.preview-area{position:relative;aspect-ratio:4/5;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;max-height:380px;}
+.pa-img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;}
+.pa-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,0.85),transparent 60%);}
+.pa-empty{text-align:center;padding:2rem;}
+.pa-empty-icon{font-size:2.5rem;opacity:0.2;margin-bottom:0.5rem;}
+.pa-empty-text{font-size:0.78rem;color:var(--muted);font-family:var(--font-h);}
+
+/* Motion arrows overlay */
+.motion-arrows{position:absolute;inset:0;display:none;pointer-events:none;}
+.motion-arrows.show{display:block;}
+.arrow{position:absolute;font-size:1.5rem;animation:float 1.5s ease-in-out infinite;opacity:0.7;}
+@keyframes float{0%,100%{transform:translate(0,0);opacity:0.4}50%{transform:translate(var(--dx,0px),var(--dy,-8px));opacity:1}}
+
+/* SUMMARY */
+.summary-box{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.15rem;}
+.sb-title{font-size:0.66rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.85rem;}
+.sb-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.sb-item{background:var(--card2);border-radius:10px;padding:0.48rem 0.7rem;}
+.sb-key{font-size:0.58rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1px;}
+.sb-val{font-size:0.76rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* COST */
+.cost-box{background:rgba(0,245,212,0.06);border:1px solid rgba(0,245,212,0.18);border-radius:12px;padding:0.85rem 1rem;display:flex;align-items:center;justify-content:space-between;}
+.cb-left{font-size:0.78rem;color:var(--muted);}
+.cb-left strong{font-family:var(--font-h);font-size:1.05rem;color:var(--accent3);}
+.cb-right{font-size:0.7rem;color:var(--muted2);}
+
+/* GEN BTN */
+.gen-btn{width:100%;padding:1rem;border:none;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:var(--font-h);font-weight:800;font-size:1rem;cursor:pointer;transition:opacity 0.2s,transform 0.15s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.gen-btn:hover{opacity:0.88;transform:translateY(-1px);}
+
+/* RECENT */
+.recent-section{margin-top:2.5rem;}
+.rs-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;}
+.rs-title{font-family:var(--font-h);font-size:1.05rem;font-weight:700;}
+.recent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:1rem;}
+.rc{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;}
+.rc:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.4);}
+.rc-thumb{position:relative;aspect-ratio:4/5;max-height:150px;overflow:hidden;}
+.rc-thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform 0.4s;}
+.rc:hover .rc-thumb img{transform:scale(1.05);}
+.rc-badge{position:absolute;top:6px;left:6px;background:rgba(120,76,254,0.8);font-size:0.58rem;font-weight:700;padding:2px 7px;border-radius:100px;backdrop-filter:blur(4px);}
+.rc-dur{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.7);font-size:0.62rem;font-weight:700;padding:1px 6px;border-radius:100px;}
+.rc-info{padding:0.65rem 0.8rem;}
+.rc-name{font-size:0.78rem;font-weight:700;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rc-meta{font-size:0.65rem;color:var(--muted);}
+.rc-actions{display:flex;gap:5px;margin-top:7px;}
+.rc-btn{flex:1;padding:4px;background:var(--card2);border:1px solid var(--border2);border-radius:7px;color:var(--muted);font-size:0.62rem;font-weight:600;cursor:pointer;text-align:center;transition:all 0.15s;}
+.rc-btn:hover{color:var(--white);}
+
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:rgba(4,4,10,0.92);backdrop-filter:blur(12px);z-index:999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;}
+.loading-overlay.show{display:flex;}
+.loading-ring{width:70px;height:70px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--accent2);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-family:var(--font-h);font-size:1.3rem;font-weight:700;}
+.loading-sub{color:var(--muted);font-size:0.88rem;}
+.loading-bar-wrap{width:280px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+.loading-bar{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent3));border-radius:2px;width:0%;animation:loadProg 5s ease forwards;}
+@keyframes loadProg{0%{width:0%}70%{width:80%}95%{width:95%}100%{width:100%}}
+
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
+@media(max-width:1000px){.page-wrap{grid-template-columns:1fr;}.right-panel{border-left:none;border-top:1px solid var(--border);position:static;height:auto;padding-left:0;}}
+@media(max-width:600px){.tab-bar{padding:0 1rem;}.tab{padding:0.75rem 0.85rem;font-size:0.78rem;}.image-slots{grid-template-columns:1fr 1fr;}}
+
+.slot-formats{font-size:0.62rem;color:var(--muted2);text-align:center;background:var(--card2);padding:3px 8px;border-radius:100px;margin-top:2px;}
+
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <a href="creatrix-dashboard.html" class="back-btn">← Dashboard</a>
+    <div class="tb-div"></div>
+    <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
+  </div>
+  <div class="credits-pill"><span class="cv">38</span><span class="cl">credits</span></div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <a href="creatrix-video-generator.html" class="tab">🎬 AI Video</a>
+  <a href="creatrix-lipsync.html" class="tab">👄 Lip Sync</a>
+  <div class="tab active">🕹️ Motion Control</div>
+  <a href="creatrix-video-generator.html" class="tab">📸 AI Headshot</a>
+  <a href="creatrix-video-generator.html" class="tab">🎥 UGC Creator</a>
+</div>
+
+<div class="page-wrap">
+
+  <!-- ══ LEFT PANEL ══ -->
+  <div class="left-panel">
+
+    <div class="section-title">🕹️ Motion Control</div>
+    <div class="section-sub">Upload an image of your AI influencer and bring it to life with realistic AI-powered motion.</div>
+
+    <!-- INFO BOX -->
+    <div class="info-box">
+      <div class="ib-title">ℹ️ How Motion Control Works</div>
+      <ul class="ib-list">
+        <li><strong style="color:var(--white);">Motion Reference</strong> — Upload a video or image showing the exact movement you want to copy (dance, walk, pose etc.)</li>
+        <li><strong style="color:var(--white);">Character Image</strong> — Upload your AI influencer's photo. The motion will be applied to them.</li>
+        <li>Motion video: MP4/MOV/GIF · max 50MB · 2–15 sec recommended</li>
+        <li>Character image: JPG/PNG · max 10MB · clear front-facing photo works best</li>
+        <li>AI analyzes the motion reference and transfers it onto your character</li>
+      </ul>
+    </div>
+
+    <!-- STEP 1: UPLOAD IMAGE -->
+    <div class="form-group">
+      <div class="form-label">Step 1 · Upload Image <span class="req">*required</span></div>
+      <div class="image-slots">
+        <!-- Slot 1 — Required -->
+        <div class="img-slot" id="slot1" onclick="triggerUpload(1)">
+          <div class="slot-badge required">Motion Reference</div>
+          <div class="slot-icon">🎬</div>
+          <div class="slot-label">Upload Movement</div>
+          <div class="slot-sub">Upload the movement you want to copy</div>
+          <div class="slot-overlay"><div class="slot-change">Change Image</div></div>
+          <div class="slot-remove" onclick="event.stopPropagation();removeSlot(1)">✕</div>
+        </div>
+        <!-- Slot 2 — Optional -->
+        <div class="img-slot optional" id="slot2" onclick="triggerUpload(2)">
+          <div class="slot-badge required" style="background:rgba(0,245,212,0.2);color:var(--accent3);border-color:rgba(0,245,212,0.3);">Character</div>
+          <div class="slot-icon">🧑‍🎤</div>
+          <div class="slot-label">Upload Image</div>
+          <div class="slot-sub">Upload character image to apply motion to</div>
+          <div class="slot-overlay"><div class="slot-change">Change Image</div></div>
+          <div class="slot-remove" onclick="event.stopPropagation();removeSlot(2)">✕</div>
+        </div>
+      </div>
+      <input type="file" id="upload1" accept="image/*" onchange="handleSlotUpload(1,this)">
+      <input type="file" id="upload2" accept="image/*" onchange="handleSlotUpload(2,this)">
+    </div>
+
+        <!-- STEP 2: PROMPT -->
+    <div class="form-group">
+      <div class="form-label">Step 2 · Prompt <span style="font-size:0.62rem;text-transform:none;letter-spacing:0;color:var(--muted2);font-weight:400;">(optional)</span></div>
+      <div style="position:relative;">
+        <textarea id="promptBox" rows="4" style="width:100%;background:var(--card);border:1.5px solid var(--border2);color:var(--white);padding:0.9rem 1rem;border-radius:14px;font-size:0.88rem;font-family:var(--font-b);resize:none;outline:none;line-height:1.65;transition:border-color 0.2s;" placeholder="Describe the motion in detail...&#10;&#10;e.g. The woman is dancing energetically to upbeat music, moving her arms and hips with confidence" onfocus="this.style.borderColor='var(--accent2)'" onblur="this.style.borderColor='var(--border2)'"></textarea>
+        <div style="text-align:right;font-size:0.68rem;color:var(--muted2);margin-top:4px;"><span id="pCharCount">0</span> / 500</div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+        <span onclick="addPrompt('Dancing energetically to upbeat music')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">💃 Dancing</span>
+        <span onclick="addPrompt('Walking confidently on a runway')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">🚶 Walking</span>
+        <span onclick="addPrompt('Striking a powerful fashion pose')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📸 Posing</span>
+        <span onclick="addPrompt('Running through a scenic location')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">🏃 Running</span>
+        <span onclick="addPrompt('Waving and smiling at the camera')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">👋 Waving</span>
+        <span onclick="addPrompt('Doing yoga stretches gracefully')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">🧘 Yoga</span>
+      </div>
+    </div>
+
+    <!-- STEP 3: MOTION AMOUNT -->
+    <div class="form-group">
+      <div class="form-label">Step 3 · Motion Amount</div>
+      <div class="motion-slider-wrap">
+        <div class="ms-header">
+          <span class="ms-title">Intensity</span>
+          <span class="ms-value" id="motionVal">5</span>
+        </div>
+        <input type="range" min="1" max="10" value="5" id="motionSlider" oninput="updateMotion(this)">
+        <div class="ms-labels">
+          <span class="ms-lbl">Subtle</span>
+          <span class="ms-lbl">Moderate</span>
+          <span class="ms-lbl">Intense</span>
+        </div>
+        <div class="ms-desc" id="motionDesc">Balanced natural motion — great for social media content</div>
+      </div>
+    </div>
+
+    <!-- STEP 5: DURATION -->
+    <div class="form-group">
+      <div class="form-label">Step 4 · Duration</div>
+      <div class="dur-grid">
+        <div class="dur-chip" onclick="pickDur(this,'5 sec')">5 sec</div>
+        <div class="dur-chip sel" onclick="pickDur(this,'8 sec')">8 sec</div>
+        <div class="dur-chip" onclick="pickDur(this,'10 sec')">10 sec</div>
+        <div class="dur-chip" onclick="pickDur(this,'15 sec')">15 sec</div>
+      </div>
+    </div>
+
+    <!-- STEP 6: OPTIONS -->
+    <div class="form-group">
+      <div class="form-label">Step 5 · Options</div>
+      <div class="toggle-row">
+        <div><div class="ti-name">HD Quality (1080p)</div><div class="ti-sub">+1 extra credit</div></div>
+        <label class="toggle"><input type="checkbox" id="hdToggle" onchange="updateCost()"><span class="tslider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="ti-name">Loop Video</div><div class="ti-sub">Seamlessly loop the output</div></div>
+        <label class="toggle"><input type="checkbox"><span class="tslider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="ti-name">Remove Watermark</div><div class="ti-sub">Clean output without logo</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+      </div>
+    </div>
+
+    <!-- RECENT -->
+    <div class="recent-section">
+      <div class="rs-head">
+        <div class="rs-title">Recent Motion Videos</div>
+        <a href="creatrix-dashboard.html" style="font-size:0.78rem;color:var(--accent2);text-decoration:none;">View all →</a>
+      </div>
+      <div class="recent-grid" id="recentGrid"></div>
+    </div>
+
+  </div>
+
+  <!-- ══ RIGHT PANEL ══ -->
+  <div class="right-panel">
+
+    <div class="preview-box">
+      <div class="preview-head">
+        <div class="ph-title">Preview</div>
+        <div class="ph-badge">🕹️ Motion Control</div>
+      </div>
+      <div class="preview-area" id="previewArea">
+        <div class="pa-empty">
+          <div class="pa-empty-icon">🕹️</div>
+          <div class="pa-empty-text">Upload image to preview</div>
+        </div>
+        <div class="motion-arrows" id="motionArrows"></div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-box">
+      <div class="sb-title">Motion Settings</div>
+      <div class="sb-grid">
+        <div class="sb-item"><div class="sb-key">Motion Type</div><div class="sb-val" id="sv-motion">Walking</div></div>
+        <div class="sb-item"><div class="sb-key">Intensity</div><div class="sb-val" id="sv-intensity">5 / 10</div></div>
+        <div class="sb-item"><div class="sb-key">Duration</div><div class="sb-val" id="sv-dur">8 sec</div></div>
+      </div>
+    </div>
+
+    <!-- Cost -->
+    <div class="cost-box">
+      <div class="cb-left">Cost: <strong id="costLabel">5 credits</strong></div>
+      <div class="cb-right">38 remaining</div>
+    </div>
+
+    <!-- Generate -->
+    <button class="gen-btn" id="genBtn" onclick="generate()">🕹️ Generate Motion Video · 5 credits</button>
+
+  </div>
+
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-ring"></div>
+  <div class="loading-title">Generating Motion...</div>
+  <div class="loading-sub">AI is animating your image. ~30–60 seconds</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loadBar"></div></div>
+</div>
+
+<script>
+let slot1Img = null, slot2Img = null;
+let currentMotion = 'Walking';
+let currentCamera = 'Static';
+let currentDur = '8 sec';
+
+const motionDescriptions = {
+  1:'Very subtle movement — almost still, just breathing',
+  2:'Minimal motion — gentle sway',
+  3:'Light natural movement',
+  4:'Moderate, smooth motion',
+  5:'Balanced natural motion — great for social media content',
+  6:'Active, lively movement',
+  7:'Dynamic, energetic motion',
+  8:'High energy, dramatic movement',
+  9:'Very intense, fast motion',
+  10:'Maximum intensity — extreme action'
+};
+
+const recentItems = [
+  {name:'Aria — Dancing',motion:'Dancing',dur:'0:08',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top',date:'2h ago'},
+  {name:'Luna — Walking',motion:'Walking',dur:'0:10',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top',date:'5h ago'},
+  {name:'Kai — Running',motion:'Running',dur:'0:08',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=top',date:'1d ago'},
+  {name:'Zara — Posing',motion:'Posing',dur:'0:05',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top',date:'2d ago'},
+];
+
+// Upload handlers
+function triggerUpload(slot) {
+  document.getElementById('upload' + slot).click();
+}
+
+function handleSlotUpload(slot, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const src = e.target.result;
+    if (slot === 1) slot1Img = src;
+    else slot2Img = src;
+    updateSlotUI(slot, src);
+    updatePreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateSlotUI(slot, src) {
+  const el = document.getElementById('slot' + slot);
+  el.classList.add('has-img');
+  // Clear inner content except badge and overlay
+  const badge = el.querySelector('.slot-badge');
+  const overlay = el.querySelector('.slot-overlay');
+  const remove = el.querySelector('.slot-remove');
+  el.innerHTML = '';
+  // Add preview image
+  const img = document.createElement('img');
+  img.src = src;
+  img.className = 'slot-preview';
+  el.appendChild(badge);
+  el.appendChild(img);
+  el.appendChild(overlay);
+  el.appendChild(remove);
+}
+
+function removeSlot(slot) {
+  if (slot === 1) slot1Img = null;
+  else slot2Img = null;
+  const el = document.getElementById('slot' + slot);
+  el.classList.remove('has-img');
+  document.getElementById('upload' + slot).value = '';
+  if (slot === 1) {
+    el.innerHTML = `<div class="slot-badge required">Motion Reference</div><div class="slot-icon">🎬</div><div class="slot-label">Upload Movement</div><div class="slot-sub">Upload the movement you want to copy</div><div class="slot-formats">MP4 · MOV · GIF · JPG · PNG</div><div class="slot-overlay"><div class="slot-change">Change File</div></div><div class="slot-remove" onclick="event.stopPropagation();removeSlot(1)">✕</div>`;
+  } else {
+    el.innerHTML = `<div class="slot-badge required" style="background:rgba(0,245,212,0.2);color:var(--accent3);border-color:rgba(0,245,212,0.3);">Character</div><div class="slot-icon">🧑‍🎤</div><div class="slot-label">Upload Image</div><div class="slot-sub">Upload character image to apply motion to</div><div class="slot-formats">JPG · PNG · WEBP</div><div class="slot-overlay"><div class="slot-change">Change Image</div></div><div class="slot-remove" onclick="event.stopPropagation();removeSlot(2)">✕</div>`;
+  }
+  if (slot === 2) updatePreview();
+}
+
+function updatePreview() {
+  const area = document.getElementById('previewArea');
+  if (!slot2Img) {
+    area.innerHTML = `<div class="pa-empty"><div class="pa-empty-icon">🕹️</div><div class="pa-empty-text">Upload your character image to preview</div></div><div class="motion-arrows" id="motionArrows"></div>`;
+    return;
+  }
+  area.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = slot2Img;
+  img.className = 'pa-img';
+  const overlay = document.createElement('div');
+  overlay.className = 'pa-overlay';
+  const arrows = document.createElement('div');
+  arrows.className = 'motion-arrows show';
+  arrows.id = 'motionArrows';
+  updateArrows(arrows);
+  area.appendChild(img);
+  area.appendChild(overlay);
+  area.appendChild(arrows);
+}
+
+// Motion arrows based on type
+function updateArrows(container) {
+  container = container || document.getElementById('motionArrows');
+  if (!container) return;
+  container.innerHTML = '';
+  const arrowMap = {
+    'Walking': [{x:'40%',y:'30%',dx:'0',dy:'-12px',e:'⬆️'},{x:'55%',y:'55%',dx:'0',dy:'-12px',e:'⬆️'}],
+    'Dancing': [{x:'30%',y:'40%',dx:'-10px',dy:'-8px',e:'↙️'},{x:'60%',y:'35%',dx:'10px',dy:'-8px',e:'↗️'},{x:'50%',y:'60%',dx:'0',dy:'8px',e:'⬇️'}],
+    'Posing': [{x:'45%',y:'25%',dx:'8px',dy:'0',e:'↗️'}],
+    'Running': [{x:'35%',y:'45%',dx:'15px',dy:'-5px',e:'➡️'},{x:'55%',y:'30%',dx:'15px',dy:'-5px',e:'➡️'}],
+    'Yoga': [{x:'50%',y:'30%',dx:'0',dy:'-10px',e:'⬆️'},{x:'30%',y:'55%',dx:'-8px',dy:'8px',e:'↙️'},{x:'65%',y:'55%',dx:'8px',dy:'8px',e:'↘️'}],
+    'Waving': [{x:'65%',y:'25%',dx:'10px',dy:'-10px',e:'👋'}],
+    'Laughing': [{x:'45%',y:'35%',dx:'0',dy:'-5px',e:'😄'}],
+    'Jumping': [{x:'40%',y:'40%',dx:'0',dy:'-18px',e:'⬆️'},{x:'55%',y:'40%',dx:'0',dy:'-18px',e:'⬆️'}],
+  };
+  const arrows = arrowMap[currentMotion] || arrowMap['Walking'];
+  arrows.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'arrow';
+    div.textContent = a.e;
+    div.style.left = a.x;
+    div.style.top = a.y;
+    div.style.setProperty('--dx', a.dx);
+    div.style.setProperty('--dy', a.dy);
+    div.style.animationDelay = (i * 0.3) + 's';
+    container.appendChild(div);
+  });
+}
+
+// Pickers
+function pickMotion(el, motion) {
+  document.querySelectorAll('.mc').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  currentMotion = motion;
+  document.getElementById('sv-motion').textContent = motion;
+  if (slot1Img) updateArrows();
+}
+
+function pickCamera(el, cam) {
+  document.querySelectorAll('.cam-btn').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  currentCamera = cam;
+  document.getElementById('sv-camera').textContent = cam;
+}
+
+function pickDur(el, dur) {
+  document.querySelectorAll('.dur-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  currentDur = dur;
+  document.getElementById('sv-dur').textContent = dur;
+}
+
+function updateMotion(input) {
+  const v = input.value;
+  const pct = ((v - 1) / 9 * 100) + '%';
+  input.style.setProperty('--pct', pct);
+  document.getElementById('motionVal').textContent = v;
+  document.getElementById('sv-intensity').textContent = v + ' / 10';
+  document.getElementById('motionDesc').textContent = motionDescriptions[v];
+}
+
+function updateCost() {
+  const hd = document.getElementById('hdToggle').checked;
+  const cost = 5 + (hd ? 1 : 0);
+  document.getElementById('costLabel').textContent = cost + ' credits';
+  document.getElementById('genBtn').textContent = '🕹️ Generate Motion Video · ' + cost + ' credits';
+}
+
+// Generate
+function generate() {
+  if (!slot1Img) {
+    alert('Please upload a Motion Reference first!');
+    return;
+  }
+  if (!slot2Img) {
+    alert('Please upload your Character Image!');
+    return;
+  }
+
+  const overlay = document.getElementById('loadingOverlay');
+  const bar = document.getElementById('loadBar');
+  bar.style.animation = 'none';
+  bar.offsetHeight;
+  bar.style.animation = 'loadProg 5s ease forwards';
+  overlay.classList.add('show');
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    // Show result
+    const area = document.getElementById('previewArea');
+    const img = document.createElement('img');
+    img.src = slot2Img;
+    img.className = 'pa-img';
+    img.style.opacity = '1';
+    const overlay2 = document.createElement('div');
+    overlay2.className = 'pa-overlay';
+    const badge = document.createElement('div');
+    badge.style.cssText = 'position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:var(--font-h);font-size:0.85rem;font-weight:700;color:var(--accent3);';
+    badge.textContent = '✅ ' + currentMotion + ' Generated!';
+    area.innerHTML = '';
+    area.appendChild(img);
+    area.appendChild(overlay2);
+    area.appendChild(badge);
+  }, 5500);
+}
+
+// Build recent
+function buildRecent() {
+  const grid = document.getElementById('recentGrid');
+  recentItems.forEach(r => {
+    grid.insertAdjacentHTML('beforeend', `
+      <div class="rc">
+        <div class="rc-thumb">
+          <img src="${r.img}" alt="${r.name}" loading="lazy">
+          <div class="rc-badge">🕹️ ${r.motion}</div>
+          <div class="rc-dur">${r.dur}</div>
+        </div>
+        <div class="rc-info">
+          <div class="rc-name">${r.name}</div>
+          <div class="rc-meta">${r.date}</div>
+          <div class="rc-actions">
+            <div class="rc-btn">⬇ Download</div>
+            <div class="rc-btn">📤 Share</div>
+          </div>
+        </div>
+      </div>`);
+  });
+}
+
+// Init
+buildRecent();
+
+function addPrompt(text) {
+  const box = document.getElementById('promptBox');
+  box.value = text;
+  document.getElementById('pCharCount').textContent = text.length;
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const pb = document.getElementById('promptBox');
+  if (pb) pb.addEventListener('input', function() {
+    document.getElementById('pCharCount').textContent = this.value.length;
+  });
+});
+
+const sl = document.getElementById('motionSlider');
+sl.style.setProperty('--pct', '44.4%');
+</script>
+</body>
+</html>

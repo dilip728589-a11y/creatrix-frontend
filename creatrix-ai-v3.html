@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creatrix AI — Create Your AI Influencer. Go Viral. Earn Money.</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700;800&family=Cabinet+Grotesk:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #04040A;
+  --bg2: #080812;
+  --card: #0F0F1E;
+  --card2: #161628;
+  --white: #F0EEF8;
+  --muted: #7070A0;
+  --muted2: #3A3A5C;
+  --accent: #FF3CAC;
+  --accent2: #784CFE;
+  --accent3: #00F5D4;
+  --gold: #FFD166;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.12);
+  --font-h: 'Clash Display', sans-serif;
+  --font-b: 'Cabinet Grotesk', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--white); font-family: var(--font-b); overflow-x: hidden; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 5%;
+  background: rgba(4,4,10,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-family: var(--font-h); font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--white); letter-spacing: -0.02em; }
+.logo span { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--white); }
+.nav-right { display: flex; align-items: center; gap: 0.85rem; }
+.btn-login { color: var(--white); text-decoration: none; font-size: 0.88rem; font-weight: 500; padding: 0.55rem 1.2rem; border: 1px solid var(--border2); border-radius: 100px; transition: border-color 0.2s; }
+.btn-login:hover { border-color: rgba(255,255,255,0.3); }
+.btn-signup { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; text-decoration: none; font-size: 0.88rem; font-weight: 700; font-family: var(--font-h); padding: 0.6rem 1.5rem; border-radius: 100px; transition: opacity 0.2s, transform 0.15s; }
+.btn-signup:hover { opacity: 0.88; transform: scale(1.03); }
+
+/* ══════════════════════════════════
+   HERO — Split layout with model photo
+══════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 7rem 5% 4rem;
+  position: relative;
+  overflow: hidden;
+  gap: 3rem;
+}
+/* Background effects */
+.hero-glow1 { position: absolute; width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(120,76,254,0.2) 0%, transparent 70%); top: -200px; left: -200px; pointer-events: none; }
+.hero-glow2 { position: absolute; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(255,60,172,0.15) 0%, transparent 70%); bottom: -150px; right: 30%; pointer-events: none; }
+.hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px); background-size: 55px 55px; mask-image: radial-gradient(ellipse 80% 80% at 30% 50%, black 20%, transparent 100%); pointer-events: none; }
+
+/* Hero left text */
+.hero-text { position: relative; z-index: 2; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,60,172,0.08); border: 1px solid rgba(255,60,172,0.25);
+  color: var(--accent); font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.4rem 1.1rem; border-radius: 100px; margin-bottom: 2rem;
+  animation: fadeUp 0.5s ease both;
+}
+.badge-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.hero-text h1 {
+  font-family: var(--font-h);
+  font-size: clamp(2.6rem, 4.5vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+.hero-text h1 .line-grad {
+  display: block;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-text h1 .line-out {
+  display: block;
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.25);
+  -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+  color: var(--muted); font-size: 1.05rem; line-height: 1.75;
+  max-width: 480px; margin-bottom: 2.5rem;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+.hero-btns {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  animation: fadeUp 0.6s 0.3s ease both;
+  margin-bottom: 3rem;
+}
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; padding: 0.95rem 2.2rem; border-radius: 100px; font-weight: 800; font-size: 1rem; font-family: var(--font-h); text-decoration: none; transition: transform 0.15s, box-shadow 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(255,60,172,0.35); }
+.btn-ghost { border: 1px solid var(--border2); color: var(--white); padding: 0.95rem 2.2rem; border-radius: 100px; font-size: 1rem; font-weight: 500; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+.btn-ghost:hover { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.04); }
+
+.hero-stats {
+  display: flex; gap: 2.5rem;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.hero-stat-num { font-family: var(--font-h); font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; }
+.hero-stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+/* ── HERO RIGHT — Model photos ── */
+.hero-visual {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeUp 0.7s 0.15s ease both;
+}
+
+/* Big center model */
+.model-stack { position: relative; width: 100%; max-width: 520px; margin: 0 auto; }
+
+.model-main {
+  width: 72%;
+  aspect-ratio: 2/3;
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
+  z-index: 3;
+}
+.model-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.model-main-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(4,4,10,0.9) 0%, rgba(4,4,10,0.2) 40%, transparent 70%);
+}
+.model-main-badge {
+  position: absolute; top: 14px; left: 14px;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 100px; padding: 5px 12px;
+  font-size: 0.72rem; font-weight: 700; color: var(--white);
+  display: flex; align-items: center; gap: 6px;
+}
+.badge-live { width: 6px; height: 6px; background: var(--accent3); border-radius: 50%; animation: blink 1.5s infinite; }
+.model-main-info {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 1.25rem 1.25rem 1rem;
+}
+.model-main-name { font-family: var(--font-h); font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
+.model-main-sub { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
+.model-main-tags { display: flex; gap: 6px; margin-top: 8px; }
+.model-mtag { font-size: 0.65rem; padding: 3px 10px; border-radius: 100px; background: rgba(255,255,255,0.12); backdrop-filter: blur(4px); font-weight: 600; }
+
+/* Side model cards */
+.model-side-left {
+  position: absolute;
+  left: -5%;
+  top: 10%;
+  width: 42%;
+  aspect-ratio: 2/3;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 24px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.07);
+  z-index: 2;
+  transform: rotate(-4deg);
+  transition: transform 0.3s;
+}
+.model-side-left:hover { transform: rotate(-2deg) scale(1.02); }
+.model-side-right {
+  position: absolute;
+  right: -5%;
+  top: 15%;
+  width: 42%;
+  aspect-ratio: 2/3;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 24px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.07);
+  z-index: 2;
+  transform: rotate(4deg);
+  transition: transform 0.3s;
+}
+.model-side-right:hover { transform: rotate(2deg) scale(1.02); }
+.model-side-left img, .model-side-right img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.model-side-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%); }
+.side-info { position: absolute; bottom: 10px; left: 10px; right: 10px; }
+.side-name { font-family: var(--font-h); font-size: 0.82rem; font-weight: 700; }
+.side-niche { font-size: 0.65rem; color: rgba(255,255,255,0.6); }
+
+/* Floating cards */
+.float-card {
+  position: absolute; z-index: 4;
+  background: rgba(10,10,20,0.85);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 0.75rem 1rem;
+  animation: float 4s ease-in-out infinite;
+}
+.float-card.fc1 { bottom: 12%; left: 0; animation-delay: 0s; }
+.float-card.fc2 { top: 5%; right: 2%; animation-delay: 1.5s; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.fc-row { display: flex; align-items: center; gap: 8px; }
+.fc-icon { font-size: 1.2rem; }
+.fc-label { font-size: 0.72rem; color: var(--muted); }
+.fc-val { font-family: var(--font-h); font-size: 0.9rem; font-weight: 700; }
+.fc-green { color: var(--accent3); }
+.fc-pink { color: var(--accent); }
+
+/* Small avatar strip at bottom of stack */
+.model-more {
+  display: flex; align-items: center; gap: 10px;
+  justify-content: center; margin-top: 1.5rem;
+}
+.more-av { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--bg); overflow: hidden; margin-left: -8px; }
+.more-av:first-child { margin-left: 0; }
+.more-av img { width: 100%; height: 100%; object-fit: cover; }
+.more-text { font-size: 0.8rem; color: var(--muted); margin-left: 4px; }
+.more-text strong { color: var(--white); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+/* MARQUEE */
+.marquee-wrap { padding: 1.5rem 0; background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow: hidden; }
+.marquee-track { display: flex; gap: 0; width: max-content; animation: scrollLeft 28s linear infinite; }
+.m-item { display: flex; align-items: center; gap: 10px; padding: 0 2.5rem; font-size: 0.8rem; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+.m-sep { color: var(--accent); font-size: 0.9rem; }
+@keyframes scrollLeft { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ══════════════════════════════════
+   EXPLORE SECTION — model grid
+══════════════════════════════════ */
+#explore { padding: 7rem 5%; background: var(--bg); }
+.explore-header { text-align: center; margin-bottom: 3.5rem; }
+.section-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent3); margin-bottom: 0.75rem; }
+.section-title { font-family: var(--font-h); font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+.section-sub { color: var(--muted); font-size: 1rem; line-height: 1.75; max-width: 500px; margin: 0.75rem auto 0; }
+
+/* Model gallery — masonry style */
+.model-gallery {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+.gallery-card {
+  border-radius: 20px; overflow: hidden;
+  position: relative; cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.gallery-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+.gallery-card.tall { grid-row: span 2; }
+.gallery-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; min-height: 240px; }
+.gallery-card.tall .gallery-img { min-height: 500px; }
+.gallery-card:hover .gallery-img { transform: scale(1.05); }
+.gallery-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
+  opacity: 0; transition: opacity 0.3s;
+  display: flex; align-items: flex-end; padding: 1.25rem;
+}
+.gallery-card:hover .gallery-overlay { opacity: 1; }
+.gallery-name { font-family: var(--font-h); font-size: 1rem; font-weight: 700; }
+.gallery-handle { font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.gallery-views { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); border-radius: 100px; padding: 3px 10px; font-size: 0.7rem; font-weight: 700; opacity: 0; transition: opacity 0.3s; }
+.gallery-card:hover .gallery-views { opacity: 1; }
+.gallery-platform { position: absolute; top: 12px; left: 12px; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
+
+.explore-cta { text-align: center; margin-top: 3rem; }
+
+/* TOOLS SECTION */
+#tools { padding: 7rem 5%; background: var(--bg2); }
+.tools-header { text-align: center; margin-bottom: 4rem; }
+.tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.05); border-radius: 24px; overflow: hidden; }
+.tool-card { background: var(--bg2); padding: 2.5rem 2rem; position: relative; overflow: hidden; transition: background 0.25s; cursor: pointer; }
+.tool-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent2), transparent); opacity: 0; transition: opacity 0.3s; }
+.tool-card:hover { background: var(--card2); }
+.tool-card:hover::before { opacity: 1; }
+.tool-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.25rem; }
+.ti-pink { background: rgba(255,60,172,0.12); }
+.ti-purple { background: rgba(120,76,254,0.12); }
+.ti-teal { background: rgba(0,245,212,0.1); }
+.ti-gold { background: rgba(255,209,102,0.1); }
+.ti-blue { background: rgba(59,130,246,0.1); }
+.ti-green { background: rgba(52,211,153,0.1); }
+.ti-orange { background: rgba(251,146,60,0.1); }
+.ti-red { background: rgba(248,113,113,0.1); }
+.tool-name { font-family: var(--font-h); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+.tool-desc { color: var(--muted); font-size: 0.85rem; line-height: 1.65; }
+.tool-tag { display: inline-block; margin-top: 0.85rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; }
+.tag-new { background: rgba(0,245,212,0.12); color: var(--accent3); }
+.tag-hot { background: rgba(255,60,172,0.12); color: var(--accent); }
+
+/* VIDEO MODELS */
+#models { padding: 6rem 5%; background: var(--bg); }
+.models-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; margin-top: 3rem; }
+.model-chip { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 1.5rem 1rem; text-align: center; transition: border-color 0.2s, transform 0.2s; cursor: pointer; }
+.model-chip:hover { border-color: var(--accent2); transform: translateY(-3px); }
+.mc-logo { font-size: 2rem; margin-bottom: 0.6rem; }
+.mc-name { font-family: var(--font-h); font-size: 0.95rem; font-weight: 700; }
+.mc-by { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+.mc-badge { display: inline-block; font-size: 0.62rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; margin-top: 6px; background: rgba(120,76,254,0.15); color: var(--accent2); }
+
+/* EARN */
+#earn { padding: 7rem 5%; background: var(--bg2); }
+.earn-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; max-width: 1100px; margin: 0 auto; }
+.earn-cards { display: flex; flex-direction: column; gap: 1rem; }
+.earn-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 1.5rem; display: flex; gap: 1rem; transition: border-color 0.2s; }
+.earn-card:hover { border-color: var(--border2); }
+.earn-icon { width: 44px; height: 44px; min-width: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+.earn-card-title { font-family: var(--font-h); font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+.earn-card-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+.earn-amount { font-family: var(--font-h); font-size: 0.85rem; font-weight: 700; color: var(--accent3); margin-top: 0.3rem; }
+
+/* TESTIMONIALS */
+#testimonials { padding: 7rem 5%; background: var(--bg); }
+.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 1100px; margin: 3rem auto 0; }
+.testi-card { background: var(--card); border: 1px solid var(--border); border-radius: 22px; padding: 2rem; transition: border-color 0.2s; }
+.testi-card:hover { border-color: var(--border2); }
+.testi-stars { color: var(--gold); font-size: 0.85rem; letter-spacing: 3px; margin-bottom: 1rem; }
+.testi-quote { color: var(--white); font-size: 0.95rem; line-height: 1.75; font-style: italic; font-weight: 300; margin-bottom: 1.5rem; }
+.testi-author { display: flex; align-items: center; gap: 12px; }
+.testi-av { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; font-family: var(--font-h); }
+.testi-name { font-weight: 700; font-size: 0.88rem; }
+.testi-handle { color: var(--muted); font-size: 0.75rem; }
+
+/* PRICING */
+#pricing { padding: 7rem 5%; background: var(--bg2); }
+.pricing-header { text-align: center; margin-bottom: 3.5rem; }
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 920px; margin: 0 auto; }
+.plan { background: var(--card); border: 1px solid var(--border); border-radius: 26px; padding: 2.5rem 2rem; position: relative; overflow: hidden; transition: transform 0.2s; }
+.plan:hover { transform: translateY(-4px); }
+.plan.featured { border-color: rgba(255,60,172,0.4); background: linear-gradient(160deg, rgba(255,60,172,0.07), var(--card) 60%); }
+.plan-glow { position: absolute; top: -80px; right: -80px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(120,76,254,0.2), transparent 70%); }
+.plan-ribbon { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, var(--accent), var(--accent2)); color: #fff; font-size: 0.65rem; font-weight: 800; font-family: var(--font-h); padding: 5px 18px; border-radius: 0 0 12px 12px; white-space: nowrap; letter-spacing: 0.08em; text-transform: uppercase; }
+.plan-name { font-family: var(--font-h); font-size: 0.85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.25rem; }
+.plan-price { font-family: var(--font-h); font-size: 3rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+.plan-price sup { font-size: 1.1rem; vertical-align: super; color: var(--muted); }
+.plan-price sub { font-size: 0.72rem; color: var(--muted); font-weight: 400; }
+.plan-tagline { color: var(--muted); font-size: 0.85rem; margin: 0.75rem 0 1.5rem; }
+.plan-divider { height: 1px; background: var(--border); margin-bottom: 1.5rem; }
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 2rem; }
+.plan-features li { font-size: 0.85rem; color: var(--muted); display: flex; gap: 10px; }
+.plan-features li .ck { color: var(--accent3); font-weight: 800; flex-shrink: 0; }
+.plan-btn { width: 100%; padding: 0.9rem; border-radius: 12px; font-family: var(--font-h); font-weight: 700; font-size: 0.95rem; cursor: pointer; text-align: center; text-decoration: none; display: block; transition: all 0.2s; border: none; }
+.plan-btn.grad { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+.plan-btn.grad:hover { opacity: 0.88; transform: scale(1.01); }
+.plan-btn.outline { background: transparent; border: 1px solid var(--border2); color: var(--white); }
+.plan-btn.outline:hover { border-color: rgba(255,255,255,0.25); }
+
+/* CTA */
+#cta { padding: 7rem 5%; background: var(--bg); text-align: center; }
+.cta-box { max-width: 780px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 36px; padding: 6rem 3rem; position: relative; overflow: hidden; }
+.cta-orb1 { position: absolute; top: -100px; left: -100px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(120,76,254,0.25), transparent 70%); }
+.cta-orb2 { position: absolute; bottom: -80px; right: -80px; width: 250px; height: 250px; border-radius: 50%; background: radial-gradient(circle, rgba(255,60,172,0.2), transparent 70%); }
+.cta-box h2 { font-family: var(--font-h); font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1rem; position: relative; z-index: 1; }
+.cta-box h2 span { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.cta-box p { color: var(--muted); font-size: 1rem; margin-bottom: 2.5rem; position: relative; z-index: 1; }
+.cta-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; position: relative; z-index: 1; flex-wrap: wrap; justify-content: center; }
+.cta-input { flex: 1; min-width: 200px; background: rgba(255,255,255,0.05); border: 1px solid var(--border2); color: var(--white); padding: 0.9rem 1.25rem; border-radius: 100px; font-size: 0.95rem; outline: none; font-family: var(--font-b); transition: border-color 0.2s; }
+.cta-input::placeholder { color: var(--muted2); }
+.cta-input:focus { border-color: var(--accent); }
+
+/* FOOTER */
+footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 5rem 5% 2.5rem; }
+.footer-grid { display: grid; grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 4rem; }
+.footer-brand p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin: 0.75rem 0 1.5rem; max-width: 240px; }
+.footer-social { display: flex; gap: 0.75rem; }
+.s-link { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; text-decoration: none; color: var(--muted); transition: all 0.2s; }
+.s-link:hover { border-color: var(--accent); color: var(--accent); }
+.footer-col h5 { font-family: var(--font-h); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); margin-bottom: 1.25rem; }
+.footer-col a { display: block; color: var(--muted); font-size: 0.85rem; text-decoration: none; margin-bottom: 0.65rem; transition: color 0.2s; }
+.footer-col a:hover { color: var(--white); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--muted2); font-size: 0.8rem; flex-wrap: wrap; gap: 1rem; }
+.footer-bottom a { color: var(--muted2); text-decoration: none; }
+.footer-bottom a:hover { color: var(--muted); }
+
+/* Scroll reveal */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; padding-top: 8rem; }
+  .hero-visual { display: none; }
+  .frow, .frow-2 { grid-template-columns: 1fr; }
+  .models-grid { grid-template-columns: repeat(3, 1fr); }
+  .model-gallery { grid-template-columns: repeat(3, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .earn-wrap { grid-template-columns: 1fr; }
+  .pricing-grid, .testi-grid { grid-template-columns: 1fr; }
+}
+
+/* ── NEW TOOL CARDS ── */
+.tl-card { background: var(--card); border: 1px solid var(--border); border-radius: 22px; overflow: hidden; transition: border-color 0.25s, transform 0.22s, box-shadow 0.25s; }
+.tl-card:hover { border-color: rgba(120,76,254,0.5); transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+.tl-img-box { position: relative; overflow: hidden; height: 320px; }
+.tl-img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform 0.5s ease; }
+.tl-card:hover .tl-img { transform: scale(1.06); }
+.tl-grad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(4,4,10,1) 0%, rgba(4,4,10,0.5) 40%, rgba(4,4,10,0.1) 100%); }
+.tl-pill { position: absolute; top: 14px; left: 14px; font-size: 0.72rem; font-weight: 800; padding: 5px 14px; border-radius: 100px; color: #fff; font-family: var(--font-h); letter-spacing: 0.03em; }
+.tl-float { position: absolute; background: rgba(8,8,22,0.78); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 0.75rem 1rem; }
+.tl-chip { display: inline-block; font-size: 0.72rem; padding: 3px 10px; border-radius: 100px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); color: var(--white); font-weight: 600; }
+.tl-body { display: flex; align-items: flex-start; gap: 1rem; padding: 1.4rem 1.5rem; }
+.tl-icon { width: 46px; height: 46px; min-width: 46px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+.tl-title { font-family: var(--font-h); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--white); }
+.tl-desc { color: var(--muted); font-size: 0.84rem; line-height: 1.65; margin-bottom: 0.85rem; }
+.tl-btn { display: inline-flex; align-items: center; gap: 5px; color: var(--accent2); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: color 0.2s, gap 0.2s; }
+.tl-btn:hover { color: var(--accent); gap: 9px; }
+/* Wave bars */
+.tl-wave-bars { display: flex; align-items: center; gap: 3px; height: 34px; }
+.twb { display: inline-block; width: 4px; height: var(--h, 12px); background: var(--accent3); border-radius: 2px; animation: wavePulse 1s ease-in-out var(--d, 0s) infinite alternate; }
+@keyframes wavePulse { from { transform: scaleY(0.3); opacity: 0.5; } to { transform: scaleY(1.4); opacity: 1; } }
+@keyframes progress { 0%{width:10%} 100%{width:90%} }
+@media (max-width:900px) { #tools > div:last-child { grid-template-columns: 1fr!important; } #tools > div:last-child .tl-card[style*="span 2"], #tools > div:last-child .tl-card[style*="span 3"] { grid-column: span 1!important; } #tools > div:last-child .tl-card:last-child > div:first-child { grid-template-columns: 1fr!important; } }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Creatrix <span>AI</span></a>
+  <ul class="nav-links">
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#explore">Explore</a></li>
+    <li><a href="#earn">Earn</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="creatrix-auth.html" class="btn-login">Log in</a>
+    <a href="creatrix-auth.html" class="btn-signup">Sign Up Free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow1"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-grid"></div>
+
+  <!-- LEFT TEXT -->
+  <div class="hero-text">
+    <div class="hero-badge"><span class="badge-dot"></span> #1 AI Influencer Platform</div>
+    <h1>
+      Create Your Own<br>
+      <span class="line-grad">AI Influencer.</span><br>
+      <span class="line-out">Go Viral.</span>
+    </h1>
+    <p class="hero-sub">The all-in-one AI influencer generator. Create AI girls, generate videos with 10+ models, face swap, lip sync, and motion control. Start earning today.</p>
+    <div class="hero-btns">
+      <a href="creatrix-auth.html" class="btn-primary">✨ Create Your AI Influencer</a>
+      <a href="#explore" class="btn-ghost">🔍 Explore Models</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">50K+</div>
+        <div class="hero-stat-label">Creators</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">2M+</div>
+        <div class="hero-stat-label">AI Videos</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">10+</div>
+        <div class="hero-stat-label">AI Models</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT VISUAL — Glamorous AI model photos -->
+  <div class="hero-visual">
+    <div class="model-stack">
+
+      <div style="display:flex;gap:12px;align-items:flex-end;justify-content:center;position:relative;">
+
+        <!-- LEFT model -->
+        <div style="width:30%;border-radius:22px;overflow:hidden;position:relative;box-shadow:0 30px 70px rgba(0,0,0,0.7);transform:translateY(24px);flex-shrink:0;">
+          <img
+            src="https://images.unsplash.com/photo-1536766820879-059fec98ec0a?w=400&q=90&fit=crop&crop=top"
+            style="width:100%;aspect-ratio:2/3;object-fit:cover;object-position:top center;display:block;"
+            alt="AI Influencer"
+            onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(160deg,#1a0533,#7928ca,#ff3cac)';"
+          >
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,0.92) 0%,rgba(4,4,10,0.2) 50%,transparent 100%);"></div>
+          <div style="position:absolute;bottom:12px;left:10px;right:10px;">
+            <div style="font-family:var(--font-h);font-size:0.82rem;font-weight:700;">Luna</div>
+            <div style="font-size:0.62rem;color:rgba(255,255,255,0.6);">Fashion · 110K</div>
+          </div>
+        </div>
+
+        <!-- CENTER model — biggest & most prominent -->
+        <div style="width:38%;border-radius:24px;overflow:hidden;position:relative;box-shadow:0 40px 80px rgba(120,76,254,0.45),0 0 0 1px rgba(255,255,255,0.1);z-index:3;flex-shrink:0;">
+          <img
+            src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=90&fit=crop&crop=top"
+            style="width:100%;aspect-ratio:2/3;object-fit:cover;object-position:top center;display:block;"
+            alt="AI Influencer Main"
+            onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(160deg,#2d0066,#784cfe,#ff3cac)';"
+          >
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,0.95) 0%,rgba(120,76,254,0.12) 65%,transparent 100%);"></div>
+          <div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.15);border-radius:100px;padding:4px 12px;font-size:0.65rem;font-weight:700;display:flex;align-items:center;gap:5px;">
+            <span style="width:6px;height:6px;background:#00F5D4;border-radius:50%;animation:blink 1.5s infinite;display:inline-block;"></span> AI Generated
+          </div>
+          <div style="position:absolute;bottom:14px;left:14px;right:14px;">
+            <div style="font-family:var(--font-h);font-size:1.05rem;font-weight:700;">Aria</div>
+            <div style="font-size:0.68rem;color:rgba(255,255,255,0.65);margin-bottom:7px;">Fashion & Lifestyle</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;">
+              <span style="font-size:0.6rem;padding:2px 8px;border-radius:100px;background:rgba(255,60,172,0.3);border:1px solid rgba(255,60,172,0.5);color:#FF3CAC;font-weight:700;">🔥 Trending</span>
+              <span style="font-size:0.6rem;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);">125K Followers</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT model -->
+        <div style="width:30%;border-radius:22px;overflow:hidden;position:relative;box-shadow:0 30px 70px rgba(0,0,0,0.7);transform:translateY(24px);flex-shrink:0;">
+          <img
+            src="https://images.unsplash.com/photo-1554568218-0f1715e72254?w=400&q=90&fit=crop&crop=top"
+            style="width:100%;aspect-ratio:2/3;object-fit:cover;object-position:top center;display:block;"
+            alt="AI Influencer"
+            onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(160deg,#003333,#006655,#00f5d4)';"
+          >
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,0.92) 0%,rgba(4,4,10,0.2) 50%,transparent 100%);"></div>
+          <div style="position:absolute;bottom:12px;left:10px;right:10px;">
+            <div style="font-family:var(--font-h);font-size:0.82rem;font-weight:700;">Nova</div>
+            <div style="font-size:0.62rem;color:rgba(255,255,255,0.6);">Glam · 88K</div>
+          </div>
+        </div>
+
+        <!-- Floating stats bar -->
+        <div style="position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);background:rgba(8,8,20,0.92);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:0.8rem 1.5rem;white-space:nowrap;z-index:5;display:flex;align-items:center;gap:16px;">
+          <div style="text-align:center;">
+            <div style="font-family:var(--font-h);font-size:1.05rem;font-weight:800;color:#00F5D4;">₹42,500</div>
+            <div style="font-size:0.6rem;color:var(--muted);">earned/month</div>
+          </div>
+          <div style="width:1px;height:30px;background:rgba(255,255,255,0.1);"></div>
+          <div style="text-align:center;">
+            <div style="font-family:var(--font-h);font-size:1.05rem;font-weight:800;color:#FF3CAC;">2,841</div>
+            <div style="font-size:0.6rem;color:var(--muted);">videos today</div>
+          </div>
+          <div style="width:1px;height:30px;background:rgba(255,255,255,0.1);"></div>
+          <div style="text-align:center;">
+            <div style="font-family:var(--font-h);font-size:1.05rem;font-weight:800;color:#FFD166;">50K+</div>
+            <div style="font-size:0.6rem;color:var(--muted);">creators</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Avatar strip -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:2.75rem;">
+        <div style="display:flex;">
+          <div style="width:34px;height:34px;border-radius:50%;border:2px solid var(--bg);overflow:hidden;margin-left:0;"><img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=80&q=80&fit=crop&crop=faces" style="width:100%;height:100%;object-fit:cover;" alt="" onerror="this.parentElement.style.background='#2d1b69'"></div>
+          <div style="width:34px;height:34px;border-radius:50%;border:2px solid var(--bg);overflow:hidden;margin-left:-8px;"><img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=80&q=80&fit=crop&crop=faces" style="width:100%;height:100%;object-fit:cover;" alt="" onerror="this.parentElement.style.background='#1a3a6e'"></div>
+          <div style="width:34px;height:34px;border-radius:50%;border:2px solid var(--bg);overflow:hidden;margin-left:-8px;"><img src="https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=80&q=80&fit=crop&crop=faces" style="width:100%;height:100%;object-fit:cover;" alt="" onerror="this.parentElement.style.background='#3d2200'"></div>
+          <div style="width:34px;height:34px;border-radius:50%;border:2px solid var(--bg);overflow:hidden;margin-left:-8px;"><img src="https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=80&q=80&fit=crop&crop=faces" style="width:100%;height:100%;object-fit:cover;" alt="" onerror="this.parentElement.style.background='#006655'"></div>
+        </div>
+        <span style="font-size:0.8rem;color:var(--muted);"><strong style="color:var(--white);">2,400+</strong> influencers created today</span>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="m-item"><span class="m-sep">✦</span> AI Influencer Generator</span>
+    <span class="m-item"><span class="m-sep">✦</span> Face Swap</span>
+    <span class="m-item"><span class="m-sep">✦</span> Lip Sync</span>
+    <span class="m-item"><span class="m-sep">✦</span> Motion Control</span>
+    <span class="m-item"><span class="m-sep">✦</span> AI Video Generator</span>
+    <span class="m-item"><span class="m-sep">✦</span> Sora 2.0</span>
+    <span class="m-item"><span class="m-sep">✦</span> Veo 3.1</span>
+    <span class="m-item"><span class="m-sep">✦</span> Kling v3</span>
+    <span class="m-item"><span class="m-sep">✦</span> AI Headshots</span>
+    <span class="m-item"><span class="m-sep">✦</span> UGC Creator</span>
+    <span class="m-item"><span class="m-sep">✦</span> Instagram Reels</span>
+    <span class="m-item"><span class="m-sep">✦</span> TikTok Videos</span>
+    <span class="m-item"><span class="m-sep">✦</span> AI Influencer Generator</span>
+    <span class="m-item"><span class="m-sep">✦</span> Face Swap</span>
+    <span class="m-item"><span class="m-sep">✦</span> Lip Sync</span>
+    <span class="m-item"><span class="m-sep">✦</span> Motion Control</span>
+    <span class="m-item"><span class="m-sep">✦</span> AI Video Generator</span>
+    <span class="m-item"><span class="m-sep">✦</span> Sora 2.0</span>
+    <span class="m-item"><span class="m-sep">✦</span> Veo 3.1</span>
+    <span class="m-item"><span class="m-sep">✦</span> Kling v3</span>
+    <span class="m-item"><span class="m-sep">✦</span> AI Headshots</span>
+    <span class="m-item"><span class="m-sep">✦</span> UGC Creator</span>
+    <span class="m-item"><span class="m-sep">✦</span> Instagram Reels</span>
+    <span class="m-item"><span class="m-sep">✦</span> TikTok Videos</span>
+  </div>
+</div>
+
+<!-- EXPLORE AI INFLUENCERS -->
+<section id="explore">
+  <div class="explore-header">
+    <div class="section-eyebrow">Community</div>
+    <h2 class="section-title">Explore AI Influencers</h2>
+    <p class="section-sub">Discover stunning AI influencers created by our community. From fashion to fitness — the possibilities are endless.</p>
+  </div>
+
+  <div class="model-gallery">
+    <div class="gallery-card tall reveal">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&q=90&fit=crop&crop=top" alt="AI Model" onerror="this.src='';this.parentElement.style.background='linear-gradient(160deg,#2d0066,#7928ca)'">
+      <div class="gallery-platform">📸</div>
+      <div class="gallery-views">3.2M views</div>
+      <div class="gallery-overlay"><div><div class="gallery-name">Aria</div><div class="gallery-handle">@aria.fashion · 125K</div></div></div>
+    </div>
+    <div class="gallery-card reveal">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1536766820879-059fec98ec0a?w=400&q=90&fit=crop&crop=top" alt="AI Model" onerror="this.src='';this.parentElement.style.background='linear-gradient(160deg,#001a33,#0066aa)'">
+      <div class="gallery-platform">🎵</div>
+      <div class="gallery-views">1.8M views</div>
+      <div class="gallery-overlay"><div><div class="gallery-name">Nova</div><div class="gallery-handle">@nova.vibes · 80K</div></div></div>
+    </div>
+    <div class="gallery-card reveal">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1554568218-0f1715e72254?w=400&q=90&fit=crop&crop=top" alt="AI Model" onerror="this.src='';this.parentElement.style.background='linear-gradient(160deg,#1a0015,#800060)'">
+      <div class="gallery-platform">📸</div>
+      <div class="gallery-views">990K views</div>
+      <div class="gallery-overlay"><div><div class="gallery-name">Kira</div><div class="gallery-handle">@kira.ai · 55K</div></div></div>
+    </div>
+    <div class="gallery-card reveal">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=400&q=90&fit=crop&crop=top" alt="AI Model" onerror="this.src='';this.parentElement.style.background='linear-gradient(160deg,#1a1a00,#665500)'">
+      <div class="gallery-platform">🎵</div>
+      <div class="gallery-views">2.1M views</div>
+      <div class="gallery-overlay"><div><div class="gallery-name">Zara</div><div class="gallery-handle">@zara.style · 200K</div></div></div>
+    </div>
+    <div class="gallery-card tall reveal">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=400&q=90&fit=crop&crop=top" alt="AI Model" onerror="this.src='';this.parentElement.style.background='linear-gradient(160deg,#003333,#00665a)'">
+      <div class="gallery-platform">📸</div>
+      <div class="gallery-views">4.5M views</div>
+      <div class="gallery-overlay"><div><div class="gallery-name">Luna</div><div class="gallery-handle">@luna.glam · 310K</div></div></div>
+    </div>
+    <div class="gallery-card reveal">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=400&q=90&fit=crop&crop=top" alt="AI Model" onerror="this.src='';this.parentElement.style.background='linear-gradient(160deg,#2d1500,#7a3900)'">
+      <div class="gallery-platform">🎵</div>
+      <div class="gallery-views">760K views</div>
+      <div class="gallery-overlay"><div><div class="gallery-name">Maya</div><div class="gallery-handle">@maya.fit · 42K</div></div></div>
+    </div>
+    <div class="gallery-card reveal">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&q=90&fit=crop&crop=top" alt="AI Model" onerror="this.src='';this.parentElement.style.background='linear-gradient(160deg,#0d0d33,#333399)'">
+      <div class="gallery-platform">📸</div>
+      <div class="gallery-views">1.3M views</div>
+      <div class="gallery-overlay"><div><div class="gallery-name">Alex</div><div class="gallery-handle">@alex.tech · 95K</div></div></div>
+    </div>
+  </div>
+  <div class="explore-cta">
+    <a href="creatrix-auth.html" class="btn-ghost" style="display:inline-flex;">View All Influencers →</a>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools" style="padding:7rem 5%;background:var(--bg);">
+  <div style="text-align:center;margin-bottom:4rem;">
+    <div class="section-eyebrow">Powerful Tools</div>
+    <h2 class="section-title">Everything you need to create</h2>
+    <p style="color:var(--muted);font-size:1rem;line-height:1.75;max-width:520px;margin:0.75rem auto 0;">6 AI-powered tools. One platform. Create influencers, videos, lip sync, motion and more.</p>
+  </div>
+
+  <!-- TOOLS GRID -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
+
+    <!-- 1. AI Influencer Generator -->
+    <div class="tl-card" style="grid-column:span 2;">
+      <div class="tl-img-box">
+        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=900&q=90&fit=crop&crop=top" class="tl-img" alt="AI Influencer">
+        <div class="tl-grad"></div>
+        <span class="tl-pill" style="background:linear-gradient(90deg,#FF3CAC,#784CFE);">🔥 Most Popular</span>
+        <!-- Live floating card -->
+        <div class="tl-float" style="bottom:20px;left:20px;right:20px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="width:8px;height:8px;background:#FF3CAC;border-radius:50%;display:inline-block;animation:blink 1.2s infinite;"></span>
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.7);">Creating your AI Influencer...</span>
+          </div>
+          <div style="height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-bottom:10px;">
+            <div style="height:100%;width:72%;background:linear-gradient(90deg,#FF3CAC,#784CFE);border-radius:3px;animation:progress 3s ease-in-out infinite alternate;"></div>
+          </div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap;">
+            <span class="tl-chip">👗 Fashion</span><span class="tl-chip">✨ Trendy</span><span class="tl-chip">💪 Confident</span>
+          </div>
+        </div>
+      </div>
+      <div class="tl-body">
+        <div class="tl-icon" style="background:rgba(255,60,172,0.15);">🧑‍🎤</div>
+        <div>
+          <h3 class="tl-title">AI Influencer Generator</h3>
+          <p class="tl-desc">Design a stunning photorealistic AI influencer — pick face, body type, outfit, style and personality. Go viral without ever being on camera.</p>
+          <a href='creatrix-create-influencer.html' class="tl-btn">Try it free →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. AI Video Generator -->
+    <div class="tl-card">
+      <div class="tl-img-box" style="height:260px;">
+        <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=90&fit=crop&crop=top" class="tl-img" alt="AI Video">
+        <div class="tl-grad"></div>
+        <span class="tl-pill" style="background:linear-gradient(90deg,#784CFE,#00F5D4);">✨ 10+ Models</span>
+        <!-- Video player UI -->
+        <div class="tl-float" style="bottom:16px;left:16px;right:16px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#784CFE,#FF3CAC);display:flex;align-items:center;justify-content:center;font-size:0.7rem;cursor:pointer;">▶</div>
+            <div style="flex:1;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;">
+              <div style="width:40%;height:100%;background:linear-gradient(90deg,#784CFE,#FF3CAC);border-radius:2px;animation:progress 4s linear infinite;"></div>
+            </div>
+            <span style="font-size:0.65rem;color:rgba(255,255,255,0.5);">0:24</span>
+          </div>
+          <div style="display:flex;gap:5px;">
+            <span class="tl-chip" style="font-size:0.62rem;">Sora 2.0</span>
+            <span class="tl-chip" style="font-size:0.62rem;background:rgba(120,76,254,0.3);border-color:rgba(120,76,254,0.5);">Kling v3 ✓</span>
+            <span class="tl-chip" style="font-size:0.62rem;">Veo 3.1</span>
+          </div>
+        </div>
+      </div>
+      <div class="tl-body">
+        <div class="tl-icon" style="background:rgba(120,76,254,0.15);">🎬</div>
+        <div>
+          <h3 class="tl-title">AI Video Generator</h3>
+          <p class="tl-desc">Generate cinematic videos using Sora 2, Veo 3.1, Kling v3 and 7 more top AI models.</p>
+          <a href="creatrix-auth.html" class="tl-btn">Try it free →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Lip Sync -->
+    <div class="tl-card">
+      <div class="tl-img-box" style="height:260px;">
+        <img src="https://images.unsplash.com/photo-1488716820095-cbe80883c496?w=600&q=90&fit=crop&crop=top" class="tl-img" alt="Lip Sync">
+        <div class="tl-grad"></div>
+        <span class="tl-pill" style="background:linear-gradient(90deg,#00C8A0,#784CFE);">🆕 New Feature</span>
+        <!-- Audio wave UI -->
+        <div class="tl-float" style="bottom:16px;left:16px;right:16px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:1.2rem;">🎙️</span>
+            <div class="tl-wave-bars">
+              <span class="twb" style="--h:8px;--d:0s"></span>
+              <span class="twb" style="--h:22px;--d:0.1s"></span>
+              <span class="twb" style="--h:14px;--d:0.2s"></span>
+              <span class="twb" style="--h:30px;--d:0.05s"></span>
+              <span class="twb" style="--h:18px;--d:0.15s"></span>
+              <span class="twb" style="--h:26px;--d:0.25s"></span>
+              <span class="twb" style="--h:12px;--d:0.3s"></span>
+              <span class="twb" style="--h:20px;--d:0.08s"></span>
+              <span class="twb" style="--h:28px;--d:0.18s"></span>
+              <span class="twb" style="--h:10px;--d:0.35s"></span>
+            </div>
+            <span style="font-size:0.7rem;color:#00F5D4;font-weight:700;white-space:nowrap;">Syncing...</span>
+          </div>
+        </div>
+      </div>
+      <div class="tl-body">
+        <div class="tl-icon" style="background:rgba(0,245,212,0.12);">👄</div>
+        <div>
+          <h3 class="tl-title">Lip Sync</h3>
+          <p class="tl-desc">Upload any audio and your AI influencer syncs her lips perfectly. Built for Reels & TikTok.</p>
+          <a href="creatrix-auth.html" class="tl-btn">Try it free →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Motion Control — uses canvas animation of a dancer -->
+    <div class="tl-card">
+      <div class="tl-img-box" style="height:300px;position:relative;overflow:hidden;background:linear-gradient(160deg,#0d0020,#2d0060,#1a0040);">
+        <!-- Canvas dancing figure animation -->
+        <canvas id="danceCanvas" width="400" height="300" style="width:100%;height:100%;display:block;"></canvas>
+        <span class="tl-pill" style="background:linear-gradient(90deg,#FFD166,#FF3CAC);">🕹️ Motion AI</span>
+        <div class="tl-float" style="bottom:16px;left:16px;right:16px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="width:8px;height:8px;background:#FFD166;border-radius:50%;animation:blink 1s infinite;"></span>
+            <span style="font-size:0.72rem;color:#FFD166;font-weight:700;">Motion tracking active</span>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:7px;">
+            <span class="tl-chip" style="font-size:0.62rem;">💃 Dance</span>
+            <span class="tl-chip" style="font-size:0.62rem;">🚶 Walk</span>
+            <span class="tl-chip" style="font-size:0.62rem;">🏋️ Workout</span>
+          </div>
+        </div>
+      </div>
+      <div class="tl-body">
+        <div class="tl-icon" style="background:rgba(255,209,102,0.12);">🕹️</div>
+        <div>
+          <h3 class="tl-title">Motion Control</h3>
+          <p class="tl-desc">Animate your AI influencer with real human movements — dance, walk, workout — no capture needed.</p>
+          <a href="creatrix-auth.html" class="tl-btn">Try it free →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. AI UGC Creator -->
+    <div class="tl-card">
+      <div class="tl-img-box" style="height:300px;">
+        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=90&fit=crop&crop=top" class="tl-img" alt="UGC">
+        <div class="tl-grad"></div>
+        <span class="tl-pill" style="background:linear-gradient(90deg,#FF3CAC,#FFD166);">💰 Earn Big</span>
+        <div class="tl-float" style="bottom:16px;left:16px;right:16px;">
+          <div style="font-size:0.68rem;color:var(--accent2);font-weight:800;margin-bottom:4px;">📦 Brand: Nike Air Max</div>
+          <div style="font-size:0.78rem;color:white;font-style:italic;">"Just tried these and honestly WOW — total game changer! 🔥"</div>
+          <div style="display:flex;gap:6px;margin-top:8px;">
+            <span class="tl-chip" style="font-size:0.62rem;">📱 Reel Ready</span>
+            <span class="tl-chip" style="font-size:0.62rem;">✅ UGC Style</span>
+          </div>
+        </div>
+      </div>
+      <div class="tl-body">
+        <div class="tl-icon" style="background:rgba(248,113,113,0.15);">🎥</div>
+        <div>
+          <h3 class="tl-title">AI UGC Creator</h3>
+          <p class="tl-desc">Auto-generate brand UGC content. Brands pay ₹5K–₹50K per video — now produce it with AI.</p>
+          <a href="creatrix-auth.html" class="tl-btn">Try it free →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. AI Headshot Generator -->
+    <div class="tl-card" style="grid-column:span 3;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;">
+        <div class="tl-img-box" style="height:300px;border-radius:0;">
+          <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&q=90&fit=crop&crop=top" class="tl-img" alt="Headshot 1">
+          <div class="tl-grad"></div>
+          <span style="position:absolute;bottom:12px;left:12px;font-size:0.7rem;font-weight:700;background:rgba(0,245,212,0.2);border:1px solid rgba(0,245,212,0.4);color:#00F5D4;padding:3px 10px;border-radius:100px;">Studio White</span>
+        </div>
+        <div class="tl-img-box" style="height:300px;border-radius:0;">
+          <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&q=90&fit=crop&crop=top" class="tl-img" alt="Headshot 2" style="filter:brightness(1.05) saturate(1.2);">
+          <div class="tl-grad"></div>
+          <span style="position:absolute;bottom:12px;left:12px;font-size:0.7rem;font-weight:700;background:rgba(255,60,172,0.2);border:1px solid rgba(255,60,172,0.4);color:#FF3CAC;padding:3px 10px;border-radius:100px;">Golden Hour</span>
+        </div>
+        <div class="tl-img-box" style="height:300px;border-radius:0;">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=90&fit=crop&crop=top" class="tl-img" alt="Headshot 3">
+          <div class="tl-grad"></div>
+          <span style="position:absolute;bottom:12px;left:12px;font-size:0.7rem;font-weight:700;background:rgba(120,76,254,0.2);border:1px solid rgba(120,76,254,0.4);color:#784CFE;padding:3px 10px;border-radius:100px;">Dark Moody</span>
+        </div>
+      </div>
+      <div class="tl-body" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+        <div style="display:flex;gap:1rem;align-items:flex-start;">
+          <div class="tl-icon" style="background:rgba(251,146,60,0.15);">📸</div>
+          <div>
+            <h3 class="tl-title">AI Headshot Generator</h3>
+            <p class="tl-desc" style="max-width:500px;">Generate ultra-realistic professional headshots in any lighting, style, and background. Perfect for Instagram profiles, brand pages, and campaign posters.</p>
+          </div>
+        </div>
+        <a href="creatrix-auth.html" class="tl-btn" style="white-space:nowrap;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#FF3CAC,#784CFE);border-radius:100px;color:#fff;font-family:var(--font-h);font-weight:700;font-size:0.9rem;">Try it free →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- AI MODELS -->
+<section id="models">
+  <div style="text-align:center;">
+    <div class="section-eyebrow">AI Video Models</div>
+    <h2 class="section-title">10+ world-class AI models</h2>
+  </div>
+  <div class="models-grid reveal">
+    <div class="model-chip"><div class="mc-logo">🌀</div><div class="mc-name">Sora 2.0</div><div class="mc-by">by OpenAI</div><div class="mc-badge">Latest</div></div>
+    <div class="model-chip"><div class="mc-logo">🎯</div><div class="mc-name">Veo 3.1</div><div class="mc-by">by Google</div><div class="mc-badge">New</div></div>
+    <div class="model-chip"><div class="mc-logo">⚡</div><div class="mc-name">Kling v3.0</div><div class="mc-by">by Kuaishou</div><div class="mc-badge">Popular</div></div>
+    <div class="model-chip"><div class="mc-logo">🌊</div><div class="mc-name">WAN 2.6</div><div class="mc-by">by Alibaba</div><div class="mc-badge">Fast</div></div>
+    <div class="model-chip"><div class="mc-logo">🌱</div><div class="mc-name">Seedance 2.0</div><div class="mc-by">by ByteDance</div><div class="mc-badge">New</div></div>
+    <div class="model-chip"><div class="mc-logo">🔮</div><div class="mc-name">Runway Gen-4</div><div class="mc-by">by Runway</div><div class="mc-badge">HD</div></div>
+  </div>
+</section>
+
+<!-- EARN -->
+<section id="earn">
+  <div class="earn-wrap">
+    <div>
+      <div class="section-eyebrow">Monetize</div>
+      <h2 class="section-title">Build once.<br>Earn forever.</h2>
+      <p class="section-sub" style="margin:0.75rem 0 2.5rem;">Your AI influencer works 24/7 without breaks. Here's how our creators are making real money.</p>
+      <a href="creatrix-auth.html" class="btn-primary" style="display:inline-flex;">Start Earning Today →</a>
+    </div>
+    <div class="earn-cards reveal">
+      <div class="earn-card"><div class="earn-icon ti-pink">📱</div><div><div class="earn-card-title">Brand Sponsorships</div><p class="earn-card-desc">Brands pay AI influencers for sponsored posts. Hit 10K followers and your inbox fills up.</p><div class="earn-amount">₹5,000 – ₹50,000 per post</div></div></div>
+      <div class="earn-card"><div class="earn-icon ti-teal">🎯</div><div><div class="earn-card-title">Affiliate Marketing</div><p class="earn-card-desc">Promote products through your AI persona and earn commissions on every sale.</p><div class="earn-amount">10–30% commission per sale</div></div></div>
+      <div class="earn-card"><div class="earn-icon ti-gold">💎</div><div><div class="earn-card-title">Sell AI Content Packs</div><p class="earn-card-desc">Sell AI-generated image packs, video templates, and UGC content to brands.</p><div class="earn-amount">₹500 – ₹10,000 per pack</div></div></div>
+      <div class="earn-card"><div class="earn-icon ti-purple">🤝</div><div><div class="earn-card-title">Affiliate Program</div><p class="earn-card-desc">Refer creators to Creatrix AI and earn 30% of every credit they purchase.</p><div class="earn-amount">30% recurring commission</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div style="text-align:center;">
+    <div class="section-eyebrow">Testimonials</div>
+    <h2 class="section-title">Creators love Creatrix AI</h2>
+  </div>
+  <div class="testi-grid reveal">
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Made my first AI influencer for Instagram — the photos look scarily real. The lip sync feature gets me way more engagement on Reels than I expected."</p><div class="testi-author"><div class="testi-av" style="background:rgba(255,60,172,0.15);color:var(--accent);">PK</div><div><div class="testi-name">Priya Kapoor</div><div class="testi-handle">@priyakreates · 80K followers</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Created a fitness influencer and the motion control feature is what hooked me. She does actual workout demos and it looks real. My TikTok blew up."</p><div class="testi-author"><div class="testi-av" style="background:rgba(0,245,212,0.12);color:var(--accent3);">RS</div><div><div class="testi-name">Rahul Shah</div><div class="testi-handle">@rahulfit · 42K followers</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Started with one character just for fun, now I'm running three different AI influencers. Earning ₹45K+ monthly now just from brand deals and affiliate."</p><div class="testi-author"><div class="testi-av" style="background:rgba(120,76,254,0.15);color:var(--accent2);">AM</div><div><div class="testi-name">Ayesha Mirza</div><div class="testi-handle">@ayeshaai · 125K followers</div></div></div></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="pricing-header">
+    <div class="section-eyebrow">Pricing</div>
+    <h2 class="section-title">Pay only for what you use</h2>
+    <p class="section-sub" style="max-width:480px;margin:0.75rem auto 0;color:var(--muted);">No subscriptions. Buy credits and spend them on any tool. Start free with 20 credits.</p>
+  </div>
+  <div class="pricing-grid reveal">
+    <div class="plan">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price"><sup>₹</sup>0<sub> free</sub></div>
+      <p class="plan-tagline">Explore all tools risk-free</p>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li><span class="ck">✓</span>20 free credits on signup</li>
+        <li><span class="ck">✓</span>Access to all 8 AI tools</li>
+        <li><span class="ck">✓</span>720p video exports</li>
+        <li><span class="ck">✓</span>Watermarked output</li>
+      </ul>
+      <a href="creatrix-auth.html" class="plan-btn outline">Get started free</a>
+    </div>
+    <div class="plan featured">
+      <div class="plan-glow"></div>
+      <div class="plan-ribbon">Most Popular</div>
+      <div class="plan-name">Creator Pack</div>
+      <div class="plan-price"><sup>₹</sup>299<sub>/100 credits</sub></div>
+      <p class="plan-tagline">For serious content creators</p>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li><span class="ck">✓</span>100 credits (~20 full videos)</li>
+        <li><span class="ck">✓</span>1080p HD exports</li>
+        <li><span class="ck">✓</span>No watermark</li>
+        <li><span class="ck">✓</span>All 10+ AI models</li>
+        <li><span class="ck">✓</span>Commercial license</li>
+      </ul>
+      <a href="creatrix-auth.html" class="plan-btn grad">Buy Credits</a>
+    </div>
+    <div class="plan">
+      <div class="plan-name">Pro Pack</div>
+      <div class="plan-price"><sup>₹</sup>799<sub>/300 credits</sub></div>
+      <p class="plan-tagline">For agencies & power creators</p>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li><span class="ck">✓</span>300 credits (~60 full videos)</li>
+        <li><span class="ck">✓</span>4K ultra exports</li>
+        <li><span class="ck">✓</span>API access</li>
+        <li><span class="ck">✓</span>Dedicated support</li>
+        <li><span class="ck">✓</span>Affiliate program access</li>
+      </ul>
+      <a href="creatrix-auth.html" class="plan-btn outline">Buy Credits</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-box">
+    <div class="cta-orb1"></div>
+    <div class="cta-orb2"></div>
+    <h2>Start creating with<br><span>Creatrix AI</span> today</h2>
+    <p>20 free credits on signup. No credit card required.</p>
+    <div class="cta-form">
+      <input type="email" class="cta-input" placeholder="Enter your email address">
+      <a href="creatrix-auth.html" class="btn-primary">Create Free Account</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo">Creatrix <span>AI</span></a>
+      <p>The AI platform for creators. Build, grow, and monetize your AI influencer on Instagram and TikTok.</p>
+      <div class="footer-social">
+        <a href="#" class="s-link">𝕏</a>
+        <a href="#" class="s-link">📸</a>
+        <a href="#" class="s-link">▶</a>
+        <a href="#" class="s-link">🎵</a>
+      </div>
+    </div>
+    <div class="footer-col"><h5>Tools</h5><a href="#">AI Influencer</a><a href="#">Video Generator</a><a href="#">Face Swap</a><a href="#">Lip Sync</a><a href="#">Motion Control</a><a href="#">AI Headshots</a><a href="#">UGC Creator</a></div>
+    <div class="footer-col"><h5>AI Models</h5><a href="#">Sora 2.0</a><a href="#">Veo 3.1</a><a href="#">Kling v3.0</a><a href="#">WAN 2.6</a><a href="#">Seedance 2.0</a><a href="#">Runway Gen-4</a></div>
+    <div class="footer-col"><h5>Guides</h5><a href="#">Create AI Influencer</a><a href="#">How to Earn Money</a><a href="#">Go Viral with AI</a><a href="#">Face Swap Guide</a><a href="#">Best AI Models</a></div>
+    <div class="footer-col"><h5>Company</h5><a href="#">About Us</a><a href="#">Pricing</a><a href="#">Affiliate Program</a><a href="#">Showcase</a><a href="#">Contact</a><a href="#">Privacy Policy</a><a href="creatrix-terms.html">Terms &amp; Conditions</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Creatrix AI. All rights reserved.</span>
+    <div style="display:flex;gap:1.5rem;"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Refund</a></div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+
+
+</body>
+</html>

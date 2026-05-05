@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monetize — Creatrix AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700;800&family=Cabinet+Grotesk:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04040A;--bg2:#080812;--card:#0F0F1E;--card2:#161628;--white:#F0EEF8;--muted:#7070A0;--muted2:#3A3A5C;--accent:#FF3CAC;--accent2:#784CFE;--accent3:#00F5D4;--gold:#FFD166;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--font-h:'Clash Display',sans-serif;--font-b:'Cabinet Grotesk',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--white);font-family:var(--font-b);min-height:100vh;}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;background:rgba(4,4,10,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;}
+.tb-left{display:flex;align-items:center;gap:1.25rem;}
+.back-btn{color:var(--muted);font-size:0.85rem;font-weight:500;text-decoration:none;transition:color 0.2s;}
+.back-btn:hover{color:var(--white);}
+.tb-div{width:1px;height:18px;background:var(--border2);}
+.tb-logo{font-family:var(--font-h);font-size:1.15rem;font-weight:700;text-decoration:none;color:var(--white);}
+.tb-logo span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.credits-pill{display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border2);border-radius:100px;padding:0.38rem 1rem;font-size:0.8rem;}
+.credits-pill .cv{font-family:var(--font-h);font-weight:700;color:var(--accent3);}
+.credits-pill .cl{color:var(--muted);}
+
+/* PAGE TABS */
+.page-tabs{position:fixed;top:62px;left:0;right:0;z-index:100;background:rgba(4,4,10,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;padding:0 2.5rem;}
+.ptab{padding:0.9rem 1.4rem;font-size:0.85rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;}
+.ptab:hover{color:var(--white);}
+.ptab.active{color:var(--white);border-bottom-color:var(--accent2);}
+
+/* LAYOUT */
+.page{padding:110px 2.5rem 4rem;max-width:1100px;margin:0 auto;}
+
+/* SECTION */
+.section-eyebrow{font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
+.section-title{font-family:var(--font-h);font-size:1.75rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.5rem;}
+.section-sub{color:var(--muted);font-size:0.9rem;line-height:1.7;margin-bottom:2rem;}
+
+/* BIO LINK CARD */
+.bio-link-card{background:linear-gradient(135deg,rgba(120,76,254,0.12),rgba(255,60,172,0.08));border:1.5px solid rgba(120,76,254,0.3);border-radius:24px;padding:2rem;margin-bottom:2rem;position:relative;overflow:hidden;}
+.bio-link-card::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(120,76,254,0.15),transparent 70%);pointer-events:none;}
+.blc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.blc-title{font-family:var(--font-h);font-size:1.1rem;font-weight:700;}
+.blc-status{display:flex;align-items:center;gap:5px;font-size:0.72rem;font-weight:700;color:var(--accent3);}
+.live-dot{width:6px;height:6px;background:var(--accent3);border-radius:50%;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.link-display{display:flex;align-items:center;gap:0.75rem;background:var(--card2);border:1px solid var(--border2);border-radius:14px;padding:0.85rem 1.1rem;margin-bottom:1rem;}
+.link-url{font-family:var(--font-h);font-size:0.95rem;font-weight:700;color:var(--accent2);flex:1;word-break:break-all;}
+.link-btns{display:flex;gap:6px;flex-shrink:0;}
+.link-btn{padding:0.45rem 0.9rem;border-radius:100px;font-size:0.75rem;font-weight:700;cursor:pointer;border:none;font-family:var(--font-h);transition:all 0.18s;}
+.link-btn.copy{background:rgba(120,76,254,0.2);color:#b09eff;border:1px solid rgba(120,76,254,0.3);}
+.link-btn.copy:hover{background:rgba(120,76,254,0.35);}
+.link-btn.view{background:rgba(0,245,212,0.15);color:var(--accent3);border:1px solid rgba(0,245,212,0.25);}
+.link-btn.view:hover{background:rgba(0,245,212,0.25);}
+
+/* QUICK STATS */
+.quick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0.85rem;margin-bottom:1rem;}
+.qs{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:0.85rem 1rem;text-align:center;}
+.qs-val{font-family:var(--font-h);font-size:1.35rem;font-weight:800;color:var(--white);}
+.qs-lbl{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;}
+
+/* SHARE GUIDE */
+.share-guide{background:var(--card2);border-radius:14px;padding:1rem 1.25rem;}
+.sg-title{font-size:0.72rem;font-weight:700;color:var(--gold);margin-bottom:0.6rem;display:flex;align-items:center;gap:6px;}
+.sg-steps{display:flex;gap:1rem;flex-wrap:wrap;}
+.sg-step{display:flex;align-items:flex-start;gap:8px;font-size:0.78rem;color:var(--muted);flex:1;min-width:140px;}
+.sg-num{width:20px;height:20px;background:rgba(120,76,254,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:700;color:var(--accent2);flex-shrink:0;margin-top:1px;}
+
+/* CONTENT LIBRARY */
+.content-library{margin-bottom:2rem;}
+.cl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;}
+.cl-title{font-family:var(--font-h);font-size:1.1rem;font-weight:700;}
+.cl-filter{display:flex;gap:6px;}
+.clf{padding:0.38rem 0.85rem;border-radius:100px;border:1.5px solid var(--border2);background:var(--card);color:var(--muted);font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.18s;}
+.clf.active{background:rgba(120,76,254,0.15);border-color:var(--accent2);color:var(--white);}
+.content-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;}
+
+/* CONTENT CARD */
+.cc{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;position:relative;transition:transform 0.2s,box-shadow 0.2s;}
+.cc:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.4);}
+.cc-thumb{position:relative;aspect-ratio:9/16;max-height:200px;overflow:hidden;}
+.cc-thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform 0.4s;}
+.cc:hover .cc-thumb img{transform:scale(1.05);}
+
+/* Blur overlay for locked */
+.cc-blur{position:absolute;inset:0;backdrop-filter:blur(8px);background:rgba(4,4,10,0.4);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;}
+.cc-lock-icon{font-size:1.5rem;}
+.cc-lock-price{font-family:var(--font-h);font-size:0.82rem;font-weight:700;color:var(--gold);}
+
+/* Status badges */
+.cc-badge{position:absolute;top:8px;left:8px;font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:100px;backdrop-filter:blur(6px);}
+.badge-free{background:rgba(0,245,212,0.8);color:#000;}
+.badge-locked{background:rgba(255,209,102,0.85);color:#1a1000;}
+.badge-premium{background:rgba(255,60,172,0.8);color:#fff;}
+
+.cc-info{padding:0.75rem 0.85rem;}
+.cc-name{font-size:0.8rem;font-weight:700;margin-bottom:0.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cc-actions{display:flex;gap:5px;}
+.cca{flex:1;padding:5px;border-radius:8px;font-size:0.65rem;font-weight:700;text-align:center;cursor:pointer;border:none;font-family:var(--font-h);transition:all 0.18s;}
+.cca.make-premium{background:linear-gradient(135deg,var(--gold),#f0a500);color:#1a1000;}
+.cca.make-premium:hover{opacity:0.88;}
+.cca.make-free{background:var(--card2);border:1px solid var(--border2);color:var(--muted);}
+.cca.make-free:hover{color:var(--white);}
+.cca.set-price{background:rgba(120,76,254,0.15);border:1px solid rgba(120,76,254,0.3);color:#b09eff;}
+
+/* SET PRICE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(4,4,10,0.9);backdrop-filter:blur(10px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:2rem;max-width:400px;width:100%;animation:popIn 0.25s ease both;}
+@keyframes popIn{from{opacity:0;transform:scale(0.93)}to{opacity:1;transform:scale(1)}}
+.modal-title{font-family:var(--font-h);font-size:1.2rem;font-weight:800;margin-bottom:0.35rem;}
+.modal-sub{font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.6;}
+.price-options{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:1.25rem;}
+.po{padding:0.75rem;background:var(--card2);border:2px solid var(--border2);border-radius:12px;text-align:center;cursor:pointer;transition:all 0.18s;}
+.po:hover{border-color:rgba(255,255,255,0.2);}
+.po.sel{border-color:var(--gold);background:rgba(255,209,102,0.08);}
+.po-price{font-family:var(--font-h);font-size:1rem;font-weight:800;color:var(--gold);}
+.po-label{font-size:0.62rem;color:var(--muted);margin-top:2px;}
+.custom-price-wrap{display:flex;align-items:center;gap:0.5rem;background:var(--card2);border:1.5px solid var(--border2);border-radius:12px;padding:0.6rem 1rem;margin-bottom:1.25rem;}
+.cp-sym{font-family:var(--font-h);font-size:1rem;font-weight:700;color:var(--gold);}
+.cp-input{background:transparent;border:none;outline:none;font-family:var(--font-h);font-size:1rem;font-weight:700;color:var(--white);width:100%;}
+.modal-btns{display:flex;gap:0.75rem;}
+.modal-cancel{flex:1;padding:0.72rem;background:var(--card2);border:1px solid var(--border2);color:var(--muted);border-radius:12px;font-family:var(--font-b);font-size:0.88rem;font-weight:600;cursor:pointer;transition:color 0.2s;}
+.modal-cancel:hover{color:var(--white);}
+.modal-confirm{flex:1;padding:0.72rem;background:linear-gradient(135deg,var(--gold),#f0a500);color:#1a1000;border:none;border-radius:12px;font-family:var(--font-h);font-size:0.9rem;font-weight:800;cursor:pointer;transition:opacity 0.2s;}
+.modal-confirm:hover{opacity:0.88;}
+
+/* INSTRUCTIONS */
+.instructions{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.75rem;margin-bottom:2rem;}
+.inst-title{font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;}
+.inst-steps{display:flex;flex-direction:column;gap:1rem;}
+.inst-step{display:flex;align-items:flex-start;gap:1rem;}
+.is-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-size:0.85rem;font-weight:800;flex-shrink:0;}
+.is-content{}
+.is-title{font-family:var(--font-h);font-size:0.9rem;font-weight:700;margin-bottom:3px;}
+.is-sub{font-size:0.78rem;color:var(--muted);line-height:1.55;}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;z-index:999;background:var(--card2);border:1px solid var(--accent3);border-radius:14px;padding:0.9rem 1.1rem;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast-icon{font-size:1.2rem;}
+.toast-t{font-weight:700;color:var(--accent3);display:block;margin-bottom:1px;font-size:0.88rem;}
+.toast-s{color:var(--muted);font-size:0.75rem;}
+
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
+@media(max-width:768px){.quick-stats{grid-template-columns:repeat(2,1fr);}.content-grid{grid-template-columns:repeat(2,1fr);}.page{padding:110px 1.5rem 4rem;}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <a href="creatrix-dashboard.html" class="back-btn">← Dashboard</a>
+    <div class="tb-div"></div>
+    <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
+  </div>
+  <div class="credits-pill"><span class="cv">38</span><span class="cl">credits</span></div>
+</div>
+
+<!-- TABS -->
+<div class="page-tabs">
+  <div class="ptab active" onclick="switchTab('monetize',this)">💰 Monetize</div>
+  <div class="ptab" onclick="switchTab('earnings',this)">📊 Earnings</div>
+  <div class="ptab" onclick="switchTab('payouts',this)">🏦 Payouts</div>
+</div>
+
+<div class="page">
+
+  <!-- ═══ MONETIZE TAB ═══ -->
+  <div id="tab-monetize">
+
+    <div class="section-eyebrow">Your Creator Economy</div>
+    <h1 class="section-title">💰 Monetize Your Influencer</h1>
+    <p class="section-sub">Share your unique bio link, lock your best content, and start earning from your AI influencer. Followers pay to unlock exclusive content.</p>
+
+    <!-- BIO LINK CARD -->
+    <div class="bio-link-card">
+      <div class="blc-header">
+        <div class="blc-title">🔗 Your Creator Link</div>
+        <div class="blc-status"><div class="live-dot"></div>Live & Active</div>
+      </div>
+      <div class="link-display">
+        <div class="link-url" id="bioLinkUrl">creatrixai.com/rahulverma</div>
+        <div class="link-btns">
+          <button class="link-btn copy" onclick="copyLink()">📋 Copy</button>
+          <button class="link-btn view" onclick="previewLink()">👁️ Preview</button>
+        </div>
+      </div>
+      <div class="quick-stats">
+        <div class="qs"><div class="qs-val">247</div><div class="qs-lbl">Total Visits</div></div>
+        <div class="qs"><div class="qs-val">31</div><div class="qs-lbl">Unlocks</div></div>
+        <div class="qs"><div class="qs-val">₹9,300</div><div class="qs-lbl">Total Earned</div></div>
+        <div class="qs"><div class="qs-val">12.5%</div><div class="qs-lbl">Conversion</div></div>
+      </div>
+      <div class="share-guide">
+        <div class="sg-title">🔥 How to get paid — 3 easy steps</div>
+        <div class="sg-steps">
+          <div class="sg-step"><div class="sg-num">1</div><span>Put this link in your <strong style="color:var(--white);">Instagram bio</strong></span></div>
+          <div class="sg-step"><div class="sg-num">2</div><span>Post content saying <strong style="color:var(--white);">"Exclusive content 🔒👇"</strong></span></div>
+          <div class="sg-step"><div class="sg-num">3</div><span>Followers click → pay → <strong style="color:var(--accent3);">you earn 💸</strong></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="instructions">
+      <div class="inst-title">⚡ How Premium Content Works</div>
+      <div class="inst-steps">
+        <div class="inst-step"><div class="is-num">1</div><div class="is-content"><div class="is-title">Generate Content</div><div class="is-sub">Create images or videos using any Creatrix AI tool</div></div></div>
+        <div class="inst-step"><div class="is-num">2</div><div class="is-content"><div class="is-title">Click "Make Premium 🔒" <span style="background:rgba(0,245,212,0.15);color:var(--accent3);font-size:0.65rem;font-weight:700;padding:2px 7px;border-radius:100px;border:1px solid rgba(0,245,212,0.25);margin-left:5px;">FREE</span></div><div class="is-sub">Content gets locked with a blur preview. Set your own price — ₹99 to ₹4,999. <strong style="color:var(--accent3);">No credits charged!</strong></div></div></div>
+        <div class="inst-step"><div class="is-num">3</div><div class="is-content"><div class="is-title">Share Your Bio Link</div><div class="is-sub">Visitors see blurred preview → get curious → pay to unlock</div></div></div>
+        <div class="inst-step"><div class="is-num">4</div><div class="is-content"><div class="is-title">Earn Money 💸</div><div class="is-sub">50% goes to you. Paid out every 7 days directly to your bank/UPI</div></div></div>
+      </div>
+    </div>
+
+    <!-- CONTENT LIBRARY -->
+    <div class="content-library">
+      <!-- FREE banner -->
+      <div style="background:rgba(0,245,212,0.07);border:1px solid rgba(0,245,212,0.2);border-radius:14px;padding:0.85rem 1.1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:1.25rem;">🎉</span>
+        <div>
+          <div style="font-size:0.82rem;font-weight:700;color:var(--accent3);">Making content premium is 100% FREE for you!</div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:2px;">Lock your content → Set a price → Followers pay to unlock → You earn 50% of every sale</div>
+        </div>
+      </div>
+      <div class="cl-header">
+        <div class="cl-title">🗂️ Your Content Library</div>
+        <div class="cl-filter">
+          <div class="clf active" onclick="filterContent(this,'all')">All</div>
+          <div class="clf" onclick="filterContent(this,'free')">Free</div>
+          <div class="clf" onclick="filterContent(this,'premium')">🔒 Premium</div>
+        </div>
+      </div>
+      <div class="content-grid" id="contentGrid"></div>
+    </div>
+
+  </div>
+
+  <!-- ═══ EARNINGS TAB ═══ -->
+  <div id="tab-earnings" style="display:none;">
+    <div class="section-eyebrow">Revenue Tracking</div>
+    <h1 class="section-title">📊 Your Earnings</h1>
+    <p class="section-sub">Track every rupee you earn from your premium content.</p>
+
+    <!-- Earnings Overview -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;">
+      <div style="background:linear-gradient(135deg,rgba(0,245,212,0.12),rgba(120,76,254,0.08));border:1.5px solid rgba(0,245,212,0.25);border-radius:20px;padding:1.5rem;text-align:center;">
+        <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent3);margin-bottom:0.5rem;">Today</div>
+        <div style="font-family:var(--font-h);font-size:2rem;font-weight:800;">₹1,240</div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">↑ +₹340 vs yesterday</div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(120,76,254,0.12),rgba(255,60,172,0.08));border:1.5px solid rgba(120,76,254,0.25);border-radius:20px;padding:1.5rem;text-align:center;">
+        <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.5rem;">This Week</div>
+        <div style="font-family:var(--font-h);font-size:2rem;font-weight:800;">₹8,900</div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">↑ +22% vs last week</div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(255,209,102,0.1),rgba(255,60,172,0.06));border:1.5px solid rgba(255,209,102,0.25);border-radius:20px;padding:1.5rem;text-align:center;">
+        <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Total Earned</div>
+        <div style="font-family:var(--font-h);font-size:2rem;font-weight:800;">₹21,300</div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">Since you joined</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.5rem;text-align:center;">
+        <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Available to Withdraw</div>
+        <div style="font-family:var(--font-h);font-size:2rem;font-weight:800;color:var(--accent3);">₹4,650</div>
+        <button style="margin-top:0.6rem;background:linear-gradient(135deg,var(--accent3),var(--accent2));border:none;color:#fff;font-family:var(--font-h);font-size:0.78rem;font-weight:700;padding:6px 16px;border-radius:100px;cursor:pointer;" onclick="requestWithdraw()">Withdraw Now</button>
+      </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.5rem;">
+      <div style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1.25rem;">Recent Transactions</div>
+      <div id="transactionsList"></div>
+    </div>
+  </div>
+
+  <!-- ═══ PAYOUTS TAB ═══ -->
+  <div id="tab-payouts" style="display:none;">
+    <div class="section-eyebrow">Bank & UPI</div>
+    <h1 class="section-title">🏦 Payout Settings</h1>
+    <p class="section-sub">Add your bank account or UPI to receive earnings every 7 days automatically.</p>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;max-width:520px;">
+      <div style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1.5rem;">💳 Payment Details</div>
+
+      <!-- UPI -->
+      <div style="margin-bottom:1.25rem;">
+        <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem;">UPI ID</div>
+        <div style="display:flex;gap:0.5rem;">
+          <input type="text" placeholder="yourname@upi" style="flex:1;background:var(--card2);border:1.5px solid var(--border2);color:var(--white);padding:0.8rem 1rem;border-radius:12px;font-size:0.88rem;font-family:var(--font-b);outline:none;" onfocus="this.style.borderColor='var(--accent2)'" onblur="this.style.borderColor='var(--border2)'">
+          <button style="padding:0.8rem 1.25rem;background:rgba(120,76,254,0.15);border:1px solid rgba(120,76,254,0.3);color:#b09eff;border-radius:12px;font-family:var(--font-h);font-size:0.82rem;font-weight:700;cursor:pointer;" onclick="showToast('✅','UPI Saved!','Your UPI has been verified')">Save</button>
+        </div>
+      </div>
+
+      <!-- Bank -->
+      <div style="background:var(--card2);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem;">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:1rem;">OR Bank Account</div>
+        <input type="text" placeholder="Account Holder Name" style="width:100%;background:var(--bg);border:1.5px solid var(--border2);color:var(--white);padding:0.75rem 1rem;border-radius:10px;font-size:0.85rem;font-family:var(--font-b);outline:none;margin-bottom:0.6rem;" onfocus="this.style.borderColor='var(--accent2)'" onblur="this.style.borderColor='var(--border2)'">
+        <input type="text" placeholder="Account Number" style="width:100%;background:var(--bg);border:1.5px solid var(--border2);color:var(--white);padding:0.75rem 1rem;border-radius:10px;font-size:0.85rem;font-family:var(--font-b);outline:none;margin-bottom:0.6rem;" onfocus="this.style.borderColor='var(--accent2)'" onblur="this.style.borderColor='var(--border2)'">
+        <input type="text" placeholder="IFSC Code" style="width:100%;background:var(--bg);border:1.5px solid var(--border2);color:var(--white);padding:0.75rem 1rem;border-radius:10px;font-size:0.85rem;font-family:var(--font-b);outline:none;" onfocus="this.style.borderColor='var(--accent2)'" onblur="this.style.borderColor='var(--border2)'">
+      </div>
+
+      <button style="width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-family:var(--font-h);font-size:0.95rem;font-weight:800;border-radius:14px;cursor:pointer;" onclick="showToast('✅','Bank Details Saved!','Payouts will be processed in 7 days')">Save Payout Details</button>
+
+      <!-- Payout Policy -->
+      <div style="margin-top:1.25rem;background:rgba(255,209,102,0.06);border:1px solid rgba(255,209,102,0.15);border-radius:12px;padding:1rem;">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;">📋 Payout Policy</div>
+        <div style="font-size:0.75rem;color:var(--muted);line-height:1.65;">
+          • Minimum withdrawal: ₹500<br>
+          • Payouts processed every 7 days<br>
+          • Platform commission: 50% of each sale<br>
+          • GST invoice provided for all transactions<br>
+          • Governing law: Surat, Gujarat, India
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SET PRICE MODAL -->
+<div class="modal-overlay" id="priceModal">
+  <div class="modal">
+    <div class="modal-title">🔒 Set Unlock Price</div>
+    <div class="modal-sub">Choose how much your <strong style="color:var(--white);">followers pay</strong> to unlock. Making content premium is <strong style="color:var(--accent3);">completely free</strong> — you only earn! 💸</div>
+    <div class="price-options">
+      <div class="po sel" onclick="pickPrice(this,99)"><div class="po-price">₹99</div><div class="po-label">Entry</div></div>
+      <div class="po" onclick="pickPrice(this,199)"><div class="po-price">₹199</div><div class="po-label">Popular</div></div>
+      <div class="po" onclick="pickPrice(this,299)"><div class="po-price">₹299</div><div class="po-label">Standard</div></div>
+      <div class="po" onclick="pickPrice(this,499)"><div class="po-price">₹499</div><div class="po-label">Premium</div></div>
+      <div class="po" onclick="pickPrice(this,999)"><div class="po-price">₹999</div><div class="po-label">Exclusive</div></div>
+      <div class="po" onclick="pickPrice(this,0,'custom')"><div class="po-price">Custom</div><div class="po-label">Set own</div></div>
+    </div>
+    <div class="custom-price-wrap" id="customPriceWrap" style="display:none;">
+      <span class="cp-sym">₹</span>
+      <input class="cp-input" type="number" id="customPriceInput" placeholder="Enter amount" min="49" max="4999">
+    </div>
+    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:1.25rem;">✅ No credits charged · You earn: <strong style="color:var(--accent3);" id="earningsPreview">₹49.50</strong> per unlock (50% of ₹99)</div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closePriceModal()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmPremium()">🔒 Lock & Publish — Free!</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toastIcon">✅</div>
+  <div><span class="toast-t" id="toastT">Done!</span><span class="toast-s" id="toastS"></span></div>
+</div>
+
+<script>
+// Content data
+const contentItems = [
+  {id:1,name:'Aria — Fashion Walk',type:'video',status:'premium',price:299,img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top'},
+  {id:2,name:'Luna — Talking Head',type:'video',status:'free',price:0,img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top'},
+  {id:3,name:'Zara — Glam Shoot',type:'image',status:'premium',price:199,img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top'},
+  {id:4,name:'Maya — Fitness Reel',type:'video',status:'free',price:0,img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&q=80&fit=crop&crop=top'},
+  {id:5,name:'Aria — Luxury Look',type:'image',status:'premium',price:499,img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top'},
+  {id:6,name:'Kai — Street Style',type:'video',status:'free',price:0,img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=top'},
+  {id:7,name:'Zara — Evening Gown',type:'image',status:'free',price:0,img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top'},
+  {id:8,name:'Luna — Dancing Reel',type:'video',status:'premium',price:299,img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top'},
+];
+
+const transactions = [
+  {name:'Priya S.', content:'Aria — Fashion Walk',amount:299,your_cut:149,time:'2h ago'},
+  {name:'Anonymous', content:'Zara — Glam Shoot',amount:199,your_cut:99,time:'4h ago'},
+  {name:'Ravi M.', content:'Aria — Luxury Look',amount:499,your_cut:249,time:'6h ago'},
+  {name:'Anonymous', content:'Luna — Dancing Reel',amount:299,your_cut:149,time:'1d ago'},
+  {name:'Sneha K.', content:'Aria — Fashion Walk',amount:299,your_cut:149,time:'1d ago'},
+];
+
+let selectedPrice = 99;
+let targetContentId = null;
+let currentFilter = 'all';
+
+// Build content grid
+function buildContentGrid(filter = 'all') {
+  const grid = document.getElementById('contentGrid');
+  grid.innerHTML = '';
+  const items = filter === 'all' ? contentItems :
+    filter === 'free' ? contentItems.filter(c => c.status === 'free') :
+    contentItems.filter(c => c.status === 'premium');
+
+  items.forEach(item => {
+    const isPremium = item.status === 'premium';
+    grid.insertAdjacentHTML('beforeend', `
+      <div class="cc" id="cc-${item.id}">
+        <div class="cc-thumb">
+          <img src="${item.img}" alt="${item.name}" loading="lazy" style="${isPremium ? 'filter:blur(6px);' : ''}">
+          ${isPremium ? `<div class="cc-blur"><div class="cc-lock-icon">🔒</div><div class="cc-lock-price">₹${item.price}</div></div>` : ''}
+          <div class="cc-badge ${isPremium ? 'badge-locked' : 'badge-free'}">${isPremium ? `🔒 ₹${item.price}` : '🆓 Free'}</div>
+        </div>
+        <div class="cc-info">
+          <div class="cc-name">${item.name}</div>
+          <div class="cc-actions">
+            ${isPremium
+              ? `<button class="cca set-price" onclick="openPriceModal(${item.id})">✏️ Edit Price</button>
+                 <button class="cca make-free" onclick="makeContentFree(${item.id})">🔓 Make Free</button>`
+              : `<button class="cca make-premium" onclick="openPriceModal(${item.id})">🔒 Make Premium <span style="font-size:0.58rem;background:rgba(0,245,212,0.2);color:var(--accent3);padding:1px 5px;border-radius:100px;margin-left:3px;">FREE</span></button>`
+            }
+          </div>
+        </div>
+      </div>`);
+  });
+}
+
+// Filter content
+function filterContent(el, filter) {
+  document.querySelectorAll('.clf').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = filter;
+  buildContentGrid(filter);
+}
+
+// Price modal
+function openPriceModal(id) {
+  targetContentId = id;
+  const item = contentItems.find(c => c.id === id);
+  if (item && item.price) {
+    // Pre-select existing price
+    document.querySelectorAll('.po').forEach(p => p.classList.remove('sel'));
+  }
+  document.getElementById('priceModal').classList.add('show');
+  updateEarningsPreview(selectedPrice);
+}
+
+function closePriceModal() {
+  document.getElementById('priceModal').classList.remove('show');
+  document.getElementById('customPriceWrap').style.display = 'none';
+  targetContentId = null;
+}
+
+function pickPrice(el, price, type) {
+  document.querySelectorAll('.po').forEach(p => p.classList.remove('sel'));
+  el.classList.add('sel');
+  if (type === 'custom') {
+    document.getElementById('customPriceWrap').style.display = 'flex';
+    document.getElementById('customPriceInput').focus();
+    selectedPrice = 0;
+  } else {
+    document.getElementById('customPriceWrap').style.display = 'none';
+    selectedPrice = price;
+    updateEarningsPreview(price);
+  }
+}
+
+function updateEarningsPreview(price) {
+  document.getElementById('earningsPreview').textContent = `₹${(price * 0.5).toFixed(0)} per unlock (50% of ₹${price})`;
+}
+
+function confirmPremium() {
+  const customInput = document.getElementById('customPriceInput');
+  if (document.getElementById('customPriceWrap').style.display !== 'none') {
+    selectedPrice = parseInt(customInput.value) || 199;
+  }
+  const item = contentItems.find(c => c.id === targetContentId);
+  if (item) {
+    item.status = 'premium';
+    item.price = selectedPrice;
+    buildContentGrid(currentFilter);
+    closePriceModal();
+    showToast('🔒', 'Content Locked!', `Set to ₹${selectedPrice} — now live on your bio link`);
+  }
+}
+
+function makeContentFree(id) {
+  const item = contentItems.find(c => c.id === id);
+  if (item) {
+    item.status = 'free';
+    item.price = 0;
+    buildContentGrid(currentFilter);
+    showToast('🔓', 'Made Free!', 'Content is now publicly visible');
+  }
+}
+
+// Tab switching
+function switchTab(tab, el) {
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-monetize').style.display = 'none';
+  document.getElementById('tab-earnings').style.display = 'none';
+  document.getElementById('tab-payouts').style.display = 'none';
+  document.getElementById('tab-' + tab).style.display = 'block';
+}
+
+// Bio link
+function copyLink() {
+  const url = document.getElementById('bioLinkUrl').textContent;
+  navigator.clipboard.writeText('https://' + url).then(() => {
+    showToast('📋', 'Link Copied!', 'Paste it in your Instagram bio now 🚀');
+  }).catch(() => {
+    showToast('📋', 'Link Copied!', 'https://' + url);
+  });
+}
+
+function previewLink() {
+  window.open('creatrix-biolink.html', '_blank');
+}
+
+function requestWithdraw() {
+  showToast('💸', 'Withdrawal Requested!', '₹4,650 will be credited in 7 days');
+}
+
+// Build transactions
+function buildTransactions() {
+  const list = document.getElementById('transactionsList');
+  if (!list) return;
+  transactions.forEach(t => {
+    list.insertAdjacentHTML('beforeend', `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;">💳</div>
+          <div>
+            <div style="font-size:0.82rem;font-weight:700;">${t.name} unlocked "${t.content}"</div>
+            <div style="font-size:0.68rem;color:var(--muted);">${t.time}</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:var(--font-h);font-size:0.88rem;font-weight:700;color:var(--accent3);">+₹${t.your_cut}</div>
+          <div style="font-size:0.65rem;color:var(--muted2);">of ₹${t.amount} total</div>
+        </div>
+      </div>`);
+  });
+}
+
+// Toast
+function showToast(icon, title, sub) {
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastT').textContent = title;
+  document.getElementById('toastS').textContent = sub;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Close modal on overlay click
+document.getElementById('priceModal').addEventListener('click', function(e) {
+  if (e.target === this) closePriceModal();
+});
+document.getElementById('customPriceInput')?.addEventListener('input', function() {
+  updateEarningsPreview(parseInt(this.value) || 0);
+});
+
+// Init
+buildContentGrid();
+buildTransactions();
+</script>
+</body>
+</html>

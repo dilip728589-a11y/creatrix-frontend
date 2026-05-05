@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Video Generator — Creatrix AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700;800&family=Cabinet+Grotesk:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04040A;--bg2:#080812;--card:#0F0F1E;--card2:#161628;--card3:#1C1C32;--white:#F0EEF8;--muted:#7070A0;--muted2:#3A3A5C;--accent:#FF3CAC;--accent2:#784CFE;--accent3:#00F5D4;--gold:#FFD166;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--font-h:'Clash Display',sans-serif;--font-b:'Cabinet Grotesk',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-x:hidden;}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;background:rgba(4,4,10,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;}
+.tb-left{display:flex;align-items:center;gap:1.25rem;}
+.back-btn{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:0.85rem;font-weight:500;text-decoration:none;transition:color 0.2s;}
+.back-btn:hover{color:var(--white);}
+.tb-div{width:1px;height:18px;background:var(--border2);}
+.tb-logo{font-family:var(--font-h);font-size:1.15rem;font-weight:700;text-decoration:none;color:var(--white);}
+.tb-logo span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.credits-pill{display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border2);border-radius:100px;padding:0.38rem 1rem;font-size:0.8rem;}
+.credits-pill .cv{font-family:var(--font-h);font-weight:700;color:var(--accent3);}
+.credits-pill .cl{color:var(--muted);}
+
+/* TAB BAR */
+.tab-bar{position:fixed;top:62px;left:0;right:0;z-index:100;background:rgba(4,4,10,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0;padding:0 2.5rem;}
+.tab{padding:0.9rem 1.4rem;font-size:0.85rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;text-decoration:none;display:flex;align-items:center;gap:7px;}
+.tab:hover{color:var(--white);}
+.tab.active{color:var(--white);border-bottom-color:var(--accent2);}
+
+/* LAYOUT */
+.page-wrap{padding-top:110px;min-height:100vh;display:grid;grid-template-columns:1fr;gap:0;max-width:1400px;margin:0 auto;padding-left:2.5rem;padding-right:2.5rem;padding-bottom:4rem;}
+
+/* LEFT PANEL */
+.left-panel{padding-right:0;padding-top:2rem;max-width:780px;}
+.section-title{font-family:var(--font-h);font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.35rem;}
+.section-sub{color:var(--muted);font-size:0.88rem;margin-bottom:2rem;line-height:1.6;}
+
+/* SELECT INFLUENCER */
+.inf-selector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:0.85rem;margin-bottom:2rem;}
+.inf-sel-card{border-radius:16px;overflow:hidden;border:2.5px solid var(--border);cursor:pointer;transition:all 0.2s;position:relative;background:var(--card);}
+.inf-sel-card:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-2px);}
+.inf-sel-card.sel{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(120,76,254,0.2);}
+.inf-sel-img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top;display:block;}
+.inf-sel-name{padding:5px 7px;font-size:0.68rem;font-weight:600;text-align:center;background:var(--card2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inf-sel-check{position:absolute;top:6px;right:6px;width:20px;height:20px;background:var(--accent2);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:0.58rem;color:#fff;}
+.inf-sel-card.sel .inf-sel-check{display:flex;}
+
+/* FORM GROUPS */
+.form-group{margin-bottom:1.75rem;}
+.form-label{font-size:0.7rem;font-weight:700;letter-spacing:0.11em;text-transform:uppercase;color:var(--muted);margin-bottom:0.85rem;display:flex;align-items:center;gap:8px;}
+.form-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* VIDEO STYLE GRID */
+.style-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.85rem;}
+.style-card{background:var(--card);border:2px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all 0.2s;position:relative;}
+.style-card:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-2px);}
+.style-card.sel{border-color:var(--accent2);background:rgba(120,76,254,0.08);}
+.style-thumb{width:100%;aspect-ratio:16/9;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:1.75rem;position:relative;overflow:hidden;}
+.style-thumb-bg{position:absolute;inset:0;opacity:0.15;}
+.style-card-label{padding:8px 10px;font-size:0.75rem;font-weight:600;text-align:center;}
+.style-check{position:absolute;top:6px;right:6px;width:18px;height:18px;background:var(--accent2);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:0.55rem;color:#fff;}
+.style-card.sel .style-check{display:flex;}
+
+/* CHIP GRID */
+.chip-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{padding:0.45rem 1rem;border-radius:100px;border:1.5px solid var(--border2);background:var(--card);color:var(--muted);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.18s;}
+.chip:hover{border-color:rgba(255,255,255,0.2);color:var(--white);}
+.chip.sel{background:rgba(120,76,254,0.15);border-color:var(--accent2);color:var(--white);}
+
+/* SLIDER */
+.slider-wrap{margin-top:0.5rem;}
+.slider-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;}
+.slider-label{font-size:0.82rem;color:var(--muted);}
+.slider-val{font-family:var(--font-h);font-size:0.9rem;font-weight:700;color:var(--accent3);}
+input[type=range]{width:100%;height:4px;border-radius:2px;-webkit-appearance:none;appearance:none;background:linear-gradient(90deg,var(--accent2) 0%,var(--accent2) var(--pct,30%),var(--muted2) var(--pct,30%));outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--white);box-shadow:0 0 0 3px rgba(120,76,254,0.3);transition:box-shadow 0.2s;}
+input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 5px rgba(120,76,254,0.3);}
+.slider-ticks{display:flex;justify-content:space-between;margin-top:5px;}
+.slider-tick{font-size:0.65rem;color:var(--muted2);}
+
+/* TEXTAREA */
+.prompt-ta{width:100%;background:var(--card);border:1.5px solid var(--border2);color:var(--white);padding:0.9rem 1rem;border-radius:14px;font-size:0.88rem;font-family:var(--font-b);resize:none;outline:none;line-height:1.65;transition:border-color 0.2s;}
+.prompt-ta:focus{border-color:var(--accent2);}
+.prompt-ta::placeholder{color:var(--muted2);}
+.prompt-hints{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;}
+.phint{font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;}
+.phint:hover{border-color:var(--accent2);color:var(--accent2);}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:0.65rem;}
+.toggle-info .ti-name{font-size:0.85rem;font-weight:600;}
+.toggle-info .ti-sub{font-size:0.7rem;color:var(--muted);margin-top:1px;}
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.tslider{position:absolute;inset:0;background:var(--muted2);border-radius:100px;cursor:pointer;transition:background 0.25s;}
+.tslider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform 0.25s;}
+.toggle input:checked+.tslider{background:linear-gradient(90deg,var(--accent2),var(--accent));}
+.toggle input:checked+.tslider::before{transform:translateX(18px);}
+
+/* RIGHT PANEL - PREVIEW */
+.right-panel{padding-top:2rem;padding-left:2rem;border-left:1px solid var(--border);position:sticky;top:110px;height:calc(100vh - 110px);overflow-y:auto;display:flex;flex-direction:column;gap:1.5rem;}
+.preview-box{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+.preview-box-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.pbh-title{font-family:var(--font-h);font-size:0.88rem;font-weight:700;}
+.pbh-live{display:flex;align-items:center;gap:5px;font-size:0.68rem;color:var(--accent3);}
+.live-dot{width:5px;height:5px;background:var(--accent3);border-radius:50%;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* Video preview area */
+.video-preview{position:relative;aspect-ratio:9/16;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;max-height:380px;}
+.video-preview.landscape{aspect-ratio:16/9;max-height:200px;}
+.video-preview.square{aspect-ratio:1;max-height:260px;}
+.vp-img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;opacity:0.7;}
+.vp-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,0.85),rgba(4,4,10,0.2) 60%,transparent 100%);}
+.vp-empty{text-align:center;padding:2rem;}
+.vp-empty-icon{font-size:3rem;opacity:0.2;margin-bottom:0.5rem;}
+.vp-empty-text{font-size:0.8rem;color:var(--muted);font-family:var(--font-h);}
+.vp-play{position:absolute;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:1.25rem;cursor:pointer;transition:transform 0.2s,background 0.2s;}
+.vp-play:hover{transform:scale(1.1);background:rgba(255,255,255,0.25);}
+.vp-duration{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:100px;font-family:var(--font-h);}
+
+/* Summary box */
+.summary-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;}
+.sb-title{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.9rem;}
+.sb-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.sb-item{background:var(--card2);border-radius:10px;padding:0.5rem 0.7rem;}
+.sb-key{font-size:0.58rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;}
+.sb-val{font-size:0.76rem;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* Cost box */
+.cost-box{background:rgba(0,245,212,0.06);border:1px solid rgba(0,245,212,0.18);border-radius:14px;padding:0.9rem 1.1rem;display:flex;align-items:center;justify-content:space-between;}
+.cb-left{font-size:0.78rem;color:var(--muted);}
+.cb-left strong{font-family:var(--font-h);font-size:1.1rem;color:var(--accent3);}
+.cb-right{font-size:0.7rem;color:var(--muted2);}
+
+/* GENERATE BTN */
+.gen-btn{width:100%;padding:1rem;border:none;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:var(--font-h);font-weight:800;font-size:1rem;cursor:pointer;transition:opacity 0.2s,transform 0.15s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.gen-btn:hover{opacity:0.88;transform:translateY(-1px);}
+.gen-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+/* RECENT VIDEOS */
+.recent-section{margin-top:2.5rem;}
+.rs-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+.rs-title{font-family:var(--font-h);font-size:1.1rem;font-weight:700;}
+.rs-view{font-size:0.78rem;color:var(--accent2);cursor:pointer;text-decoration:none;}
+.rs-view:hover{text-decoration:underline;}
+.videos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;}
+.vid-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;}
+.vid-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.4);}
+.vid-thumb{position:relative;aspect-ratio:9/16;background:var(--card2);overflow:hidden;}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform 0.4s;}
+.vid-card:hover .vid-thumb img{transform:scale(1.05);}
+.vid-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);opacity:0;transition:opacity 0.2s;}
+.vid-card:hover .vid-play{opacity:1;}
+.vid-play-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.vid-duration{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.7);font-size:0.62rem;font-weight:700;padding:1px 6px;border-radius:100px;}
+.vid-style-badge{position:absolute;top:6px;left:6px;background:rgba(120,76,254,0.7);font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:100px;}
+.vid-info{padding:0.75rem 0.85rem;}
+.vid-name{font-size:0.8rem;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vid-meta{font-size:0.68rem;color:var(--muted);}
+.vid-actions{display:flex;gap:5px;margin-top:8px;}
+.vid-btn{flex:1;padding:4px;background:var(--card2);border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-size:0.65rem;font-weight:600;cursor:pointer;text-align:center;transition:all 0.15s;}
+.vid-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.2);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
+
+/* LOADING OVERLAY */
+.loading-overlay{position:fixed;inset:0;background:rgba(4,4,10,0.92);backdrop-filter:blur(12px);z-index:999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;}
+.loading-overlay.show{display:flex;}
+.loading-ring{width:70px;height:70px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--accent2);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-family:var(--font-h);font-size:1.3rem;font-weight:700;}
+.loading-sub{color:var(--muted);font-size:0.88rem;}
+.loading-bar-wrap{width:280px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+.loading-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;width:0%;animation:loadProgress 4s ease forwards;}
+@keyframes loadProgress{0%{width:0%}60%{width:75%}90%{width:90%}100%{width:100%}}
+
+@media(max-width:1000px){.page-wrap{grid-template-columns:1fr;padding:1.5rem;}.right-panel{border-left:none;border-top:1px solid var(--border);position:static;height:auto;padding-left:0;padding-top:1.5rem;}}
+@media(max-width:600px){.tab-bar{padding:0 1rem;gap:0;overflow-x:auto;}.tab{padding:0.75rem 0.85rem;font-size:0.78rem;}}
+
+/* MODEL SELECTOR */
+.model-selector{position:relative;}
+.model-selected{background:var(--card);border:1.5px solid var(--border2);border-radius:14px;padding:0.9rem 1.1rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:border-color 0.2s;}
+.model-selected:hover{border-color:var(--accent2);}
+.ms-left{flex:1;}
+.ms-name{font-family:var(--font-h);font-size:0.9rem;font-weight:700;}
+.ms-desc{font-size:0.72rem;color:var(--muted);margin-top:2px;}
+.ms-badge{font-size:0.6rem;font-weight:800;letter-spacing:0.08em;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap;}
+.ms-arrow{color:var(--muted);font-size:0.8rem;transition:transform 0.2s;}
+.ms-arrow.open{transform:rotate(180deg);}
+.model-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--card2);border:1.5px solid var(--border2);border-radius:16px;overflow:hidden;z-index:100;display:none;box-shadow:0 20px 50px rgba(0,0,0,0.5);}
+.model-dropdown.open{display:block;}
+.model-option{display:flex;align-items:center;gap:0.85rem;padding:0.85rem 1.1rem;cursor:pointer;transition:background 0.15s;border-bottom:1px solid var(--border);}
+.model-option:last-child{border-bottom:none;}
+.model-option:hover{background:rgba(255,255,255,0.04);}
+.model-option.sel{background:rgba(120,76,254,0.1);}
+.mo-icon{font-size:1.3rem;width:28px;text-align:center;}
+.mo-info{flex:1;}
+.mo-name{font-size:0.82rem;font-weight:700;}
+.mo-sub{font-size:0.68rem;color:var(--muted);margin-top:1px;}
+.mo-cost{font-family:var(--font-h);font-size:0.78rem;font-weight:700;color:var(--accent3);white-space:nowrap;}
+
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <a href="creatrix-dashboard.html" class="back-btn">← Dashboard</a>
+    <div class="tb-div"></div>
+    <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
+  </div>
+  <div class="credits-pill"><span class="cv">38</span><span class="cl">credits</span></div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('video',this)">🎬 AI Video</div>
+  <div class="tab" onclick="window.location='creatrix-lipsync.html'">👄 Lip Sync</div>
+  <div class="tab" onclick="window.location='creatrix-motion-control.html'">🕹️ Motion Control</div>
+  <div class="tab" onclick="window.location='creatrix-video-generator.html'">📸 AI Headshot</div>
+  <div class="tab" onclick="window.location='creatrix-ugc-creator.html'">🎥 UGC Creator</div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="page-wrap">
+
+  <!-- ════ LEFT PANEL ════ -->
+  <div class="left-panel">
+
+    <!-- TAB: VIDEO GENERATOR -->
+    <div id="tab-video" class="tab-content">
+      <div class="section-title">AI Video Generator</div>
+      <div class="section-sub">Select your AI influencer, choose a style and let AI generate a stunning video in seconds.</div>
+
+
+      <!-- Model Selector -->
+      <div class="form-group">
+        <div class="form-label">Video Quality / AI Model</div>
+        <div class="model-selector" id="modelSelector">
+          <div class="model-selected" onclick="toggleModelDropdown()">
+            <div class="ms-left">
+              <div class="ms-name" id="msName">Premium · Kling v3.0 Pro</div>
+              <div class="ms-desc" id="msDesc">15s · Sound · 4K · Multi-shot · Best quality</div>
+            </div>
+            <div class="ms-badge" id="msBadge" style="background:linear-gradient(135deg,var(--accent),var(--accent2));">PRO</div>
+            <div class="ms-arrow" id="msArrow">▾</div>
+          </div>
+          <div class="model-dropdown" id="modelDropdown">
+            <div class="model-option" onclick="selectModel(this,'Premium · Kling v3.0 Pro','15s · Sound · 4K · Multi-shot · Best quality','PRO','linear-gradient(135deg,var(--accent),var(--accent2))',10)">
+              <div class="mo-icon">⚡</div>
+              <div class="mo-info">
+                <div class="mo-name">Premium · Kling v3.0 Pro</div>
+                <div class="mo-sub">3–15s, Sound, 4K, Multi-shot, No NSFW</div>
+              </div>
+              <div class="mo-cost">10 cr</div>
+            </div>
+            <div class="model-option sel" onclick="selectModel(this,'Great Quality · Kling v3.0','5–15s · Sound · 1080p · Multi-shot · NSFW OK','HOT','linear-gradient(135deg,#ff6b35,#f7931e)',7)">
+              <div class="mo-icon">🔥</div>
+              <div class="mo-info">
+                <div class="mo-name">Great Quality · Kling v3.0</div>
+                <div class="mo-sub">5–15s, Sound, 1080p, Multi-shot, NSFW OK</div>
+              </div>
+              <div class="mo-cost">7 cr</div>
+            </div>
+            <div class="model-option" onclick="selectModel(this,'High Quality · Wan 2.6','5–10s · Fast · Affordable · NSFW sometimes','FAST','linear-gradient(135deg,var(--accent2),#4c8aff)',5)">
+              <div class="mo-icon">🌊</div>
+              <div class="mo-info">
+                <div class="mo-name">High Quality · Wan 2.6</div>
+                <div class="mo-sub">5–10s, Fast & affordable, Supports NSFW</div>
+              </div>
+              <div class="mo-cost">5 cr</div>
+            </div>
+            <div class="model-option" onclick="selectModel(this,'Spicy & Cheap · Wan 2.2','5–10s · Vivid motion · NSFW support','NSFW','linear-gradient(135deg,#8b0000,#cc0044)',4)">
+              <div class="mo-icon">💋</div>
+              <div class="mo-info">
+                <div class="mo-name">Spicy & Cheap · Wan 2.2</div>
+                <div class="mo-sub">Expressive visuals with vivid motion, NSFW support</div>
+              </div>
+              <div class="mo-cost">4 cr</div>
+            </div>
+            <div class="model-option" onclick="selectModel(this,'High Quality · Kling v2.1','5–10s · Sound · 1080p · Cinematic','HD','linear-gradient(135deg,#1a1a2e,#784cfe)',6)">
+              <div class="mo-icon">🎬</div>
+              <div class="mo-info">
+                <div class="mo-name">High Quality · Kling v2.1</div>
+                <div class="mo-sub">5–10s, Sound, 1080p, Cinematic motion</div>
+              </div>
+              <div class="mo-cost">6 cr</div>
+            </div>
+            <div class="model-option" onclick="selectModel(this,'Best Lip Sync · Veo 3.1','5–8s · Native audio · Natural lip sync','NEW','linear-gradient(135deg,#0d4f3c,#00f5d4)',8)">
+              <div class="mo-icon">🎙️</div>
+              <div class="mo-info">
+                <div class="mo-name">Best Lip Sync · Veo 3.1</div>
+                <div class="mo-sub">5–8s, Best native audio, Natural lip sync</div>
+              </div>
+              <div class="mo-cost">8 cr</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 1: Select Influencer -->
+      <div class="form-group">
+        <div class="form-label">Step 1 · Select Influencer</div>
+        <div class="inf-selector-grid" id="infSelectorGrid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+
+      <!-- Step 2: Video Style -->
+      <div class="form-group">
+        <div class="form-label">Step 2 · Choose Video Style <span style="font-size:0.62rem;text-transform:none;letter-spacing:0;color:var(--muted2);font-weight:400;">(optional)</span></div>
+        <div class="style-grid">
+          <div class="style-card sel" onclick="pickStyle(this,'None')">
+            <div class="style-thumb" style="background:var(--card2);">✕</div>
+            <div class="style-card-label">None</div>
+            <div class="style-check">✓</div>
+          </div>
+          <div class="style-card" onclick="pickStyle(this,'Talking Head')">
+            <div class="style-thumb" style="background:linear-gradient(135deg,#1a0533,#784cfe);">🎙️</div>
+            <div class="style-card-label">Talking Head</div>
+            <div class="style-check">✓</div>
+          </div>
+          <div class="style-card" onclick="pickStyle(this,'Fashion Walk')">
+            <div class="style-thumb" style="background:linear-gradient(135deg,#330015,#ff3cac);">👗</div>
+            <div class="style-card-label">Fashion Walk</div>
+            <div class="style-check">✓</div>
+          </div>
+          <div class="style-card" onclick="pickStyle(this,'Product Review')">
+            <div class="style-thumb" style="background:linear-gradient(135deg,#002233,#00f5d4);">📦</div>
+            <div class="style-card-label">Product Review</div>
+            <div class="style-check">✓</div>
+          </div>
+          <div class="style-card" onclick="pickStyle(this,'Dance & Music')">
+            <div class="style-thumb" style="background:linear-gradient(135deg,#1a1500,#ffd166);">🎵</div>
+            <div class="style-card-label">Dance & Music</div>
+            <div class="style-check">✓</div>
+          </div>
+          <div class="style-card" onclick="pickStyle(this,'Fitness Demo')">
+            <div class="style-thumb" style="background:linear-gradient(135deg,#001a12,#00c87a);">💪</div>
+            <div class="style-card-label">Fitness Demo</div>
+            <div class="style-check">✓</div>
+          </div>
+          <div class="style-card" onclick="pickStyle(this,'Story / Vlog')">
+            <div class="style-thumb" style="background:linear-gradient(135deg,#1a1a1a,#888);">📱</div>
+            <div class="style-card-label">Story / Vlog</div>
+            <div class="style-check">✓</div>
+          </div>
+          <div class="style-card" onclick="pickStyle(this,'Luxury Lifestyle')">
+            <div class="style-thumb" style="background:linear-gradient(135deg,#1a1200,#c8960a);">✨</div>
+            <div class="style-card-label">Luxury Lifestyle</div>
+            <div class="style-check">✓</div>
+          </div>
+          <div class="style-card" onclick="pickStyle(this,'Outfit Reveal')">
+            <div class="style-thumb" style="background:linear-gradient(135deg,#200033,#a855f7);">🪄</div>
+            <div class="style-card-label">Outfit Reveal</div>
+            <div class="style-check">✓</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Video Format -->
+      <div class="form-group">
+        <div class="form-label">Step 3 · Video Format</div>
+        <div class="chip-grid">
+          <div class="chip sel" onclick="pickFormat(this,'9:16 Vertical','portrait')">📱 9:16 Vertical</div>
+          <div class="chip" onclick="pickFormat(this,'16:9 Landscape','landscape')">🖥️ 16:9 Landscape</div>
+          <div class="chip" onclick="pickFormat(this,'1:1 Square','square')">⬛ 1:1 Square</div>
+        </div>
+      </div>
+
+      <!-- Step 4: Duration -->
+      <div class="form-group">
+        <div class="form-label">Step 4 · Video Duration</div>
+        <div class="slider-wrap">
+          <div class="slider-row">
+            <span class="slider-label">Duration</span>
+            <span class="slider-val" id="durationVal">15 seconds</span>
+          </div>
+          <input type="range" min="5" max="15" value="10" id="durationSlider" oninput="updateDuration(this)">
+          <div class="slider-ticks">
+            <span class="slider-tick">5s</span>
+            <span class="slider-tick">7s</span>
+            <span class="slider-tick">10s</span>
+            <span class="slider-tick">12s</span>
+            <span class="slider-tick">15s</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5: Background Music -->
+      <div class="form-group">
+        <div class="form-label">Step 5 · Background Music</div>
+        <div class="chip-grid">
+          <div class="chip sel" onclick="pickMusic(this,'No Music')">🔇 No Music</div>
+          <div class="chip" onclick="pickMusic(this,'Pop Beats')">🎵 Pop Beats</div>
+          <div class="chip" onclick="pickMusic(this,'Hip Hop')">🎤 Hip Hop</div>
+          <div class="chip" onclick="pickMusic(this,'Cinematic')">🎬 Cinematic</div>
+          <div class="chip" onclick="pickMusic(this,'Lo-Fi Chill')">☁️ Lo-Fi Chill</div>
+          <div class="chip" onclick="pickMusic(this,'EDM Energy')">⚡ EDM Energy</div>
+          <div class="chip" onclick="pickMusic(this,'Bollywood')">🪔 Bollywood</div>
+          <div class="chip" onclick="pickMusic(this,'Ambient')">🌊 Ambient</div>
+        </div>
+      </div>
+
+      <!-- Step 6: Script / Prompt -->
+      <div class="form-group">
+        <div class="form-label">Step 6 · Script / Prompt <span style="font-size:0.68rem;color:var(--accent);font-weight:700;text-transform:none;letter-spacing:0;">*required</span></div>
+        <textarea class="prompt-ta" id="scriptBox" rows="4" placeholder="Required · Describe what you want the influencer to say or do in this video... e.g. 'She's showing off her new outfit collection, smiling confidently at the camera'" oninput="updateSummary()"></textarea>
+        <div class="prompt-hints">
+          <span class="phint" onclick="addScript('Introducing new product collection')">New collection</span>
+          <span class="phint" onclick="addScript('Morning routine vlog style')">Morning routine</span>
+          <span class="phint" onclick="addScript('Confidence and empowerment message')">Empowerment</span>
+          <span class="phint" onclick="addScript('Luxury lifestyle showcase')">Luxury lifestyle</span>
+          <span class="phint" onclick="addScript('Fitness motivation content')">Fitness motivation</span>
+        </div>
+      </div>
+
+      <!-- Step 7: Options -->
+      <div class="form-group">
+        <div class="form-label">Step 7 · Options</div>
+        <div class="toggle-row">
+          <div class="toggle-info"><div class="ti-name">Auto Captions</div><div class="ti-sub">Add subtitles automatically</div></div>
+          <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info"><div class="ti-name">HD Quality (1080p)</div><div class="ti-sub">+1 extra credit</div></div>
+          <label class="toggle"><input type="checkbox" id="hdToggle" onchange="updateSummary()"><span class="tslider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info"><div class="ti-name">Remove Watermark</div><div class="ti-sub">Pro plan required</div></div>
+          <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: LIP SYNC -->
+    <div id="tab-lipsync" class="tab-content" style="display:none;">
+      <div class="section-title">Lip Sync</div>
+      <div class="section-sub">Upload an audio file or paste text — AI will sync your influencer's lips perfectly to the audio.</div>
+      <div class="form-group">
+        <div class="form-label">Select Influencer</div>
+        <div class="inf-selector-grid" id="lipSyncInfGrid"></div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Audio Source</div>
+        <div class="chip-grid" style="margin-bottom:1rem;">
+          <div class="chip sel" onclick="pickChip(this,'audioSource')">🎙️ Upload Audio</div>
+          <div class="chip" onclick="pickChip(this,'audioSource')">📝 Type Script</div>
+          <div class="chip" onclick="pickChip(this,'audioSource')">🔗 Audio URL</div>
+        </div>
+        <div style="border:2px dashed var(--muted2);border-radius:16px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent2)'" onmouseout="this.style.borderColor='var(--muted2)'">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">🎵</div>
+          <div style="font-family:var(--font-h);font-size:0.9rem;font-weight:700;margin-bottom:0.35rem;">Drop audio file here</div>
+          <div style="font-size:0.75rem;color:var(--muted);">MP3, WAV, M4A · Max 50MB</div>
+          <div style="margin-top:1rem;"><button style="background:var(--card2);border:1px solid var(--border2);color:var(--muted);padding:0.45rem 1.1rem;border-radius:100px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--font-b);">Browse Files</button></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Language</div>
+        <div class="chip-grid">
+          <div class="chip sel" onclick="pickChip(this,'lang')">🇮🇳 Hindi</div>
+          <div class="chip" onclick="pickChip(this,'lang')">🇬🇧 English</div>
+          <div class="chip" onclick="pickChip(this,'lang')">🇪🇸 Spanish</div>
+          <div class="chip" onclick="pickChip(this,'lang')">🇫🇷 French</div>
+          <div class="chip" onclick="pickChip(this,'lang')">🇦🇪 Arabic</div>
+          <div class="chip" onclick="pickChip(this,'lang')">🇰🇷 Korean</div>
+        </div>
+      </div>
+      <button class="gen-btn" style="margin-top:1rem;" onclick="generateVideo('Lip Sync',4)">👄 Generate Lip Sync · 4 credits</button>
+    </div>
+
+    <!-- TAB: MOTION CONTROL -->
+    <div id="tab-motion" class="tab-content" style="display:none;">
+      <div class="section-title">Motion Control</div>
+      <div class="section-sub">Animate your AI influencer with realistic movements and poses.</div>
+      <div class="form-group">
+        <div class="form-label">Select Influencer</div>
+        <div class="inf-selector-grid" id="motionInfGrid"></div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Motion Type</div>
+        <div class="style-grid">
+          <div class="style-card sel" onclick="pickStyleInGrid(this)"><div class="style-thumb" style="background:linear-gradient(135deg,#1a0533,#784cfe);">🚶</div><div class="style-card-label">Walking</div><div class="style-check">✓</div></div>
+          <div class="style-card" onclick="pickStyleInGrid(this)"><div class="style-thumb" style="background:linear-gradient(135deg,#330015,#ff3cac);">💃</div><div class="style-card-label">Dancing</div><div class="style-check">✓</div></div>
+          <div class="style-card" onclick="pickStyleInGrid(this)"><div class="style-thumb" style="background:linear-gradient(135deg,#002233,#00f5d4);">🤸</div><div class="style-card-label">Posing</div><div class="style-check">✓</div></div>
+          <div class="style-card" onclick="pickStyleInGrid(this)"><div class="style-thumb" style="background:linear-gradient(135deg,#1a1500,#ffd166);">🏃</div><div class="style-card-label">Running</div><div class="style-check">✓</div></div>
+          <div class="style-card" onclick="pickStyleInGrid(this)"><div class="style-thumb" style="background:linear-gradient(135deg,#001a12,#00c87a);">🧘</div><div class="style-card-label">Yoga</div><div class="style-check">✓</div></div>
+          <div class="style-card" onclick="pickStyleInGrid(this)"><div class="style-thumb" style="background:linear-gradient(135deg,#200033,#a855f7);">🤳</div><div class="style-card-label">Selfie Pose</div><div class="style-check">✓</div></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Duration</div>
+        <div class="chip-grid">
+          <div class="chip sel" onclick="pickChip(this,'motDur')">5 sec</div>
+          <div class="chip" onclick="pickChip(this,'motDur')">10 sec</div>
+          <div class="chip" onclick="pickChip(this,'motDur')">15 sec</div>
+          <div class="chip" onclick="pickChip(this,'motDur')">30 sec</div>
+        </div>
+      </div>
+      <button class="gen-btn" style="margin-top:1rem;" onclick="generateVideo('Motion Control',5)">🕹️ Generate Motion · 5 credits</button>
+    </div>
+
+    <!-- TAB: HEADSHOT -->
+    <div id="tab-headshot" class="tab-content" style="display:none;">
+      <div class="section-title">AI Headshot Generator</div>
+      <div class="section-sub">Generate stunning professional headshots for your AI influencer.</div>
+      <div class="form-group">
+        <div class="form-label">Select Influencer</div>
+        <div class="inf-selector-grid" id="headshotInfGrid"></div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Headshot Style</div>
+        <div class="chip-grid">
+          <div class="chip sel" onclick="pickChip(this,'hsStyle')">📸 Professional</div>
+          <div class="chip" onclick="pickChip(this,'hsStyle')">🌟 LinkedIn</div>
+          <div class="chip" onclick="pickChip(this,'hsStyle')">🎭 Creative</div>
+          <div class="chip" onclick="pickChip(this,'hsStyle')">🌿 Outdoor</div>
+          <div class="chip" onclick="pickChip(this,'hsStyle')">🖤 Dramatic</div>
+          <div class="chip" onclick="pickChip(this,'hsStyle')">💡 Studio</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Background</div>
+        <div class="chip-grid">
+          <div class="chip sel" onclick="pickChip(this,'hsBg')">⬜ White Studio</div>
+          <div class="chip" onclick="pickChip(this,'hsBg')">🌆 City</div>
+          <div class="chip" onclick="pickChip(this,'hsBg')">🌿 Nature</div>
+          <div class="chip" onclick="pickChip(this,'hsBg')">🖤 Black</div>
+          <div class="chip" onclick="pickChip(this,'hsBg')">🎨 Gradient</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Number of Headshots</div>
+        <div class="chip-grid">
+          <div class="chip" onclick="pickChip(this,'hsCount')">1 photo</div>
+          <div class="chip sel" onclick="pickChip(this,'hsCount')">4 photos</div>
+          <div class="chip" onclick="pickChip(this,'hsCount')">8 photos</div>
+        </div>
+      </div>
+      <button class="gen-btn" style="margin-top:1rem;" onclick="generateVideo('Headshots',2)">📸 Generate Headshots · 2 credits</button>
+    </div>
+
+    <!-- TAB: UGC -->
+    <div id="tab-ugc" class="tab-content" style="display:none;">
+      <div class="section-title">AI UGC Creator</div>
+      <div class="section-sub">Create authentic user-generated content style videos for brand promotions.</div>
+      <div class="form-group">
+        <div class="form-label">Select Influencer</div>
+        <div class="inf-selector-grid" id="ugcInfGrid"></div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">UGC Style</div>
+        <div class="chip-grid">
+          <div class="chip sel" onclick="pickChip(this,'ugcStyle')">🛍️ Unboxing</div>
+          <div class="chip" onclick="pickChip(this,'ugcStyle')">⭐ Review</div>
+          <div class="chip" onclick="pickChip(this,'ugcStyle')">📢 Testimonial</div>
+          <div class="chip" onclick="pickChip(this,'ugcStyle')">🎯 Tutorial</div>
+          <div class="chip" onclick="pickChip(this,'ugcStyle')">🔥 Before/After</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Brand / Product Description</div>
+        <textarea class="prompt-ta" rows="3" placeholder="Describe the brand or product being promoted... e.g. 'Luxe skincare brand, anti-aging serum, premium packaging'"></textarea>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Tone</div>
+        <div class="chip-grid">
+          <div class="chip sel" onclick="pickChip(this,'ugcTone')">😊 Friendly</div>
+          <div class="chip" onclick="pickChip(this,'ugcTone')">💎 Premium</div>
+          <div class="chip" onclick="pickChip(this,'ugcTone')">🔥 Excited</div>
+          <div class="chip" onclick="pickChip(this,'ugcTone')">🤝 Trustworthy</div>
+          <div class="chip" onclick="pickChip(this,'ugcTone')">😂 Humorous</div>
+        </div>
+      </div>
+      <button class="gen-btn" style="margin-top:1rem;" onclick="generateVideo('UGC Video',4)">🎥 Generate UGC · 4 credits</button>
+    </div>
+
+    <!-- Recent Videos -->
+    <div class="recent-section">
+      <div class="rs-head">
+        <div class="rs-title">Recent Videos</div>
+        <a href="creatrix-dashboard.html" class="rs-view">View all →</a>
+      </div>
+      <div class="videos-grid" id="recentVideos"></div>
+    </div>
+
+  </div><!-- end left-panel -->
+
+  <!-- ════ RIGHT PANEL ════ -->
+  <div class="right-panel">
+
+    <!-- Preview -->
+    <div class="preview-box">
+      <div class="preview-box-head">
+        <div class="pbh-title">Video Preview</div>
+        <div class="pbh-live"><div class="live-dot"></div>Live</div>
+      </div>
+      <div id="videoPreview" class="video-preview">
+        <div class="vp-empty">
+          <div class="vp-empty-icon">🎬</div>
+          <div class="vp-empty-text">Select influencer to preview</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-box">
+      <div class="sb-title">Video Settings</div>
+      <div class="sb-grid">
+        <div class="sb-item"><div class="sb-key">Influencer</div><div class="sb-val" id="sv-inf">—</div></div>
+        <div class="sb-item"><div class="sb-key">Style</div><div class="sb-val" id="sv-style">Talking Head</div></div>
+        <div class="sb-item"><div class="sb-key">Format</div><div class="sb-val" id="sv-format">9:16 Vertical</div></div>
+        <div class="sb-item"><div class="sb-key">Duration</div><div class="sb-val" id="sv-duration">15 sec</div></div>
+        <div class="sb-item"><div class="sb-key">Music</div><div class="sb-val" id="sv-music">No Music</div></div>
+        <div class="sb-item"><div class="sb-key">Quality</div><div class="sb-val" id="sv-quality">Standard</div></div>
+      </div>
+    </div>
+
+    <!-- Cost -->
+    <div class="cost-box">
+      <div class="cb-left">Cost: <strong id="costLabel">5 credits</strong></div>
+      <div class="cb-right">38 remaining</div>
+    </div>
+
+    <!-- Generate Button -->
+    <button class="gen-btn" id="mainGenBtn" onclick="generateVideo('AI Video',5)">
+      🎬 Generate Video · 5 credits
+    </button>
+
+  </div><!-- end right-panel -->
+</div>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-ring"></div>
+  <div class="loading-title" id="loadingTitle">Generating Your Video...</div>
+  <div class="loading-sub" id="loadingSub">This usually takes 30–60 seconds</div>
+  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+</div>
+
+<script>
+const influencers = [
+  {id:1,name:'Aria Nova',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top'},
+  {id:2,name:'Luna Ray',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top'},
+  {id:3,name:'Zara Khan',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top'},
+  {id:4,name:'Maya Singh',img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&q=80&fit=crop&crop=top'},
+  {id:5,name:'Kai Storm',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=top'},
+  {id:6,name:'Rohan Dev',img:'https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=200&q=80&fit=crop&crop=top'},
+];
+
+const recentVideos = [
+  {name:'Aria — Fashion Walk',style:'Fashion Walk',duration:'15s',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top',date:'2h ago'},
+  {name:'Luna — Talking Head',style:'Talking Head',duration:'30s',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top',date:'5h ago'},
+  {name:'Kai — Fitness Demo',style:'Fitness Demo',duration:'20s',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=top',date:'1d ago'},
+  {name:'Zara — Outfit Reveal',style:'Outfit Reveal',duration:'12s',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top',date:'2d ago'},
+];
+
+
+let selectedModel = {name:'Great Quality · Kling v3.0', cost:7};
+
+function toggleModelDropdown(){
+  const dd = document.getElementById('modelDropdown');
+  const arrow = document.getElementById('msArrow');
+  dd.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function selectModel(el, name, desc, badge, badgeBg, cost){
+  // Update selected display
+  document.getElementById('msName').textContent = name;
+  document.getElementById('msDesc').textContent = desc;
+  document.getElementById('msBadge').textContent = badge;
+  document.getElementById('msBadge').style.background = badgeBg;
+  // Mark selected
+  document.querySelectorAll('.model-option').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  // Store
+  selectedModel = {name, cost};
+  // Close dropdown
+  document.getElementById('modelDropdown').classList.remove('open');
+  document.getElementById('msArrow').classList.remove('open');
+  // Update cost display
+  updateSummary();
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', function(e){
+  const sel = document.querySelector('.model-selector');
+  if(sel && !sel.contains(e.target)){
+    document.getElementById('modelDropdown')?.classList.remove('open');
+    document.getElementById('msArrow')?.classList.remove('open');
+  }
+});
+
+let selectedInf = null;
+let currentTab = 'video';
+
+// Build influencer selectors
+function buildInfSelectors(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el || el.children.length > 0) return;
+  influencers.forEach(inf => {
+    el.insertAdjacentHTML('beforeend', `
+      <div class="inf-sel-card" onclick="pickInfluencer(this,${inf.id},'${inf.name}','${inf.img}','${containerId}')">
+        <img class="inf-sel-img" src="${inf.img}" alt="${inf.name}" loading="lazy">
+        <div class="inf-sel-name">${inf.name}</div>
+        <div class="inf-sel-check">✓</div>
+      </div>`);
+  });
+}
+
+function pickInfluencer(el, id, name, img, gridId) {
+  document.querySelectorAll(`#${gridId} .inf-sel-card`).forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedInf = {id, name, img};
+  // Update preview
+  const prev = document.getElementById('videoPreview');
+  prev.innerHTML = `<img class="vp-img" src="${img}" alt="${name}"><div class="vp-overlay"></div><div class="vp-play">▶</div><div class="vp-duration" id="vpDur">0:15</div>`;
+  document.getElementById('sv-inf').textContent = name;
+}
+
+function pickStyle(el, style) {
+  el.closest('.style-grid').querySelectorAll('.style-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('sv-style').textContent = style;
+}
+
+function pickStyleInGrid(el) {
+  el.closest('.style-grid').querySelectorAll('.style-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function pickFormat(el, label, mode) {
+  el.closest('.chip-grid').querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('sv-format').textContent = label;
+  const prev = document.getElementById('videoPreview');
+  prev.className = 'video-preview' + (mode === 'landscape' ? ' landscape' : mode === 'square' ? ' square' : '');
+}
+
+function pickMusic(el, music) {
+  el.closest('.chip-grid').querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('sv-music').textContent = music;
+}
+
+function pickChip(el, group) {
+  el.closest('.chip-grid').querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function updateDuration(input) {
+  const v = input.value;
+  const pct = ((v-5)/(15-5)*100)+'%';
+  input.style.setProperty('--pct', pct);
+  document.getElementById('durationVal').textContent = v + ' seconds';
+  document.getElementById('sv-duration').textContent = v + ' sec';
+  const d = document.getElementById('vpDur');
+  if (d) d.textContent = '0:' + (v < 10 ? '0'+v : v);
+  // Update cost based on duration
+  const hd = document.getElementById('hdToggle')?.checked;
+  const base = selectedModel ? selectedModel.cost : 5;
+  const total = base + (hd ? 1 : 0);
+  document.getElementById('costLabel').textContent = total + ' credits';
+  document.getElementById('mainGenBtn').textContent = `🎬 Generate Video · ${total} credits`;
+}
+
+function updateSummary() {
+  const hd = document.getElementById('hdToggle')?.checked;
+  document.getElementById('sv-quality').textContent = hd ? 'HD 1080p' : 'Standard';
+  const base = selectedModel ? selectedModel.cost : 7;
+  const total = base + (hd ? 1 : 0);
+  document.getElementById('costLabel').textContent = total + ' credits';
+  document.getElementById('mainGenBtn').textContent = '🎬 Generate Video · ' + total + ' credits';
+}
+
+function addScript(text) {
+  const box = document.getElementById('scriptBox');
+  if (box) box.value = text;
+}
+
+// Tab switching
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.getElementById('tab-' + tab).style.display = 'block';
+  currentTab = tab;
+  // Build influencer selectors for this tab
+  const grids = {lipsync:'lipSyncInfGrid', motion:'motionInfGrid', headshot:'headshotInfGrid', ugc:'ugcInfGrid'};
+  if (grids[tab]) buildInfSelectors(grids[tab]);
+}
+
+// Generate
+function generateVideo(type, credits) {
+  if (!selectedInf && currentTab === 'video') {
+    alert('Please select an influencer first!');
+    return;
+  }
+  if (currentTab === 'video') {
+    const script = document.getElementById('scriptBox')?.value?.trim();
+    if (!script) {
+      document.getElementById('scriptBox').focus();
+      document.getElementById('scriptBox').style.borderColor = 'var(--accent)';
+      setTimeout(()=>{ document.getElementById('scriptBox').style.borderColor = 'var(--border2)'; }, 2000);
+      alert('Please enter a script or prompt — it is required!');
+      return;
+    }
+  }
+  const overlay = document.getElementById('loadingOverlay');
+  document.getElementById('loadingTitle').textContent = `Generating ${type}...`;
+  document.getElementById('loadingSub').textContent = 'This usually takes 30–60 seconds';
+  overlay.classList.add('show');
+  // Reset and restart bar animation
+  const bar = overlay.querySelector('.loading-bar');
+  bar.style.animation = 'none';
+  bar.offsetHeight; // reflow
+  bar.style.animation = 'loadProgress 4s ease forwards';
+
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    // Show result in preview
+    if (selectedInf) {
+      const prev = document.getElementById('videoPreview');
+      prev.innerHTML = `<img class="vp-img" src="${selectedInf.img}" alt="Generated" style="opacity:1;"><div class="vp-overlay"></div><div class="vp-play" style="background:rgba(0,245,212,0.2);border-color:var(--accent3);">▶</div><div class="vp-duration">0:15</div>`;
+    }
+  }, 4500);
+}
+
+// Build recent videos
+function buildRecentVideos() {
+  const grid = document.getElementById('recentVideos');
+  recentVideos.forEach(v => {
+    grid.insertAdjacentHTML('beforeend', `
+      <div class="vid-card">
+        <div class="vid-thumb">
+          <img src="${v.img}" alt="${v.name}" loading="lazy">
+          <div class="vid-play"><div class="vid-play-btn">▶</div></div>
+          <div class="vid-duration">${v.duration}</div>
+          <div class="vid-style-badge">${v.style}</div>
+        </div>
+        <div class="vid-info">
+          <div class="vid-name">${v.name}</div>
+          <div class="vid-meta">${v.date}</div>
+          <div class="vid-actions">
+            <div class="vid-btn">⬇ Download</div>
+            <div class="vid-btn">📤 Share</div>
+          </div>
+        </div>
+      </div>`);
+  });
+}
+
+// Init
+buildInfSelectors('infSelectorGrid');
+buildRecentVideos();
+// Init slider
+const sl = document.getElementById('durationSlider');
+if (sl) { sl.value=10; const pct = ((10-5)/(15-5)*100)+'%'; sl.style.setProperty('--pct', pct); document.getElementById('durationVal').textContent='10 seconds'; document.getElementById('sv-duration').textContent='10 sec'; }
+</script>
+</body>
+</html>

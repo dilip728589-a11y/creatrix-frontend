@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Influencers — Creatrix AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700;800&family=Cabinet+Grotesk:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#04040A; --bg2:#080812; --card:#0F0F1E; --card2:#161628; --card3:#1C1C32;
+  --white:#F0EEF8; --muted:#7070A0; --muted2:#3A3A5C;
+  --accent:#FF3CAC; --accent2:#784CFE; --accent3:#00F5D4; --gold:#FFD166;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13);
+  --font-h:'Clash Display',sans-serif; --font-b:'Cabinet Grotesk',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-x:hidden;}
+
+/* ── TOPBAR ── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;background:rgba(4,4,10,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;}
+.tb-left{display:flex;align-items:center;gap:1.25rem;}
+.back-btn{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:0.85rem;font-weight:500;text-decoration:none;transition:color 0.2s;}
+.back-btn:hover{color:var(--white);}
+.tb-div{width:1px;height:18px;background:var(--border2);}
+.tb-logo{font-family:var(--font-h);font-size:1.15rem;font-weight:700;text-decoration:none;color:var(--white);}
+.tb-logo span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.tb-right{display:flex;align-items:center;gap:0.85rem;}
+.credits-pill{display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border2);border-radius:100px;padding:0.38rem 1rem;font-size:0.8rem;}
+.credits-pill .cv{font-family:var(--font-h);font-weight:700;color:var(--accent3);}
+.credits-pill .cl{color:var(--muted);}
+.btn-create{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;text-decoration:none;font-family:var(--font-h);font-size:0.85rem;font-weight:700;padding:0.5rem 1.25rem;border-radius:100px;transition:opacity 0.2s,transform 0.15s;}
+.btn-create:hover{opacity:0.88;transform:translateY(-1px);}
+
+/* ── PAGE ── */
+.page{padding:62px 0 4rem;}
+.page-header{padding:2.5rem 3rem 2rem;display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.page-title-wrap{}
+.page-eyebrow{font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:0.4rem;}
+.page-title{font-family:var(--font-h);font-size:2.25rem;font-weight:800;letter-spacing:-0.03em;}
+.page-count{font-size:0.85rem;color:var(--muted);margin-top:0.35rem;}
+
+/* ── FILTER BAR ── */
+.filter-bar{padding:0 3rem 1.75rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
+.filter-chip{padding:0.45rem 1.1rem;border-radius:100px;border:1.5px solid var(--border2);background:var(--card);color:var(--muted);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.18s;user-select:none;}
+.filter-chip:hover{border-color:rgba(255,255,255,0.2);color:var(--white);}
+.filter-chip.active{background:rgba(120,76,254,0.15);border-color:var(--accent2);color:var(--white);}
+.filter-sep{width:1px;height:20px;background:var(--border2);margin:0 0.25rem;}
+.sort-select{background:var(--card);border:1.5px solid var(--border2);color:var(--muted);font-size:0.8rem;font-weight:600;padding:0.45rem 1rem;border-radius:100px;cursor:pointer;outline:none;font-family:var(--font-b);}
+.search-wrap{margin-left:auto;position:relative;}
+.search-input{background:var(--card);border:1.5px solid var(--border2);color:var(--white);font-size:0.82rem;padding:0.45rem 1rem 0.45rem 2.25rem;border-radius:100px;outline:none;font-family:var(--font-b);width:200px;transition:border-color 0.2s,width 0.3s;}
+.search-input:focus{border-color:var(--accent2);width:260px;}
+.search-input::placeholder{color:var(--muted2);}
+.search-icon{position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.82rem;pointer-events:none;}
+
+/* ── GRID ── */
+.grid-wrap{padding:0 3rem;}
+.influencer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;}
+
+/* ── INFLUENCER CARD ── */
+.inf-card{background:var(--card);border:1px solid var(--border);border-radius:22px;overflow:hidden;transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s;cursor:pointer;position:relative;group:true;}
+.inf-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,0.5);border-color:var(--border2);}
+.inf-card-img{position:relative;overflow:hidden;aspect-ratio:3/4;}
+.inf-card-img img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform 0.5s;}
+.inf-card:hover .inf-card-img img{transform:scale(1.06);}
+.inf-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,0.95) 0%,rgba(4,4,10,0.2) 50%,transparent 100%);opacity:0;transition:opacity 0.3s;}
+.inf-card:hover .inf-card-overlay{opacity:1;}
+
+/* Card action buttons */
+.inf-card-actions{position:absolute;top:12px;right:12px;display:flex;gap:7px;opacity:0;transition:opacity 0.25s;z-index:5;}
+.inf-card:hover .inf-card-actions{opacity:1;}
+.iab{width:32px;height:32px;border-radius:50%;background:rgba(4,4,10,0.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:0.78rem;cursor:pointer;transition:background 0.18s;color:#fff;text-decoration:none;}
+.iab:hover{background:rgba(120,76,254,0.5);}
+.iab.del:hover{background:rgba(255,60,172,0.5);}
+
+/* Status badge */
+.inf-status{position:absolute;top:12px;left:12px;font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px;border-radius:100px;backdrop-filter:blur(8px);}
+.inf-status.new{background:rgba(0,245,212,0.2);color:var(--accent3);border:1px solid rgba(0,245,212,0.3);}
+.inf-status.active{background:rgba(120,76,254,0.2);color:#b09eff;border:1px solid rgba(120,76,254,0.3);}
+.inf-status.popular{background:rgba(255,209,102,0.15);color:var(--gold);border:1px solid rgba(255,209,102,0.25);}
+
+/* Quick generate overlay */
+.inf-quick-gen{position:absolute;bottom:0;left:0;right:0;padding:1rem;opacity:0;transition:opacity 0.3s;z-index:4;}
+.inf-card:hover .inf-quick-gen{opacity:1;}
+.iqg-btn{width:100%;padding:0.6rem;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;color:#fff;font-family:var(--font-h);font-size:0.8rem;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
+.iqg-btn:hover{opacity:0.88;}
+
+/* Card info */
+.inf-card-info{padding:1rem 1.15rem 1.15rem;}
+.inf-name{font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inf-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:0.75rem;}
+.inf-tag{font-size:0.65rem;padding:2px 8px;border-radius:100px;background:var(--card2);color:var(--muted);font-weight:600;}
+.inf-tag.gender{background:rgba(255,60,172,0.1);color:#ff8cd0;}
+.inf-tag.gender.male{background:rgba(59,130,246,0.1);color:#7eb3ff;}
+.inf-tag.niche{background:rgba(120,76,254,0.1);color:#b09eff;}
+.inf-stats{display:flex;gap:1rem;padding-top:0.75rem;border-top:1px solid var(--border);}
+.inf-stat{text-align:center;flex:1;}
+.inf-stat-val{font-family:var(--font-h);font-size:0.88rem;font-weight:700;color:var(--white);}
+.inf-stat-lbl{font-size:0.62rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.06em;margin-top:1px;}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:6rem 2rem;display:none;}
+.empty-state.show{display:block;}
+.empty-icon{font-size:4rem;margin-bottom:1.25rem;opacity:0.3;}
+.empty-title{font-family:var(--font-h);font-size:1.5rem;font-weight:700;margin-bottom:0.6rem;}
+.empty-sub{color:var(--muted);font-size:0.9rem;margin-bottom:2rem;line-height:1.7;}
+.empty-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;text-decoration:none;font-family:var(--font-h);font-size:0.9rem;font-weight:700;padding:0.8rem 2rem;border-radius:12px;transition:opacity 0.2s;}
+.empty-btn:hover{opacity:0.88;}
+
+/* ── CREATE CARD ── */
+.create-card{background:var(--card);border:2px dashed var(--muted2);border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.85rem;min-height:380px;cursor:pointer;transition:all 0.25s;text-decoration:none;padding:2rem;}
+.create-card:hover{border-color:var(--accent2);background:rgba(120,76,254,0.05);transform:translateY(-4px);}
+.create-card-icon{width:64px;height:64px;border-radius:50%;background:rgba(120,76,254,0.12);border:2px solid rgba(120,76,254,0.25);display:flex;align-items:center;justify-content:center;font-size:1.75rem;transition:transform 0.25s;}
+.create-card:hover .create-card-icon{transform:scale(1.1);}
+.create-card-title{font-family:var(--font-h);font-size:1rem;font-weight:700;color:var(--white);}
+.create-card-sub{font-size:0.78rem;color:var(--muted);text-align:center;line-height:1.55;}
+
+/* ── DELETE MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(4,4,10,0.85);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:2rem;max-width:400px;width:90%;text-align:center;animation:popIn 0.25s ease both;}
+@keyframes popIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
+.modal-icon{font-size:2.5rem;margin-bottom:1rem;}
+.modal-title{font-family:var(--font-h);font-size:1.25rem;font-weight:700;margin-bottom:0.5rem;}
+.modal-sub{color:var(--muted);font-size:0.88rem;margin-bottom:1.75rem;line-height:1.65;}
+.modal-btns{display:flex;gap:0.75rem;}
+.modal-cancel{flex:1;padding:0.75rem;background:var(--card2);border:1px solid var(--border2);color:var(--muted);border-radius:12px;font-family:var(--font-b);font-size:0.9rem;font-weight:600;cursor:pointer;transition:color 0.2s;}
+.modal-cancel:hover{color:var(--white);}
+.modal-delete{flex:1;padding:0.75rem;background:linear-gradient(135deg,#ff3c3c,#c01c1c);border:none;color:#fff;border-radius:12px;font-family:var(--font-h);font-size:0.9rem;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
+.modal-delete:hover{opacity:0.88;}
+
+/* ── DETAIL MODAL ── */
+.detail-overlay{position:fixed;inset:0;background:rgba(4,4,10,0.9);backdrop-filter:blur(12px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;}
+.detail-overlay.show{display:flex;}
+.detail-modal{background:var(--card);border:1px solid var(--border2);border-radius:28px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;animation:popIn 0.3s ease both;}
+.detail-img{border-radius:28px 0 0 28px;overflow:hidden;position:relative;min-height:480px;}
+.detail-img img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;}
+.detail-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,0.7),transparent 60%);}
+.detail-content{padding:2rem;display:flex;flex-direction:column;}
+.detail-close{align-self:flex-end;width:32px;height:32px;border-radius:50%;background:var(--card2);border:1px solid var(--border2);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;margin-bottom:1rem;transition:color 0.2s;}
+.detail-close:hover{color:var(--white);}
+.detail-name{font-family:var(--font-h);font-size:1.6rem;font-weight:800;margin-bottom:0.5rem;}
+.detail-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.dtag{font-size:0.7rem;padding:3px 10px;border-radius:100px;background:var(--card2);color:var(--muted);font-weight:600;}
+.detail-section-title{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.6rem;}
+.detail-attrs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:1.5rem;}
+.da{background:var(--card2);border-radius:10px;padding:0.5rem 0.75rem;}
+.da-key{font-size:0.6rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;}
+.da-val{font-size:0.8rem;font-weight:600;}
+.detail-actions{display:flex;flex-direction:column;gap:0.6rem;margin-top:auto;}
+.da-btn{width:100%;padding:0.72rem;border-radius:12px;font-family:var(--font-h);font-size:0.85rem;font-weight:700;cursor:pointer;border:none;transition:opacity 0.2s,transform 0.15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.da-btn:hover{opacity:0.88;transform:translateY(-1px);}
+.da-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.da-btn.secondary{background:var(--card2);border:1px solid var(--border2);color:var(--muted);}
+.da-btn.secondary:hover{color:var(--white);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:2rem;right:2rem;z-index:999;background:var(--card2);border:1px solid var(--accent3);border-radius:14px;padding:0.9rem 1.1rem;display:flex;align-items:center;gap:10px;font-size:0.86rem;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast-icon{font-size:1.2rem;}
+.toast-t{font-weight:700;color:var(--accent3);display:block;margin-bottom:1px;}
+.toast-s{color:var(--muted);font-size:0.76rem;}
+
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
+@media(max-width:768px){.page-header{padding:2rem 1.5rem 1.25rem;}.filter-bar{padding:0 1.5rem 1.5rem;}.grid-wrap{padding:0 1.5rem;}.detail-modal{grid-template-columns:1fr;}.detail-img{min-height:280px;border-radius:28px 28px 0 0;}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <a href="creatrix-dashboard.html" class="back-btn">← Dashboard</a>
+    <div class="tb-div"></div>
+    <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
+  </div>
+  <div class="tb-right">
+    <div class="credits-pill"><span class="cv">38</span><span class="cl">credits</span></div>
+    <a href="creatrix-create-influencer.html" class="btn-create">✨ Create New</a>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="page-title-wrap">
+      <div class="page-eyebrow">Your Collection</div>
+      <h1 class="page-title">My Influencers</h1>
+      <div class="page-count" id="pageCount">6 influencers created</div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-chip active" onclick="filterBy(this,'all')">All</div>
+    <div class="filter-chip" onclick="filterBy(this,'female')">👩 Female</div>
+    <div class="filter-chip" onclick="filterBy(this,'male')">👨 Male</div>
+    <div class="filter-sep"></div>
+    <div class="filter-chip" onclick="filterBy(this,'fashion')">Fashion</div>
+    <div class="filter-chip" onclick="filterBy(this,'fitness')">Fitness</div>
+    <div class="filter-chip" onclick="filterBy(this,'lifestyle')">Lifestyle</div>
+    <div class="filter-chip" onclick="filterBy(this,'beauty')">Beauty</div>
+    <div class="filter-sep"></div>
+    <select class="sort-select" onchange="sortBy(this.value)">
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+      <option value="name">Name A–Z</option>
+    </select>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" placeholder="Search influencers..." oninput="searchInfluencers(this.value)">
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid-wrap">
+    <div class="influencer-grid" id="grid">
+
+      <!-- Create New Card -->
+      <a href="creatrix-create-influencer.html" class="create-card">
+        <div class="create-card-icon">✨</div>
+        <div class="create-card-title">Create New Influencer</div>
+        <div class="create-card-sub">Design your perfect AI influencer from scratch in just a few steps</div>
+      </a>
+
+      <!-- Influencer Cards (populated by JS) -->
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🧑‍🎤</div>
+      <div class="empty-title">No influencers found</div>
+      <div class="empty-sub">No results match your current filter.<br>Try a different category or create a new influencer.</div>
+      <a href="creatrix-create-influencer.html" class="empty-btn">✨ Create Your First Influencer</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-icon">🗑️</div>
+    <div class="modal-title">Delete Influencer?</div>
+    <div class="modal-sub">This will permanently delete <strong id="deleteModalName"></strong> and all associated content. This action cannot be undone.</div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeDeleteModal()">Cancel</button>
+      <button class="modal-delete" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="detail-overlay" id="detailModal">
+  <div class="detail-modal">
+    <div class="detail-img">
+      <img id="detailImg" src="" alt="">
+      <div class="detail-img-overlay"></div>
+    </div>
+    <div class="detail-content">
+      <div class="detail-close" onclick="closeDetail()">✕</div>
+      <div class="detail-name" id="detailName"></div>
+      <div class="detail-tags" id="detailTags"></div>
+      <div class="detail-section-title">Appearance</div>
+      <div class="detail-attrs" id="detailAttrs"></div>
+      <div class="detail-section-title">Settings</div>
+      <div class="detail-attrs" id="detailSettings"></div>
+      <div class="detail-actions">
+        <button class="da-btn primary" onclick="function generateContent(){ window.location.href='creatrix-video-generator.html'; }">🎬 Generate Content</button>
+        <button class="da-btn secondary" onclick="editInfluencer()">✏️ Edit Influencer</button>
+        <button class="da-btn secondary" onclick="closeDetail(); openDeleteModal(currentDetailId)">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toastIcon">✅</div>
+  <div><span class="toast-t" id="toastT">Done!</span><span class="toast-s" id="toastS"></span></div>
+</div>
+
+<script>
+// ── SAMPLE INFLUENCER DATA ──
+const influencers = [
+  {
+    id: 1,
+    name: 'Aria Nova',
+    gender: 'female',
+    ethnicity: 'South Asian',
+    age: '24',
+    hairColor: 'Black',
+    hairStyle: 'Long Straight',
+    eyeColor: 'Brown',
+    bodyShape: 'Athletic',
+    personality: 'Seductive',
+    voice: 'Mysterious',
+    outfit: 'Fashion & Glam',
+    niche: 'fashion',
+    status: 'popular',
+    creations: 24,
+    createdAt: '2025-04-28',
+    img: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&q=85&fit=crop&crop=top'
+  },
+  {
+    id: 2,
+    name: 'Luna Ray',
+    gender: 'female',
+    ethnicity: 'Caucasian',
+    age: '22',
+    hairColor: 'Blonde',
+    hairStyle: 'Long Wavy',
+    eyeColor: 'Blue',
+    bodyShape: 'Slim',
+    personality: 'Free Spirit',
+    voice: 'Bubbly',
+    outfit: 'Boho / Floral',
+    niche: 'lifestyle',
+    status: 'active',
+    creations: 12,
+    createdAt: '2025-04-25',
+    img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&q=85&fit=crop&crop=top'
+  },
+  {
+    id: 3,
+    name: 'Zara Khan',
+    gender: 'female',
+    ethnicity: 'Middle Eastern',
+    age: '26',
+    hairColor: 'Brown',
+    hairStyle: 'Curly',
+    eyeColor: 'Green',
+    bodyShape: 'Curvy',
+    personality: 'Majestic',
+    voice: 'Deep',
+    outfit: 'Evening Gown',
+    niche: 'beauty',
+    status: 'new',
+    creations: 3,
+    createdAt: '2025-04-29',
+    img: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&q=85&fit=crop&crop=top'
+  },
+  {
+    id: 4,
+    name: 'Maya Singh',
+    gender: 'female',
+    ethnicity: 'Indian',
+    age: '25',
+    hairColor: 'Black',
+    hairStyle: 'Ponytail',
+    eyeColor: 'Brown',
+    bodyShape: 'Athletic',
+    personality: 'Devotee',
+    voice: 'Energetic',
+    outfit: 'Athleisure',
+    niche: 'fitness',
+    status: 'active',
+    creations: 18,
+    createdAt: '2025-04-20',
+    img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=85&fit=crop&crop=top'
+  },
+  {
+    id: 5,
+    name: 'Kai Storm',
+    gender: 'male',
+    ethnicity: 'Caucasian',
+    age: '27',
+    hairColor: 'Brunette',
+    hairStyle: 'Short',
+    eyeColor: 'Blue',
+    bodyShape: 'Muscular',
+    personality: 'Alpha',
+    voice: 'Deep Bass',
+    outfit: 'Streetwear',
+    niche: 'fitness',
+    status: 'popular',
+    creations: 31,
+    createdAt: '2025-04-18',
+    img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=85&fit=crop&crop=top'
+  },
+  {
+    id: 6,
+    name: 'Rohan Dev',
+    gender: 'male',
+    ethnicity: 'Indian',
+    age: '28',
+    hairColor: 'Black',
+    hairStyle: 'Curly',
+    eyeColor: 'Brown',
+    bodyShape: 'Fit',
+    personality: 'Charmer',
+    voice: 'Smooth Baritone',
+    outfit: 'Smart Casual',
+    niche: 'lifestyle',
+    status: 'new',
+    creations: 5,
+    createdAt: '2025-04-29',
+    img: 'https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=400&q=85&fit=crop&crop=top'
+  }
+];
+
+let filtered = [...influencers];
+let deleteTargetId = null;
+let currentDetailId = null;
+let currentFilter = 'all';
+
+// ── RENDER ──
+function render(list) {
+  const grid = document.getElementById('grid');
+  // Remove all influencer cards (keep create card)
+  grid.querySelectorAll('.inf-card').forEach(c => c.remove());
+
+  if (list.length === 0) {
+    document.getElementById('emptyState').classList.add('show');
+  } else {
+    document.getElementById('emptyState').classList.remove('show');
+    list.forEach(inf => {
+      grid.insertAdjacentHTML('beforeend', buildCard(inf));
+    });
+  }
+  document.getElementById('pageCount').textContent = `${influencers.length} influencer${influencers.length !== 1 ? 's' : ''} created`;
+}
+
+function buildCard(inf) {
+  const statusBadge = inf.status ? `<div class="inf-status ${inf.status}">${inf.status === 'popular' ? '🔥 Popular' : inf.status === 'new' ? '✨ New' : '● Active'}</div>` : '';
+  const genderTag = `<span class="inf-tag gender ${inf.gender}">${inf.gender === 'female' ? '👩' : '👨'} ${inf.gender}</span>`;
+  const nicheTag = `<span class="inf-tag niche">${inf.niche}</span>`;
+  const ethnicityTag = `<span class="inf-tag">${inf.ethnicity}</span>`;
+
+  return `
+  <div class="inf-card" data-id="${inf.id}" data-gender="${inf.gender}" data-niche="${inf.niche}">
+    <div class="inf-card-img">
+      <img src="${inf.img}" alt="${inf.name}" loading="lazy">
+      <div class="inf-card-overlay"></div>
+      ${statusBadge}
+      <div class="inf-card-actions">
+        <div class="iab" onclick="event.stopPropagation();openDetail(${inf.id})" title="View">👁️</div>
+        <div class="iab" onclick="event.stopPropagation();editInf(${inf.id})" title="Edit">✏️</div>
+        <div class="iab del" onclick="event.stopPropagation();openDeleteModal(${inf.id})" title="Delete">🗑️</div>
+      </div>
+      <div class="inf-quick-gen">
+        <button class="iqg-btn" onclick="event.stopPropagation();quickGenerate(${inf.id})">🎬 Generate Content</button>
+      </div>
+    </div>
+    <div class="inf-card-info" onclick="openDetail(${inf.id})">
+      <div class="inf-name">${inf.name}</div>
+      <div class="inf-meta">${genderTag}${nicheTag}${ethnicityTag}</div>
+      <div class="inf-stats">
+        <div class="inf-stat"><div class="inf-stat-val">${inf.creations}</div><div class="inf-stat-lbl">Creations</div></div>
+        <div class="inf-stat"><div class="inf-stat-val">${inf.age}</div><div class="inf-stat-lbl">Age</div></div>
+        <div class="inf-stat"><div class="inf-stat-val">${inf.bodyShape}</div><div class="inf-stat-lbl">Body</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── FILTER ──
+function filterBy(el, type) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = type;
+  applyFilters();
+}
+
+function applyFilters() {
+  let list = [...influencers];
+  if (currentFilter !== 'all') {
+    list = list.filter(i => i.gender === currentFilter || i.niche === currentFilter);
+  }
+  filtered = list;
+  render(filtered);
+}
+
+// ── SORT ──
+function sortBy(val) {
+  if (val === 'newest') filtered.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  else if (val === 'oldest') filtered.sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  else if (val === 'name') filtered.sort((a,b) => a.name.localeCompare(b.name));
+  render(filtered);
+}
+
+// ── SEARCH ──
+function searchInfluencers(q) {
+  const query = q.toLowerCase();
+  const list = influencers.filter(i =>
+    i.name.toLowerCase().includes(query) ||
+    i.ethnicity.toLowerCase().includes(query) ||
+    i.niche.toLowerCase().includes(query)
+  );
+  render(list);
+}
+
+// ── DELETE ──
+function openDeleteModal(id) {
+  deleteTargetId = id;
+  const inf = influencers.find(i => i.id === id);
+  document.getElementById('deleteModalName').textContent = inf?.name || 'this influencer';
+  document.getElementById('deleteModal').classList.add('show');
+}
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.remove('show');
+  deleteTargetId = null;
+}
+function confirmDelete() {
+  const idx = influencers.findIndex(i => i.id === deleteTargetId);
+  if (idx !== -1) {
+    const name = influencers[idx].name;
+    influencers.splice(idx, 1);
+    filtered = filtered.filter(i => i.id !== deleteTargetId);
+    render(filtered);
+    closeDeleteModal();
+    showToast('🗑️', 'Deleted!', `${name} has been removed.`);
+  }
+}
+
+// ── DETAIL ──
+function openDetail(id) {
+  currentDetailId = id;
+  const inf = influencers.find(i => i.id === id);
+  if (!inf) return;
+  document.getElementById('detailImg').src = inf.img;
+  document.getElementById('detailName').textContent = inf.name;
+  document.getElementById('detailTags').innerHTML = [
+    `<span class="dtag">${inf.gender === 'female' ? '👩' : '👨'} ${inf.gender}</span>`,
+    `<span class="dtag">🎯 ${inf.niche}</span>`,
+    `<span class="dtag">✨ ${inf.personality}</span>`,
+    `<span class="dtag">🔊 ${inf.voice}</span>`,
+  ].join('');
+  document.getElementById('detailAttrs').innerHTML = [
+    {k:'Ethnicity', v:inf.ethnicity},
+    {k:'Age', v:inf.age + ' yrs'},
+    {k:'Hair Color', v:inf.hairColor},
+    {k:'Hair Style', v:inf.hairStyle},
+    {k:'Eye Color', v:inf.eyeColor},
+    {k:'Body Shape', v:inf.bodyShape},
+  ].map(a=>`<div class="da"><div class="da-key">${a.k}</div><div class="da-val">${a.v}</div></div>`).join('');
+  document.getElementById('detailSettings').innerHTML = [
+    {k:'Outfit', v:inf.outfit},
+    {k:'Creations', v:inf.creations},
+    {k:'Created', v:inf.createdAt},
+    {k:'Status', v:inf.status},
+  ].map(a=>`<div class="da"><div class="da-key">${a.k}</div><div class="da-val">${a.v}</div></div>`).join('');
+  document.getElementById('detailModal').classList.add('show');
+}
+function closeDetail() {
+  document.getElementById('detailModal').classList.remove('show');
+  currentDetailId = null;
+}
+
+// ── ACTIONS ──
+function quickGenerate(id) { window.location='creatrix-video-generator.html'; }
+function editInf(id) {
+  window.location.href = 'creatrix-create-influencer.html';
+}
+function editInfluencer() {
+  closeDetail();
+  window.location.href = 'creatrix-create-influencer.html';
+}
+function function generateContent(){ window.location.href='creatrix-video-generator.html'; } { closeDetail(); window.location='creatrix-video-generator.html'; }
+
+// ── TOAST ──
+function showToast(icon, title, sub) {
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastT').textContent = title;
+  document.getElementById('toastS').textContent = sub;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Close modals on overlay click
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDeleteModal();
+});
+document.getElementById('detailModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDetail();
+});
+
+// Init
+render(influencers);
+</script>
+</body>
+</html>
