@@ -162,6 +162,17 @@ var Payment = {
     const order = await Payment.createOrder(packType);
     if (order.error) { alert(order.error); return; }
 
+    // Load Razorpay script dynamically if not loaded
+    if (!window.Razorpay) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
     const options = {
       key: order.key_id,
       amount: order.amount * 100,
