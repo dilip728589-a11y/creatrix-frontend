@@ -28,19 +28,8 @@
   --topbar-h: 64px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { height: 100%; }
-body {
-  height: 100vh;
-  min-height: 100vh;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--white);
-  font-family: var(--font-b);
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  position: relative;
-}
+html, body { height: 100%; overflow: hidden; }
+body { background: var(--bg); color: var(--white); font-family: var(--font-b); display: flex; }
 
 /* ── SIDEBAR ── */
 .sidebar {
@@ -51,12 +40,8 @@ body {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 100;
-  overflow: hidden;
+  position: relative;
+  z-index: 10;
 }
 .sidebar-logo {
   padding: 0 1.5rem;
@@ -129,16 +114,7 @@ body {
 .user-more { margin-left: auto; color: var(--muted); font-size: 0.8rem; }
 
 /* ── MAIN ── */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  margin-left: var(--sidebar-w);
-  height: 100vh;
-  width: calc(100% - var(--sidebar-w));
-  min-width: 0;
-}
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
 /* TOPBAR */
 .topbar {
@@ -150,10 +126,6 @@ body {
   padding: 0 2rem;
   gap: 1rem;
   flex-shrink: 0;
-  width: 100%;
-  position: sticky;
-  top: 0;
-  z-index: 50;
 }
 .topbar-title { font-family: var(--font-h); font-size: 1.1rem; font-weight: 700; flex: 1; }
 .topbar-search {
@@ -177,7 +149,7 @@ body {
 .tb-new-btn:hover { opacity: 0.88; }
 
 /* CONTENT AREA */
-.content { flex: 1; overflow-y: auto; padding: 2rem; background: var(--bg); height: calc(100vh - var(--topbar-h)); }
+.content { flex: 1; overflow-y: auto; padding: 2rem; background: var(--bg); }
 
 /* PAGE SWITCHING */
 .page { display: none; }
