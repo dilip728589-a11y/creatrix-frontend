@@ -907,97 +907,18 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
   </div>
 </div>
 
+<script src="api.js"></script>
 <script>
-// ══════════════════════════════════════════════════
-// CONFIG — apna Railway backend URL yahan daalo
-// ══════════════════════════════════════════════════
-const API_BASE = 'https://creatrix-backend-production.up.railway.app';
+// ══════════════════════════════════════
+// DASHBOARD — Uses api.js (CreatrixAPI)
+// ══════════════════════════════════════
 
-// ══════════════════════════════════════════════════
-// AUTH — Token management
-// ══════════════════════════════════════════════════
-const Auth = {
-  getAccessToken: () => localStorage.getItem('accessToken'),
-  getRefreshToken: () => localStorage.getItem('refreshToken'),
-  setTokens: (access, refresh) => {
-    localStorage.setItem('accessToken', access);
-    if (refresh) localStorage.setItem('refreshToken', refresh);
-  },
-  clearTokens: () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('creatrix_user');
-  },
-  saveUser: (user) => localStorage.setItem('creatrix_user', JSON.stringify(user)),
-  getUser: () => {
-    try { return JSON.parse(localStorage.getItem('creatrix_user')); }
-    catch { return null; }
-  }
-};
-
-// Handle Google OAuth redirect — accessToken & refreshToken in URL
-(function handleOAuthRedirect() {
-  const params = new URLSearchParams(window.location.search);
-  const accessToken = params.get('accessToken');
-  const refreshToken = params.get('refreshToken');
-  if (accessToken) {
-    Auth.setTokens(accessToken, refreshToken);
-    // Clean URL
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-})();
-
-// ── Auth Guard ──
-if (!Auth.getAccessToken()) {
+// Auth guard — redirect if not logged in
+if (!CreatrixAPI.Auth.isLoggedIn()) {
   window.location.href = 'creatrix-auth.html';
 }
 
-// ══════════════════════════════════════════════════
-// API HELPER — auto refresh token on 401
-// ══════════════════════════════════════════════════
-async function apiFetch(endpoint, options = {}) {
-  const token = Auth.getAccessToken();
-  const res = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      ...(options.headers || {})
-    }
-  });
-
-  // Token expired — try refresh
-  if (res.status === 401) {
-    const refreshToken = Auth.getRefreshToken();
-    if (!refreshToken) { Auth.clearTokens(); window.location.href = 'creatrix-auth.html'; return; }
-
-    const refreshRes = await fetch(`${API_BASE}/api/auth/refresh`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken })
-    });
-
-    if (!refreshRes.ok) { Auth.clearTokens(); window.location.href = 'creatrix-auth.html'; return; }
-
-    const { accessToken, refreshToken: newRefresh } = await refreshRes.json();
-    Auth.setTokens(accessToken, newRefresh);
-
-    // Retry original request
-    return fetch(`${API_BASE}${endpoint}`, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-        ...(options.headers || {})
-      }
-    });
-  }
-  return res;
-}
-
-// ══════════════════════════════════════════════════
-// PAGE NAVIGATION
-// ══════════════════════════════════════════════════
+// ── PAGE NAVIGATION ──
 const pageTitles = {
   overview: 'Overview', tools: 'AI Tools',
   influencers: 'My Influencers', creations: 'My Creations', credits: 'Credits & Billing'
@@ -1019,30 +940,7 @@ const toolPages = {
 };
 function goTool(key) { if (toolPages[key]) window.location = toolPages[key]; }
 
-// ══════════════════════════════════════════════════
-// LOAD USER DATA from backend
-// ══════════════════════════════════════════════════
-async function loadUserData() {
-  try {
-    // Show skeleton/loading state
-    document.querySelector('.user-name').textContent = 'Loading...';
-    document.querySelector('.credits-val').innerHTML = '<span style="color:var(--muted)">...</span>';
-
-    const res = await apiFetch('/api/auth/me');
-    if (!res || !res.ok) throw new Error('Failed to fetch user');
-
-    const { user } = await res.json();
-    Auth.saveUser(user);
-    renderUserData(user);
-  } catch (err) {
-    console.error('loadUserData error:', err);
-    // Fallback to cached user if available
-    const cached = Auth.getUser();
-    if (cached) renderUserData(cached);
-    else showToast('Could not load profile. Please refresh.', 'error');
-  }
-}
-
+// ── RENDER USER DATA ──
 function renderUserData(user) {
   const totalCredits = (user.free_credits || 0) + (user.paid_credits || 0);
   const firstName = (user.name || 'Creator').split(' ')[0];
@@ -1056,7 +954,7 @@ function renderUserData(user) {
   document.querySelector('.user-plan').textContent = planLabel;
   document.querySelector('.user-av').textContent = initial;
 
-  // Credits box in sidebar
+  // Credits sidebar box
   document.querySelector('.credits-val').innerHTML = `${totalCredits} <span>credits</span>`;
   document.querySelector('.credits-note').textContent = `${user.paid_credits || 0} paid · ${user.free_credits || 0} free`;
   const fillPct = Math.min(100, (totalCredits / Math.max(totalCredits, 100)) * 100);
@@ -1068,37 +966,48 @@ function renderUserData(user) {
     ? `You have ${totalCredits} credits. Create something amazing today!`
     : `You're out of credits. Buy more to keep creating! 🚀`;
 
-  // Stats grid
+  // Stats
   const statNums = document.querySelectorAll('.stat-num');
   if (statNums[2]) statNums[2].textContent = totalCredits;
 
-  // Credits billing page
+  // Credits page balance
   const creditsBig = document.querySelector('.credits-big');
   if (creditsBig) creditsBig.innerHTML = `${totalCredits} <span>credits</span>`;
-
-  const cbItems = document.querySelectorAll('.cb-item strong');
-  if (cbItems[1]) cbItems[1].textContent = user.paid_credits || 0;
 }
 
-// ══════════════════════════════════════════════════
-// TRANSACTION HISTORY
-// ══════════════════════════════════════════════════
+// ── LOAD USER FROM BACKEND ──
+async function loadUserData() {
+  // Show cached user instantly (no flash)
+  const cached = CreatrixAPI.Auth.getUser();
+  if (cached) renderUserData(cached);
+
+  // Then fetch fresh data from backend
+  try {
+    const data = await CreatrixAPI.Auth.me();
+    if (data && data.user) {
+      // Save updated user to localStorage
+      localStorage.setItem('creatrix_user', JSON.stringify(data.user));
+      renderUserData(data.user);
+    }
+  } catch (err) {
+    console.error('loadUserData:', err);
+  }
+}
+
+// ── LOAD TRANSACTION HISTORY ──
 async function loadTransactionHistory() {
   try {
-    const res = await apiFetch('/api/payment/history');
-    if (!res || !res.ok) return;
-    const { transactions } = await res.json();
-    if (!transactions || transactions.length === 0) return;
+    const data = await CreatrixAPI.Payment.getHistory();
+    if (!data || !data.transactions || data.transactions.length === 0) return;
 
     const table = document.querySelector('.usage-table');
     if (!table) return;
 
-    const existingRows = table.querySelectorAll('.table-row');
-    existingRows.forEach(r => r.remove());
+    // Remove old static rows
+    table.querySelectorAll('.table-row').forEach(r => r.remove());
 
-    transactions.forEach(tx => {
-      const date = new Date(tx.created_at);
-      const dateStr = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+    data.transactions.forEach(tx => {
+      const dateStr = new Date(tx.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
       const row = document.createElement('div');
       row.className = 'table-row';
       row.innerHTML = `
@@ -1109,152 +1018,53 @@ async function loadTransactionHistory() {
       table.appendChild(row);
     });
   } catch (err) {
-    console.error('loadTransactionHistory error:', err);
+    console.error('loadTransactionHistory:', err);
   }
 }
 
-// ══════════════════════════════════════════════════
-// RAZORPAY PAYMENT
-// ══════════════════════════════════════════════════
-// Pack mapping — matches backend CREDIT_PACKS keys
-const PACKS = {
-  creator: { name: 'Creator Pack', credits: 100, amount: 299 },
-  pro:     { name: 'Pro Pack',     credits: 300, amount: 799 },
-  spark:   { name: 'Spark Pack',   credits: 50,  amount: 199 },
-};
-
+// ── RAZORPAY BUY CREDITS ──
 async function buyCredits(packType) {
   showToast('Creating order...', 'info');
-
   try {
-    const res = await apiFetch('/api/payment/create-order', {
-      method: 'POST',
-      body: JSON.stringify({ pack_type: packType })
+    await CreatrixAPI.Payment.openCheckout(packType, async (result) => {
+      showToast(`✅ ${result.credits_added} credits added!`, 'success');
+      await loadUserData();
+      await loadTransactionHistory();
     });
-
-    if (!res || !res.ok) {
-      const err = await res?.json();
-      showToast(err?.error || 'Failed to create order', 'error');
-      return;
-    }
-
-    const order = await res.json();
-
-    // Load Razorpay script dynamically if not loaded
-    if (!window.Razorpay) {
-      await loadScript('https://checkout.razorpay.com/v1/checkout.js');
-    }
-
-    const user = Auth.getUser();
-    const rzp = new Razorpay({
-      key: order.key_id,
-      amount: order.amount * 100,
-      currency: order.currency,
-      name: 'Creatrix AI',
-      description: `${order.pack_name} — ${order.credits} Credits`,
-      order_id: order.order_id,
-      prefill: {
-        name: user?.name || '',
-        email: user?.email || ''
-      },
-      theme: { color: '#784CFE' },
-      handler: async function(response) {
-        showToast('Verifying payment...', 'info');
-        await verifyPayment({
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature: response.razorpay_signature,
-          pack_type: packType
-        });
-      },
-      modal: {
-        ondismiss: () => showToast('Payment cancelled', 'warning')
-      }
-    });
-    rzp.open();
-
   } catch (err) {
-    console.error('buyCredits error:', err);
     showToast('Something went wrong. Try again.', 'error');
   }
 }
 
-async function verifyPayment(data) {
-  try {
-    const res = await apiFetch('/api/payment/verify', {
-      method: 'POST',
-      body: JSON.stringify(data)
-    });
-    const result = await res.json();
-
-    if (res.ok && result.success) {
-      showToast(`✅ ${result.credits_added} credits added! Refreshing...`, 'success');
-      setTimeout(() => loadUserData(), 1500);
-      setTimeout(() => loadTransactionHistory(), 1600);
-    } else {
-      showToast(result.error || 'Payment verification failed', 'error');
-    }
-  } catch (err) {
-    showToast('Verification error. Contact support.', 'error');
-  }
-}
-
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = src; s.onload = resolve; s.onerror = reject;
-    document.head.appendChild(s);
-  });
-}
-
-// ══════════════════════════════════════════════════
-// LOGOUT
-// ══════════════════════════════════════════════════
+// ── LOGOUT ──
 async function logout() {
-  try {
-    await apiFetch('/api/auth/logout', {
-      method: 'POST',
-      body: JSON.stringify({ refreshToken: Auth.getRefreshToken() })
-    });
-  } catch (_) {}
-  Auth.clearTokens();
-  window.location.href = 'creatrix-auth.html';
+  if (!confirm('Logout from Creatrix AI?')) return;
+  await CreatrixAPI.Auth.logout();
 }
 
-// ══════════════════════════════════════════════════
-// TOAST NOTIFICATIONS
-// ══════════════════════════════════════════════════
+// ── TOAST ──
 function showToast(msg, type = 'info') {
-  let container = document.getElementById('toast-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'toast-container';
-    container.style.cssText = 'position:fixed;top:80px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;';
-    document.body.appendChild(container);
+  let c = document.getElementById('toast-container');
+  if (!c) {
+    c = document.createElement('div');
+    c.id = 'toast-container';
+    c.style.cssText = 'position:fixed;top:80px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;';
+    document.body.appendChild(c);
   }
-  const colors = { success: '#00F5D4', error: '#FF3CAC', info: '#784CFE', warning: '#FFD166' };
-  const toast = document.createElement('div');
-  toast.style.cssText = `background:#0F0F1E;border:1px solid ${colors[type] || colors.info};color:#F0EEF8;
-    padding:0.75rem 1.25rem;border-radius:12px;font-size:0.88rem;font-family:'Cabinet Grotesk',sans-serif;
-    max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:slideIn 0.2s ease;`;
-  toast.textContent = msg;
-  container.appendChild(toast);
-
-  if (!document.getElementById('toast-style')) {
-    const style = document.createElement('style');
-    style.id = 'toast-style';
-    style.textContent = '@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}';
-    document.head.appendChild(style);
-  }
-  setTimeout(() => toast.remove(), 4000);
+  const colors = { success:'#00F5D4', error:'#FF3CAC', info:'#784CFE', warning:'#FFD166' };
+  const t = document.createElement('div');
+  t.style.cssText = `background:#0F0F1E;border:1px solid ${colors[type]||colors.info};color:#F0EEF8;
+    padding:0.75rem 1.25rem;border-radius:12px;font-size:0.88rem;max-width:320px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.4);`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
 }
 
-// ══════════════════════════════════════════════════
-// BAR CHART (static — can connect to real data later)
-// ══════════════════════════════════════════════════
+// ── BAR CHART ──
 function buildBarChart() {
   const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  const vals = [8, 12, 5, 15, 10, 6, 6];
+  const vals = [8,12,5,15,10,6,6];
   const max = Math.max(...vals);
   const chart = document.getElementById('barChart');
   const labels = document.getElementById('barLabels');
@@ -1265,7 +1075,7 @@ function buildBarChart() {
     bar.className = 'bar';
     bar.style.cssText = `height:4px;background:linear-gradient(to top,${colors[i]},${colors[(i+1)%colors.length]});opacity:0.8;flex:1;border-radius:5px 5px 0 0;transition:height 0.5s ease;`;
     chart.appendChild(bar);
-    setTimeout(() => { bar.style.height = Math.round((vals[i]/max)*76) + 'px'; }, 100 + i*60);
+    setTimeout(() => { bar.style.height = Math.round((vals[i]/max)*76)+'px'; }, 100+i*60);
     const lbl = document.createElement('div');
     lbl.className = 'bar-lbl';
     lbl.textContent = d;
@@ -1273,49 +1083,29 @@ function buildBarChart() {
   });
 }
 
-// ══════════════════════════════════════════════════
-// WIRE UP BUY BUTTONS
-// ══════════════════════════════════════════════════
+// ── WIRE BUY BUTTONS ──
 function wireBuyButtons() {
-  // Credits page pack buttons
-  const packBtns = document.querySelectorAll('.pack-buy-btn:not([disabled])');
-  packBtns.forEach(btn => {
-    const packCard = btn.closest('.pack-card');
-    if (!packCard) return;
-    const priceEl = packCard.querySelector('.pack-price');
-    if (!priceEl) return;
-    const priceText = priceEl.textContent.trim();
-    if (priceText === '₹299') btn.onclick = () => buyCredits('creator');
-    else if (priceText === '₹799') btn.onclick = () => buyCredits('pro');
-    else if (priceText === '₹199') btn.onclick = () => buyCredits('spark');
+  document.querySelectorAll('.pack-buy-btn:not([disabled])').forEach(btn => {
+    const card = btn.closest('.pack-card');
+    if (!card) return;
+    const price = card.querySelector('.pack-price')?.textContent?.trim();
+    if (price === '₹299') btn.onclick = () => buyCredits('creator');
+    else if (price === '₹799') btn.onclick = () => buyCredits('pro');
+    else if (price === '₹199') btn.onclick = () => buyCredits('spark');
   });
 
-  // Sidebar "Buy More Credits" button
-  const sidebarBuyBtn = document.querySelector('.buy-btn');
-  if (sidebarBuyBtn) {
-    sidebarBuyBtn.onclick = () => {
-      showPage('credits', document.querySelector('[onclick*="credits"]'));
-    };
-  }
-
-  // Credits hero "Buy More Credits" button
   const heroBuyBtn = document.querySelector('.credits-hero-card .buy-btn');
   if (heroBuyBtn) heroBuyBtn.onclick = () => buyCredits('creator');
 
-  // User row — click to show logout option
   const userRow = document.querySelector('.user-row');
   if (userRow) {
     userRow.style.cursor = 'pointer';
     userRow.title = 'Click to logout';
-    userRow.onclick = () => {
-      if (confirm('Logout from Creatrix AI?')) logout();
-    };
+    userRow.onclick = logout;
   }
 }
 
-// ══════════════════════════════════════════════════
-// INIT — runs on page load
-// ══════════════════════════════════════════════════
+// ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
   buildBarChart();
   wireBuyButtons();
