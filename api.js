@@ -355,7 +355,7 @@ var Monetize = {
 // ══════════════════════════════════════
 // INIT — Run on every page load
 // ══════════════════════════════════════
-var CreatrixAPI = { Auth, Credits, Payment, Generate, Influencer, Creations, Monetize };
+var CreatrixAPI = { Auth, Credits, Payment, Generate, Influencer, Creations, Monetize, apiRequest };
 
 // Auto update credits display
 const updateCreditsDisplay = async () => {

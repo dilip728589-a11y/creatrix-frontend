@@ -831,26 +831,48 @@ function generateVideo(type, credits) {
     selectedInf ? selectedInf.img : null,
     { model: 'wan_26', duration: 5, influencerId: selectedInf?.id }
   ).then(job => {
-    if(job.error){ overlay.classList.remove('show'); alert(job.error); return; }
-    if(job.job_id){
-      return CreatrixAPI.Generate.waitForResult(job.job_id, (status) => {
-        const pct = status.progress || 30;
-        bar.style.animation = 'none';
-        bar.style.width = pct + '%';
-      });
-    }
-    return job;
-  }).then(result => {
+    // Hide loading overlay immediately
     overlay.classList.remove('show');
-    const prev = document.getElementById('videoPreview');
-    if(result && result.output_url){
-      prev.innerHTML = `<video class="vp-img" src="${result.output_url}" controls autoplay style="opacity:1;border-radius:16px;width:100%;"></video>`;
-    } else if(selectedInf) {
-      prev.innerHTML = `<img class="vp-img" src="${selectedInf.img}" alt="Generated" style="opacity:1;"><div class="vp-overlay"></div><div class="vp-play" style="background:rgba(0,245,212,0.2);border-color:var(--accent3);">▶</div><div class="vp-duration">0:15</div>`;
+    if(job.error){ alert(job.error); return; }
+
+    if(job.job_id){
+      const prev = document.getElementById('videoPreview');
+      // Show progress UI
+      prev.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:280px;gap:1rem;padding:2rem;text-align:center;">
+          <div style="font-size:2.5rem;">🎬</div>
+          <div style="font-family:var(--font-h);font-size:1rem;color:var(--accent3);">Generating your video...</div>
+          <div style="width:100%;height:4px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;">
+            <div id="genFill" style="height:100%;width:5%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:4px;transition:width 2s ease;"></div>
+          </div>
+          <div id="genStatus" style="font-size:0.8rem;color:var(--muted);">Usually takes 3-5 minutes...</div>
+        </div>`;
+
+      // Background polling every 8 seconds
+      let pct = 5;
+      const timer = setInterval(async () => {
+        pct = Math.min(90, pct + 4);
+        const fill = document.getElementById('genFill');
+        const status = document.getElementById('genStatus');
+        if(fill) fill.style.width = pct + '%';
+
+        try {
+          const result = await CreatrixAPI.apiRequest('/api/generate/status/' + job.job_id);
+          if(status) status.textContent = 'Processing... ' + Math.round(pct) + '%';
+
+          if(result.status === 'done' && result.result_url){
+            clearInterval(timer);
+            prev.innerHTML = `<video class="vp-img" src="${result.result_url}" controls autoplay style="opacity:1;border-radius:16px;width:100%;max-height:320px;"></video>`;
+          } else if(result.status === 'failed'){
+            clearInterval(timer);
+            prev.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--accent);">❌ Generation failed. Please try again.</div>`;
+          }
+        } catch(e) { /* keep polling */ }
+      }, 8000);
     }
   }).catch(err => {
     overlay.classList.remove('show');
-    alert('Generation failed: ' + (err.message || 'Try again'));
+    alert('Error: ' + (err.message || 'Try again'));
   });
 }
 
