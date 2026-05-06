@@ -61,6 +61,26 @@ var apiRequest = async (endpoint, method = 'GET', body = null, requireAuth = tru
   return response.json();
 };
 
+// ── AUTH-SAFE STATUS CHECK (no redirect on 401) ──
+var checkJobStatus = async (jobId) => {
+  const token = getAccessToken();
+  const res = await fetch(`${API_URL}/api/generate/status/${jobId}`, {
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+  });
+  if(res.status === 401) {
+    // Try refresh
+    const refreshed = await refreshAccessToken();
+    if(refreshed) {
+      const res2 = await fetch(`${API_URL}/api/generate/status/${jobId}`, {
+        headers: { 'Authorization': `Bearer ${getAccessToken()}`, 'Content-Type': 'application/json' }
+      });
+      return res2.json();
+    }
+    return { status: 'auth_error' };
+  }
+  return res.json();
+};
+
 // ── REFRESH TOKEN ──
 var refreshAccessToken = async () => {
   const refreshToken = getRefreshToken();
@@ -355,7 +375,7 @@ var Monetize = {
 // ══════════════════════════════════════
 // INIT — Run on every page load
 // ══════════════════════════════════════
-var CreatrixAPI = { Auth, Credits, Payment, Generate, Influencer, Creations, Monetize, apiRequest };
+var CreatrixAPI = { Auth, Credits, Payment, Generate, Influencer, Creations, Monetize, apiRequest, checkJobStatus };
 
 // Auto update credits display
 const updateCreditsDisplay = async () => {
