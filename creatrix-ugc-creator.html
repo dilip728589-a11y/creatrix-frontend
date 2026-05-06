@@ -587,23 +587,42 @@ function generate(){
     setTimeout(()=>document.getElementById('productDesc').style.borderColor='var(--border2)',2000);
     alert('Please describe the product!');return;
   }
+  if(!CreatrixAPI.Auth.isLoggedIn()){ window.location.href='creatrix-auth.html'; return; }
+
   const overlay = document.getElementById('loadingOverlay');
   const bar = document.getElementById('loadBar');
-  bar.style.animation='none'; bar.offsetHeight; bar.style.animation='loadProg 5s ease forwards';
+  bar.style.animation='none'; bar.offsetHeight; bar.style.animation='loadProg 30s ease forwards';
   overlay.classList.add('show');
-  setTimeout(()=>{
+
+  const ugcStyle = document.querySelector('.style-btn.active')?.textContent || 'Review';
+  const tone = document.querySelector('.tone-btn.active')?.textContent || 'Friendly';
+  const language = document.querySelector('.lang-btn.active')?.textContent || 'Hindi';
+
+  CreatrixAPI.Generate.ugc(
+    selectedInf.img, brand, product,
+    { style: ugcStyle, tone, language, influencerId: selectedInf.id }
+  ).then(job => {
+    if(job.error){ overlay.classList.remove('show'); alert(job.error); return; }
+    if(job.job_id){
+      return CreatrixAPI.Generate.waitForResult(job.job_id);
+    }
+    return job;
+  }).then(result => {
     overlay.classList.remove('show');
-    if(selectedInf){
-      const area = document.getElementById('previewArea');
-      area.innerHTML='';
+    const area = document.getElementById('previewArea');
+    if(result && result.output_url){
+      area.innerHTML = `<video class="pa-img" src="${result.output_url}" controls autoplay style="opacity:1;border-radius:16px;width:100%;"></video><div style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:var(--font-h);font-size:0.85rem;font-weight:700;color:var(--gold);">✅ UGC Video Ready!</div>`;
+    } else if(selectedInf) {
       const img = document.createElement('img'); img.className='pa-img'; img.src=selectedInf.img; img.style.opacity='1';
-      const ov = document.createElement('div'); ov.className='pa-overlay';
       const badge = document.createElement('div');
       badge.style.cssText='position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:var(--font-h);font-size:0.85rem;font-weight:700;color:var(--gold);';
       badge.textContent='✅ UGC Video Ready!';
-      area.appendChild(img); area.appendChild(ov); area.appendChild(badge);
+      area.innerHTML=''; area.appendChild(img); area.appendChild(badge);
     }
-  },5500);
+  }).catch(err => {
+    overlay.classList.remove('show');
+    alert('Generation failed: ' + (err.message || 'Try again'));
+  });
 }
 
 function buildRecent(){
@@ -631,5 +650,6 @@ function buildRecent(){
 buildInfGrid();
 buildRecent();
 </script>
+<script src="api.js"></script>
 </body>
 </html>

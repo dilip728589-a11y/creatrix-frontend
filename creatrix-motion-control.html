@@ -572,30 +572,43 @@ function generate() {
     return;
   }
 
+  if(!CreatrixAPI.Auth.isLoggedIn()){ window.location.href='creatrix-auth.html'; return; }
+
   const overlay = document.getElementById('loadingOverlay');
   const bar = document.getElementById('loadBar');
   bar.style.animation = 'none';
   bar.offsetHeight;
-  bar.style.animation = 'loadProg 5s ease forwards';
+  bar.style.animation = 'loadProg 30s ease forwards';
   overlay.classList.add('show');
-  setTimeout(() => {
+
+  CreatrixAPI.Generate.motion(
+    slot2Img,
+    slot1Img,
+    currentMotion || 'motion',
+    {}
+  ).then(job => {
+    if(job.error){ overlay.classList.remove('show'); alert(job.error); return; }
+    if(job.job_id){
+      return CreatrixAPI.Generate.waitForResult(job.job_id);
+    }
+    return job;
+  }).then(result => {
     overlay.classList.remove('show');
-    // Show result
     const area = document.getElementById('previewArea');
-    const img = document.createElement('img');
-    img.src = slot2Img;
-    img.className = 'pa-img';
-    img.style.opacity = '1';
-    const overlay2 = document.createElement('div');
-    overlay2.className = 'pa-overlay';
-    const badge = document.createElement('div');
-    badge.style.cssText = 'position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:var(--font-h);font-size:0.85rem;font-weight:700;color:var(--accent3);';
-    badge.textContent = '✅ ' + currentMotion + ' Generated!';
-    area.innerHTML = '';
-    area.appendChild(img);
-    area.appendChild(overlay2);
-    area.appendChild(badge);
-  }, 5500);
+    if(result && result.output_url){
+      area.innerHTML = `<video class="pa-img" src="${result.output_url}" controls autoplay style="opacity:1;border-radius:16px;width:100%;"></video><div style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:var(--font-h);font-size:0.85rem;font-weight:700;color:var(--accent3);">✅ ${currentMotion} Generated!</div>`;
+    } else {
+      const img = document.createElement('img');
+      img.src = slot2Img; img.className = 'pa-img'; img.style.opacity = '1';
+      const badge = document.createElement('div');
+      badge.style.cssText = 'position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:var(--font-h);font-size:0.85rem;font-weight:700;color:var(--accent3);';
+      badge.textContent = '✅ ' + currentMotion + ' Generated!';
+      area.innerHTML = ''; area.appendChild(img); area.appendChild(badge);
+    }
+  }).catch(err => {
+    overlay.classList.remove('show');
+    alert('Generation failed: ' + (err.message || 'Try again'));
+  });
 }
 
 // Build recent
@@ -639,5 +652,6 @@ document.addEventListener('DOMContentLoaded', function() {
 const sl = document.getElementById('motionSlider');
 sl.style.setProperty('--pct', '44.4%');
 </script>
+<script src="api.js"></script>
 </body>
 </html>

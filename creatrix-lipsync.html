@@ -592,17 +592,40 @@ function generate(){
   }
   if(currentSource==='url' && !document.querySelector('#src-url input').value.trim()){ alert('Please paste an audio URL!'); return; }
 
+  if(!CreatrixAPI.Auth.isLoggedIn()){ window.location.href='creatrix-auth.html'; return; }
+
   const overlay = document.getElementById('loadingOverlay');
   const bar = document.getElementById('loadBar');
-  bar.style.animation='none'; bar.offsetHeight; bar.style.animation='loadProgress 5s ease forwards';
+  bar.style.animation='none'; bar.offsetHeight; bar.style.animation='loadProgress 30s ease forwards';
   overlay.classList.add('show');
-  setTimeout(()=>{
+
+  const audioUrl = currentSource==='url' ? document.querySelector('#src-url input').value.trim() : '';
+  const script = currentSource==='script' ? document.getElementById('scriptText').value.trim() : '';
+
+  CreatrixAPI.Generate.lipsync(
+    selectedInf.img,
+    audioUrl || 'tts',
+    { influencerId: selectedInf.id }
+  ).then(job => {
+    if(job.error){ overlay.classList.remove('show'); alert(job.error); return; }
+    if(job.job_id){
+      return CreatrixAPI.Generate.waitForResult(job.job_id, (status)=>{
+        const pct = status.progress || 50;
+        bar.style.animation='none'; bar.style.width=pct+'%';
+      });
+    }
+    return job;
+  }).then(result => {
     overlay.classList.remove('show');
-    // Show result with lip anim
-    if(selectedInf){
+    if(result && result.output_url){
+      document.getElementById('videoArea').innerHTML = `<video class="va-img" src="${result.output_url}" controls autoplay style="opacity:1;border-radius:16px;"></video><div class="va-inf-name show">${selectedInf.name} ✅</div>`;
+    } else if(selectedInf){
       document.getElementById('videoArea').innerHTML = `<img class="va-img" src="${selectedInf.img}" alt="Result" style="opacity:1;"><div class="va-overlay"></div><div class="lips-anim show"><div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div></div><div class="va-inf-name show">${selectedInf.name} ✅</div>`;
     }
-  },5500);
+  }).catch(err=>{
+    overlay.classList.remove('show');
+    alert('Generation failed: ' + (err.message || 'Try again'));
+  });
 }
 
 // Build recent
@@ -684,5 +707,6 @@ buildRecent();
 </script>
 
 <input type="file" id="ownImageFile" accept="image/*" style="display:none" onchange="handleOwnImage(this)">
+<script src="api.js"></script>
 </body>
 </html>

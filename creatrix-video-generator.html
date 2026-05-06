@@ -812,24 +812,46 @@ function generateVideo(type, credits) {
       return;
     }
   }
+  if(!CreatrixAPI.Auth.isLoggedIn()){ window.location.href='creatrix-auth.html'; return; }
+
   const overlay = document.getElementById('loadingOverlay');
   document.getElementById('loadingTitle').textContent = `Generating ${type}...`;
-  document.getElementById('loadingSub').textContent = 'This usually takes 30–60 seconds';
+  document.getElementById('loadingSub').textContent = 'This usually takes 30–90 seconds';
   overlay.classList.add('show');
-  // Reset and restart bar animation
   const bar = overlay.querySelector('.loading-bar');
   bar.style.animation = 'none';
-  bar.offsetHeight; // reflow
-  bar.style.animation = 'loadProgress 4s ease forwards';
+  bar.offsetHeight;
+  bar.style.animation = 'loadProgress 60s ease forwards';
 
-  setTimeout(() => {
+  const script = document.getElementById('scriptBox')?.value?.trim() || type;
+  const prompt = script;
+
+  CreatrixAPI.Generate.video(
+    prompt,
+    selectedInf ? selectedInf.img : null,
+    { model: 'wan_26', duration: 5, influencerId: selectedInf?.id }
+  ).then(job => {
+    if(job.error){ overlay.classList.remove('show'); alert(job.error); return; }
+    if(job.job_id){
+      return CreatrixAPI.Generate.waitForResult(job.job_id, (status) => {
+        const pct = status.progress || 30;
+        bar.style.animation = 'none';
+        bar.style.width = pct + '%';
+      });
+    }
+    return job;
+  }).then(result => {
     overlay.classList.remove('show');
-    // Show result in preview
-    if (selectedInf) {
-      const prev = document.getElementById('videoPreview');
+    const prev = document.getElementById('videoPreview');
+    if(result && result.output_url){
+      prev.innerHTML = `<video class="vp-img" src="${result.output_url}" controls autoplay style="opacity:1;border-radius:16px;width:100%;"></video>`;
+    } else if(selectedInf) {
       prev.innerHTML = `<img class="vp-img" src="${selectedInf.img}" alt="Generated" style="opacity:1;"><div class="vp-overlay"></div><div class="vp-play" style="background:rgba(0,245,212,0.2);border-color:var(--accent3);">▶</div><div class="vp-duration">0:15</div>`;
     }
-  }, 4500);
+  }).catch(err => {
+    overlay.classList.remove('show');
+    alert('Generation failed: ' + (err.message || 'Try again'));
+  });
 }
 
 // Build recent videos
@@ -863,5 +885,6 @@ buildRecentVideos();
 const sl = document.getElementById('durationSlider');
 if (sl) { sl.value=10; const pct = ((10-5)/(15-5)*100)+'%'; sl.style.setProperty('--pct', pct); document.getElementById('durationVal').textContent='10 seconds'; document.getElementById('sv-duration').textContent='10 sec'; }
 </script>
+<script src="api.js"></script>
 </body>
 </html>
