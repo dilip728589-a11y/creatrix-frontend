@@ -345,46 +345,25 @@ input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 5px rgba(120,76,2
       <div class="recent-grid" id="recentGrid"></div>
     </div>
 
-  </div>
-
-  <!-- ══ RIGHT PANEL ══ -->
-  <div class="right-panel">
-
-    <div class="preview-box">
-      <div class="preview-head">
-        <div class="ph-title">Preview</div>
-        <div class="ph-badge">🕹️ Motion Control</div>
-      </div>
-      <div class="preview-area" id="previewArea">
-        <div class="pa-empty">
-          <div class="pa-empty-icon">🕹️</div>
-          <div class="pa-empty-text">Upload image to preview</div>
-        </div>
-        <div class="motion-arrows" id="motionArrows"></div>
-      </div>
-    </div>
-
-    <!-- Summary -->
-    <div class="summary-box">
-      <div class="sb-title">Motion Settings</div>
-      <div class="sb-grid">
-        <div class="sb-item"><div class="sb-key">Motion Type</div><div class="sb-val" id="sv-motion">Walking</div></div>
-        <div class="sb-item"><div class="sb-key">Intensity</div><div class="sb-val" id="sv-intensity">5 / 10</div></div>
-        <div class="sb-item"><div class="sb-key">Duration</div><div class="sb-val" id="sv-dur">8 sec</div></div>
-      </div>
-    </div>
-
     <!-- Cost -->
-    <div class="cost-box">
+    <div class="cost-box" style="margin-top:1.75rem;">
       <div class="cb-left">Cost: <strong id="costLabel">5 credits</strong></div>
       <div class="cb-right"><span id="creditsRemaining">--</span> remaining</div>
     </div>
 
     <!-- Generate -->
-    <button class="gen-btn" id="genBtn" onclick="generate()">🕹️ Generate Motion Video · 5 credits</button>
+    <button class="gen-btn" id="genBtn" onclick="generate()" style="margin-top:0.75rem;">🕹️ Generate Motion Video · 5 credits</button>
 
   </div>
 
+</div>
+
+<!-- Hidden elements needed by JS -->
+<div style="display:none;">
+  <div id="previewArea"></div>
+  <div id="sv-motion">Walking</div>
+  <div id="sv-intensity">5 / 10</div>
+  <div id="sv-dur">8 sec</div>
 </div>
 
 <!-- LOADING -->
