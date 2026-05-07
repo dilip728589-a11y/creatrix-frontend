@@ -302,7 +302,8 @@ let isLoading = false;
 
 // ── TOKEN HELPER ──
 function getToken() {
-  return localStorage.getItem('creatrix_token') ||
+  return localStorage.getItem('creatrix_access_token') ||
+         localStorage.getItem('creatrix_token') ||
          localStorage.getItem('token') ||
          sessionStorage.getItem('creatrix_token') || null;
 }
