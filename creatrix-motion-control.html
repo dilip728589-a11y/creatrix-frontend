@@ -269,7 +269,7 @@ input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 5px rgba(120,76,2
           <div class="slot-remove" onclick="event.stopPropagation();removeSlot(2)">✕</div>
         </div>
       </div>
-      <input type="file" id="upload1" accept="image/*" onchange="handleSlotUpload(1,this)">
+      <input type="file" id="upload1" accept="image/*,video/*,.mp4,.mov,.gif" onchange="handleSlotUpload(1,this)">
       <input type="file" id="upload2" accept="image/*" onchange="handleSlotUpload(2,this)">
     </div>
 
@@ -524,13 +524,41 @@ function handleSlotUpload(slot, input) {
   if (!file) return;
   if (slot === 1) slot1File = file;
   else slot2File = file;
+
+  const isVideo = file.type.startsWith('video/');
   const reader = new FileReader();
   reader.onload = function(e) {
     const src = e.target.result;
     if (slot === 1) slot1Img = src;
     else slot2Img = src;
-    updateSlotUI(slot, src);
-    updatePreview();
+
+    // Update slot UI
+    const el = document.getElementById('slot' + slot);
+    el.classList.add('has-img');
+    const badge = el.querySelector('.slot-badge');
+    const overlay = el.querySelector('.slot-overlay');
+    const remove = el.querySelector('.slot-remove');
+    el.innerHTML = '';
+    if (isVideo) {
+      const vid = document.createElement('video');
+      vid.src = src;
+      vid.className = 'slot-preview';
+      vid.autoplay = true;
+      vid.loop = true;
+      vid.muted = true;
+      vid.playsInline = true;
+      el.appendChild(badge);
+      el.appendChild(vid);
+    } else {
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'slot-preview';
+      el.appendChild(badge);
+      el.appendChild(img);
+    }
+    el.appendChild(overlay);
+    el.appendChild(remove);
+    if (slot === 2) updatePreview();
   };
   reader.readAsDataURL(file);
 }
