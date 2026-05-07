@@ -182,7 +182,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-
     <div class="tb-div"></div>
     <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
   </div>
-  <div class="credits-pill"><span class="cv">38</span><span class="cl">credits</span></div>
+  <div class="credits-pill"><span class="cv" id="creditsCount">--</span><span class="cl">credits</span></div>
 </div>
 
 <div class="tab-bar">
@@ -379,44 +379,28 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-
       <div class="recent-grid" id="recentGrid"></div>
     </div>
 
-  </div>
-
-  <!-- RIGHT PANEL -->
-  <div class="right-panel">
-
-    <div class="preview-box">
-      <div class="preview-head">
-        <div class="ph-title">Preview</div>
-        <div class="ph-badge">🎥 UGC Creator</div>
-      </div>
-      <div class="preview-area" id="previewArea">
-        <div class="pa-empty">
-          <div class="pa-empty-icon">🎥</div>
-          <div class="pa-empty-text">Select influencer to preview</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="summary-box">
-      <div class="sb-title">UGC Settings</div>
-      <div class="sb-grid">
-        <div class="sb-item"><div class="sb-key">Influencer</div><div class="sb-val" id="sv-inf">—</div></div>
-        <div class="sb-item"><div class="sb-key">UGC Style</div><div class="sb-val" id="sv-style">Unboxing</div></div>
-        <div class="sb-item"><div class="sb-key">Brand</div><div class="sb-val" id="sv-brand">—</div></div>
-        <div class="sb-item"><div class="sb-key">Tone</div><div class="sb-val" id="sv-tone">Friendly</div></div>
-        <div class="sb-item"><div class="sb-key">Language</div><div class="sb-val" id="sv-lang">Hindi</div></div>
-        <div class="sb-item"><div class="sb-key">Duration</div><div class="sb-val" id="sv-dur">30 sec</div></div>
-      </div>
-    </div>
-
-    <div class="cost-box">
+    <!-- Cost -->
+    <div class="cost-box" style="margin-top:1.75rem;">
       <div class="cb-left">Cost: <strong id="costLabel">4 credits</strong></div>
-      <div class="cb-right">38 remaining</div>
+      <div class="cb-right"><span id="creditsRemaining">--</span> remaining</div>
     </div>
 
-    <button class="gen-btn" id="genBtn" onclick="generate()">🎥 Generate UGC Video · 4 credits</button>
+    <!-- Generate -->
+    <button class="gen-btn" id="genBtn" onclick="generate()" style="margin-top:0.75rem;">🎥 Generate UGC Video · 4 credits</button>
 
   </div>
+
+</div>
+
+<!-- Hidden elements needed by JS -->
+<div style="display:none;">
+  <div id="previewArea"></div>
+  <div id="sv-inf">—</div>
+  <div id="sv-style">Unboxing</div>
+  <div id="sv-brand">—</div>
+  <div id="sv-tone">Friendly</div>
+  <div id="sv-lang">Hindi</div>
+  <div id="sv-dur">30 sec</div>
 </div>
 
 <!-- LOADING -->
@@ -428,55 +412,110 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-
 </div>
 
 <script>
-const influencers = [
-  {id:1,name:'Aria Nova',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top'},
-  {id:2,name:'Luna Ray',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top'},
-  {id:3,name:'Zara Khan',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top'},
-  {id:4,name:'Maya Singh',img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&q=80&fit=crop&crop=top'},
-  {id:5,name:'Kai Storm',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=top'},
-  {id:6,name:'Rohan Dev',img:'https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=200&q=80&fit=crop&crop=top'},
-];
-const recentItems = [
-  {name:'Aria — Luxe Skin Co.',style:'Review',dur:'0:30',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top',date:'1h ago'},
-  {name:'Luna — FitWear Brand',style:'Tutorial',dur:'0:45',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top',date:'3h ago'},
-  {name:'Zara — GlowUp Serum',style:'Before & After',dur:'0:30',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top',date:'1d ago'},
-  {name:'Kai — Protein Plus',style:'Testimonial',dur:'0:60',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=top',date:'2d ago'},
-];
+// ═══════════════════════════════════════════
+//  CREATRIX — UGC Creator (Backend Connected)
+// ═══════════════════════════════════════════
+
+const API_BASE = 'https://creatrix-backend-production.up.railway.app';
 
 let selectedInf = null;
-let cfg = {style:'Unboxing',tone:'Friendly & Relatable',lang:'Hindi',dur:'30 sec'};
+let cfg = { style: 'Unboxing', tone: 'Friendly & Relatable', lang: 'Hindi', dur: '30 sec' };
 
-function buildInfGrid(){
+// ── TOKEN ──
+function getToken() {
+  return localStorage.getItem('creatrix_access_token') ||
+         localStorage.getItem('creatrix_token') ||
+         localStorage.getItem('token') || null;
+}
+
+// ── AUTH GUARD ──
+if (!getToken()) window.location.href = 'creatrix-auth.html';
+
+// ── LOAD CREDITS ──
+async function loadCredits() {
+  try {
+    const res = await fetch(`${API_BASE}/api/credits/balance`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const val = data.total ?? data.credits ?? '--';
+    document.getElementById('creditsCount').textContent = val;
+    const rem = document.getElementById('creditsRemaining');
+    if (rem) rem.textContent = val;
+  } catch(e) { console.warn('Credits fetch failed:', e.message); }
+}
+
+// ── LOAD REAL INFLUENCERS ──
+async function loadInfluencers() {
   const grid = document.getElementById('infGrid');
-  // Upload own card first
-  grid.insertAdjacentHTML('beforeend',`
+
+  grid.insertAdjacentHTML('beforeend', `
     <div class="inf-upload-card" id="ownCard" onclick="document.getElementById('ownImgFile').click()">
       <div class="iuc-icon">📸</div>
       <div class="iuc-lbl">Upload Your Own</div>
     </div>`);
-  influencers.forEach(inf=>{
-    grid.insertAdjacentHTML('beforeend',`
-      <div class="inf-card" onclick="selectInf(this,${inf.id},'${inf.name}','${inf.img}')">
-        <img src="${inf.img}" alt="${inf.name}" loading="lazy">
-        <div class="inf-card-name">${inf.name}</div>
-        <div class="inf-ck">✓</div>
-      </div>`);
-  });
+
+  try {
+    const res = await fetch(`${API_BASE}/api/influencer/list`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data?.influencers || []);
+
+    if (list.length === 0) {
+      grid.insertAdjacentHTML('beforeend', `
+        <div style="grid-column:1/-1;font-size:0.78rem;color:var(--muted);padding:0.5rem;">
+          No influencers yet. <a href="creatrix-create-influencer.html" style="color:var(--accent2);">Create one →</a>
+        </div>`);
+      return;
+    }
+
+    list.forEach(inf => {
+      const img = inf.avatar_url && inf.avatar_url.startsWith('http') ? inf.avatar_url :
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(inf.name)}&background=784CFE&color=fff&size=200`;
+      const idStr = JSON.stringify(inf.id);
+      const nameStr = JSON.stringify(inf.name);
+      const imgStr = JSON.stringify(img);
+      const avatarStr = JSON.stringify(img);
+
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="inf-card"
+             data-id="${inf.id}"
+             data-name="${inf.name.replace(/"/g,'&quot;')}"
+             data-img="${img}"
+             data-avatar="${img}"
+             onclick="selectInfCard(this)">
+          <img src="${img}" alt="${inf.name}" loading="lazy"
+               onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200'">
+          <div class="inf-card-name">${inf.name}</div>
+          <div class="inf-ck">✓</div>
+        </div>`);
+    });
+  } catch(e) {
+    console.error('Failed to load influencers:', e);
+  }
 }
 
-function selectInf(el, id, name, img){
-  document.querySelectorAll('.inf-card').forEach(c=>c.classList.remove('sel'));
+// ── SELECT INFLUENCER via data attrs ──
+function selectInfCard(el) {
+  document.querySelectorAll('.inf-card').forEach(c => c.classList.remove('sel'));
   el.classList.add('sel');
-  selectedInf = {id,name,img};
-  updatePreview(img, name);
-  document.getElementById('sv-inf').textContent = name;
+  selectedInf = {
+    id: el.dataset.id,
+    name: el.dataset.name,
+    img: el.dataset.img,
+    avatarUrl: el.dataset.avatar || el.dataset.img
+  };
+  const svInf = document.getElementById('sv-inf');
+  if (svInf) svInf.textContent = selectedInf.name;
 }
 
-function handleOwnImg(input){
+// ── OWN IMAGE ──
+function handleOwnImg(input) {
   const file = input.files[0];
-  if(!file) return;
+  if (!file) return;
   const reader = new FileReader();
-  reader.onload = function(e){
+  reader.onload = function(e) {
     const src = e.target.result;
     const card = document.getElementById('ownCard');
     card.classList.add('has-img');
@@ -488,167 +527,242 @@ function handleOwnImg(input){
     lbl.style.cssText = 'position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:0.6rem;font-weight:700;color:var(--accent3);';
     lbl.textContent = '✓ Your Image';
     card.innerHTML = ''; card.appendChild(img); card.appendChild(lbl);
-    document.querySelectorAll('.inf-card').forEach(c=>c.classList.remove('sel'));
-    selectedInf = {id:'custom',name:'Your Image',img:src};
-    updatePreview(src,'Your Image');
-    document.getElementById('sv-inf').textContent = 'Your Image';
+    document.querySelectorAll('.inf-card').forEach(c => c.classList.remove('sel'));
+    selectedInf = { id: 'custom', name: 'Your Image', img: src, avatarUrl: src };
+    const svInf = document.getElementById('sv-inf');
+    if (svInf) svInf.textContent = 'Your Image';
   };
   reader.readAsDataURL(file);
 }
 
-function updatePreview(img, name){
-  const area = document.getElementById('previewArea');
-  area.innerHTML = '';
-  const i = document.createElement('img'); i.className='pa-img'; i.src=img;
-  const ov = document.createElement('div'); ov.className='pa-overlay';
-  const info = document.createElement('div'); info.className='pa-info';
-  const brand = document.getElementById('brandName').value || 'Your Brand';
-  info.innerHTML = `<div class="pa-style">🎥 ${cfg.style}</div><div class="pa-name">${name}</div><div class="pa-brand">Promoting ${brand}</div>`;
-  area.appendChild(i); area.appendChild(ov); area.appendChild(info);
-}
-
-function pickStyle(el, style){
-  document.querySelectorAll('.ugc-card').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');
-  cfg.style = style;
-  document.getElementById('sv-style').textContent = style;
-  if(selectedInf) updatePreview(selectedInf.img, selectedInf.name);
-}
-
-function pickChip(el, key, val){
-  el.closest('.chip-grid').querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');
-  cfg[key] = val;
-  const map = {tone:'sv-tone',lang:'sv-lang',dur:'sv-dur'};
-  if(map[key]){
-    const short = val.split(' ')[0].replace('&','&').replace(/[^a-zA-Z0-9₹&\s]/g,'');
-    document.getElementById(map[key]).textContent = val.length > 12 ? val.substring(0,12)+'…' : val;
-  }
-}
-
-function updateSummary(){
-  const brand = document.getElementById('brandName').value;
-  document.getElementById('sv-brand').textContent = brand || '—';
-  if(selectedInf) updatePreview(selectedInf.img, selectedInf.name);
-}
-
-function addHint(text){
-  const box = document.getElementById('productDesc');
-  box.value = box.value ? box.value + ', ' + text : text;
-}
-
-function addScript(text){
-  document.getElementById('scriptBox').value = text;
-}
-
-function handleProductImg(input){
+// ── PRODUCT IMAGE ──
+function handleProductImg(input) {
   const file = input.files[0];
-  if(!file) return;
+  if (!file) return;
   const reader = new FileReader();
-  reader.onload = function(e){
-    document.getElementById('puDefault').style.display='none';
+  reader.onload = function(e) {
+    document.getElementById('puDefault').style.display = 'none';
     const prev = document.getElementById('puPreview');
     prev.classList.add('show');
     document.getElementById('puPrevImg').src = e.target.result;
     document.getElementById('puPrevName').textContent = file.name;
-    document.getElementById('puPrevSize').textContent = (file.size/1024/1024).toFixed(1)+' MB';
+    document.getElementById('puPrevSize').textContent = (file.size/1024/1024).toFixed(1) + ' MB';
     document.getElementById('productUpload').classList.add('has-img');
   };
   reader.readAsDataURL(file);
 }
 
-function removeProduct(){
-  document.getElementById('puDefault').style.display='block';
+function removeProduct() {
+  document.getElementById('puDefault').style.display = 'block';
   document.getElementById('puPreview').classList.remove('show');
   document.getElementById('productUpload').classList.remove('has-img');
-  document.getElementById('productImgFile').value='';
+  document.getElementById('productImgFile').value = '';
 }
 
-function updateCost(){
+// ── PICKERS ──
+function pickStyle(el, style) {
+  document.querySelectorAll('.ugc-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  cfg.style = style;
+  const sv = document.getElementById('sv-style');
+  if (sv) sv.textContent = style;
+}
+
+function pickChip(el, key, val) {
+  el.closest('.chip-grid').querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  cfg[key] = val;
+  const map = { tone: 'sv-tone', lang: 'sv-lang', dur: 'sv-dur' };
+  if (map[key]) {
+    const el2 = document.getElementById(map[key]);
+    if (el2) el2.textContent = val.length > 12 ? val.substring(0, 12) + '…' : val;
+  }
+}
+
+function updateSummary() {
+  const brand = document.getElementById('brandName').value;
+  const sv = document.getElementById('sv-brand');
+  if (sv) sv.textContent = brand || '—';
+}
+
+function updateCost() {
   const hd = document.getElementById('hdToggle').checked;
-  const cost = 4 + (hd?1:0);
-  document.getElementById('costLabel').textContent = cost+' credits';
-  document.getElementById('genBtn').textContent = '🎥 Generate UGC Video · '+cost+' credits';
+  const cost = 4 + (hd ? 1 : 0);
+  document.getElementById('costLabel').textContent = cost + ' credits';
+  document.getElementById('genBtn').textContent = '🎥 Generate UGC Video · ' + cost + ' credits';
 }
 
-function generate(){
-  if(!selectedInf){alert('Please select an influencer!');return;}
+function addHint(text) {
+  const box = document.getElementById('productDesc');
+  box.value = box.value ? box.value + ', ' + text : text;
+}
+
+function addScript(text) {
+  document.getElementById('scriptBox').value = text;
+}
+
+// ── LOAD RECENT ──
+async function loadRecent() {
+  try {
+    const res = await fetch(`${API_BASE}/api/creations/list?type=ugc`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data?.creations || []);
+    const grid = document.getElementById('recentGrid');
+    grid.innerHTML = '';
+
+    if (list.length === 0) {
+      grid.innerHTML = `<div style="color:var(--muted);font-size:0.82rem;padding:1rem 0;">No UGC videos yet.</div>`;
+      return;
+    }
+
+    list.slice(0, 8).forEach(r => {
+      const videoUrl = r.url || r.result_url || '';
+      const name = r.influencer_name || r.name || 'UGC Video';
+      const date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '';
+
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="rc" onclick="window.open('${videoUrl}','_blank')">
+          <div class="rc-thumb" style="background:linear-gradient(135deg,#1C1C32,#0F0F1E);display:flex;align-items:center;justify-content:center;">
+            ${videoUrl ? `<video src="${videoUrl}" style="width:100%;height:100%;object-fit:cover;" preload="metadata"></video>` : '<div style="font-size:2rem;opacity:0.3;">🎥</div>'}
+            <div class="rc-badge">🎥 UGC</div>
+          </div>
+          <div class="rc-info">
+            <div class="rc-name">${name}</div>
+            <div class="rc-meta">${date}</div>
+            <div class="rc-actions">
+              <div class="rc-btn" onclick="event.stopPropagation();window.open('${videoUrl}','_blank')">⬇ Download</div>
+              <div class="rc-btn" onclick="event.stopPropagation();navigator.clipboard.writeText('${videoUrl}').then(()=>alert('Copied!'))">📤 Copy</div>
+            </div>
+          </div>
+        </div>`);
+    });
+  } catch(e) { console.warn('Recent load failed:', e.message); }
+}
+
+// ── GENERATE ──
+async function generate() {
+  if (!selectedInf) { alert('Please select an influencer!'); return; }
   const brand = document.getElementById('brandName').value.trim();
   const product = document.getElementById('productDesc').value.trim();
-  if(!brand){
+  if (!brand) {
     document.getElementById('brandName').focus();
-    document.getElementById('brandName').style.borderColor='var(--accent)';
-    setTimeout(()=>document.getElementById('brandName').style.borderColor='var(--border2)',2000);
-    alert('Please enter the brand name!');return;
+    document.getElementById('brandName').style.borderColor = 'var(--accent)';
+    setTimeout(() => document.getElementById('brandName').style.borderColor = 'var(--border2)', 2000);
+    alert('Please enter the brand name!'); return;
   }
-  if(!product){
+  if (!product) {
     document.getElementById('productDesc').focus();
-    document.getElementById('productDesc').style.borderColor='var(--accent)';
-    setTimeout(()=>document.getElementById('productDesc').style.borderColor='var(--border2)',2000);
-    alert('Please describe the product!');return;
+    document.getElementById('productDesc').style.borderColor = 'var(--accent)';
+    setTimeout(() => document.getElementById('productDesc').style.borderColor = 'var(--border2)', 2000);
+    alert('Please describe the product!'); return;
   }
-  if(!CreatrixAPI.Auth.isLoggedIn()){ window.location.href='creatrix-auth.html'; return; }
+  if (!getToken()) { window.location.href = 'creatrix-auth.html'; return; }
 
   const overlay = document.getElementById('loadingOverlay');
   const bar = document.getElementById('loadBar');
-  bar.style.animation='none'; bar.offsetHeight; bar.style.animation='loadProg 30s ease forwards';
+  const loadTitle = document.querySelector('.loading-title');
+  const loadSub = document.querySelector('.loading-sub');
+
   overlay.classList.add('show');
+  bar.style.width = '0%';
 
-  const ugcStyle = document.querySelector('.style-btn.active')?.textContent || 'Review';
-  const tone = document.querySelector('.tone-btn.active')?.textContent || 'Friendly';
-  const language = document.querySelector('.lang-btn.active')?.textContent || 'Hindi';
+  try {
+    loadTitle.textContent = 'Creating UGC Video...';
+    loadSub.textContent = 'AI is generating your brand video. ~1–3 minutes';
+    bar.style.width = '20%';
 
-  CreatrixAPI.Generate.ugc(
-    selectedInf.img, brand, product,
-    { style: ugcStyle, tone, language, influencerId: selectedInf.id }
-  ).then(job => {
-    if(job.error){ overlay.classList.remove('show'); alert(job.error); return; }
-    if(job.job_id){
-      return CreatrixAPI.Generate.waitForResult(job.job_id);
-    }
-    return job;
-  }).then(result => {
+    const hd = document.getElementById('hdToggle')?.checked || false;
+    const imageUrl = selectedInf.avatarUrl && selectedInf.avatarUrl.startsWith('http')
+      ? selectedInf.avatarUrl : selectedInf.img;
+
+    const res = await fetch(`${API_BASE}/api/generate/ugc`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({
+        image_url: imageUrl,
+        brand_name: brand,
+        product_desc: product,
+        ugc_style: cfg.style,
+        tone: cfg.tone,
+        language: cfg.lang,
+        hd,
+        influencer_id: selectedInf.id !== 'custom' ? selectedInf.id : null
+      })
+    });
+
+    const job = await res.json();
+    if (job.error) { overlay.classList.remove('show'); alert('Error: ' + job.error); return; }
+
+    loadTitle.textContent = 'Generating UGC...';
+    bar.style.width = '40%';
+
+    const jobId = job.job_id || job.id;
+    let attempts = 0;
+    const maxAttempts = 2160; // 3 hours
+
+    const poll = async () => {
+      attempts++;
+      try {
+        const statusRes = await fetch(`${API_BASE}/api/generate/status/${jobId}`, {
+          headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        const status = await statusRes.json();
+
+        const pct = Math.min(40 + (attempts / 60) * 55, 95);
+        bar.style.width = pct + '%';
+
+        if (status.status === 'done' || status.result_url || status.creation?.url) {
+          bar.style.width = '100%';
+          overlay.classList.remove('show');
+
+          const resultUrl = status.result_url || status.output_url || status.creation?.url;
+          if (resultUrl) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(4,4,10,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;';
+            modal.innerHTML = `
+              <div style="font-family:var(--font-h);font-size:1.2rem;font-weight:700;color:var(--gold);">🎉 UGC Video Ready!</div>
+              <video src="${resultUrl}" controls autoplay style="max-height:70vh;max-width:100%;border-radius:16px;box-shadow:0 0 40px rgba(255,209,102,0.3);"></video>
+              <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+                <a href="${resultUrl}" download target="_blank" style="padding:0.75rem 1.5rem;background:linear-gradient(135deg,var(--gold),#f0a500);color:#1a1000;border-radius:12px;font-family:var(--font-h);font-weight:700;text-decoration:none;font-size:0.9rem;">⬇ Download</a>
+                <button onclick="this.closest('div[style]').remove()" style="padding:0.75rem 1.5rem;background:var(--card2);border:1px solid var(--border2);color:var(--muted);border-radius:12px;font-family:var(--font-h);font-weight:700;cursor:pointer;font-size:0.9rem;">✕ Close</button>
+              </div>`;
+            modal.addEventListener('click', e => { if(e.target === modal) modal.remove(); });
+            document.body.appendChild(modal);
+          }
+
+          loadCredits();
+          loadRecent();
+
+        } else if (status.status === 'failed') {
+          overlay.classList.remove('show');
+          alert('Generation failed: ' + (status.error || 'Please try again.'));
+        } else {
+          setTimeout(poll, 8000);
+        }
+      } catch(pollErr) {
+        console.warn('Poll error:', pollErr);
+        setTimeout(poll, 8000);
+      }
+    };
+
+    setTimeout(poll, 15000);
+
+  } catch(err) {
     overlay.classList.remove('show');
-    const area = document.getElementById('previewArea');
-    if(result && result.output_url){
-      area.innerHTML = `<video class="pa-img" src="${result.output_url}" controls autoplay style="opacity:1;border-radius:16px;width:100%;"></video><div style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:var(--font-h);font-size:0.85rem;font-weight:700;color:var(--gold);">✅ UGC Video Ready!</div>`;
-    } else if(selectedInf) {
-      const img = document.createElement('img'); img.className='pa-img'; img.src=selectedInf.img; img.style.opacity='1';
-      const badge = document.createElement('div');
-      badge.style.cssText='position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:var(--font-h);font-size:0.85rem;font-weight:700;color:var(--gold);';
-      badge.textContent='✅ UGC Video Ready!';
-      area.innerHTML=''; area.appendChild(img); area.appendChild(badge);
-    }
-  }).catch(err => {
-    overlay.classList.remove('show');
-    alert('Generation failed: ' + (err.message || 'Try again'));
-  });
+    console.error('UGC error:', err);
+    alert('Failed: ' + (err.message || 'Please try again.'));
+  }
 }
 
-function buildRecent(){
-  const grid = document.getElementById('recentGrid');
-  recentItems.forEach(r=>{
-    grid.insertAdjacentHTML('beforeend',`
-      <div class="rc">
-        <div class="rc-thumb">
-          <img src="${r.img}" alt="${r.name}" loading="lazy">
-          <div class="rc-badge">🎥 ${r.style}</div>
-          <div class="rc-dur">${r.dur}</div>
-        </div>
-        <div class="rc-info">
-          <div class="rc-name">${r.name}</div>
-          <div class="rc-meta">${r.date}</div>
-          <div class="rc-actions">
-            <div class="rc-btn">⬇ Download</div>
-            <div class="rc-btn">📤 Share</div>
-          </div>
-        </div>
-      </div>`);
-  });
-}
-
-buildInfGrid();
-buildRecent();
+// ── INIT ──
+loadCredits();
+loadInfluencers();
+loadRecent();
 </script>
 <script src="api.js"></script>
 </body>
