@@ -498,7 +498,12 @@ async function loadInfluencers() {
       const avatarStr = JSON.stringify(inf.avatar_url && inf.avatar_url.startsWith('http') ? inf.avatar_url : img);
 
       grid.insertAdjacentHTML('beforeend', `
-        <div class="inf-card" onclick="selectInf(this,${idStr},${nameStr},${imgStr},${avatarStr})">
+        <div class="inf-card" 
+             data-id="${inf.id}" 
+             data-name="${inf.name.replace(/"/g,'&quot;')}" 
+             data-img="${img}" 
+             data-avatar="${avatarStr.replace(/"/g,'&quot;')}"
+             onclick="selectInfCard(this)">
           <img src="${img}" alt="${inf.name}" loading="lazy"
                onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200'">
           <div class="inf-card-name">${inf.name}</div>
@@ -553,6 +558,15 @@ async function loadRecent() {
         </div>`);
     });
   } catch(e) { console.warn('Recent load failed:', e.message); }
+}
+
+// ── SELECT INFLUENCER (via data attributes) ──
+function selectInfCard(el) {
+  const id = el.dataset.id;
+  const name = el.dataset.name;
+  const img = el.dataset.img;
+  const avatar = el.dataset.avatar || img;
+  selectInf(el, id, name, img, avatar);
 }
 
 // ── SELECT INFLUENCER ──
