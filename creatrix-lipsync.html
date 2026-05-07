@@ -683,7 +683,7 @@ async function generate() {
 
     const jobId = job.job_id || job.id;
     let attempts = 0;
-    const maxAttempts = 36; // 3 minutes
+    const maxAttempts = 60; // 5 minutes (60 x 5sec)
 
     const poll = async () => {
       attempts++;
@@ -701,11 +701,11 @@ async function generate() {
       const pct = Math.min(50 + (attempts / maxAttempts) * 45, 95);
       bar.style.width = pct + '%';
 
-      if (status.status === 'done' || status.result_url) {
+      if (status.status === 'done' || status.result_url || status.creation?.url) {
         bar.style.width = '100%';
         overlay.classList.remove('show');
 
-        const resultUrl = status.result_url || status.output_url;
+        const resultUrl = status.result_url || status.output_url || status.creation?.url;
         if (resultUrl) {
           document.getElementById('videoArea').innerHTML = `
             <video class="va-img" src="${resultUrl}" controls autoplay loop style="opacity:1;border-radius:16px;object-fit:cover;"></video>
