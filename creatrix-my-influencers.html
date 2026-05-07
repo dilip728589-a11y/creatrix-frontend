@@ -348,8 +348,10 @@ async function apiFetch(path, options = {}) {
 // ── LOAD CREDITS ──
 async function loadCredits() {
   try {
-    const data = await apiFetch('/api/credits');
-    if (data && data.credits !== undefined) {
+    const data = await apiFetch('/api/credits/balance');
+    if (data && data.total !== undefined) {
+      document.getElementById('creditsCount').textContent = data.total;
+    } else if (data && data.credits !== undefined) {
       document.getElementById('creditsCount').textContent = data.credits;
     }
   } catch (e) {
