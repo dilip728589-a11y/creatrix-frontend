@@ -495,9 +495,10 @@ async function loadInfluencers() {
       const idStr = JSON.stringify(inf.id);
       const nameStr = JSON.stringify(inf.name);
       const imgStr = JSON.stringify(img);
+      const avatarStr = JSON.stringify(inf.avatar_url || '');
 
       grid.insertAdjacentHTML('beforeend', `
-        <div class="inf-card" onclick="selectInf(this,${idStr},${nameStr},${imgStr})">
+        <div class="inf-card" onclick="selectInf(this,${idStr},${nameStr},${imgStr},${avatarStr})">
           <img src="${img}" alt="${inf.name}" loading="lazy"
                onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200'">
           <div class="inf-card-name">${inf.name}</div>
@@ -555,10 +556,10 @@ async function loadRecent() {
 }
 
 // ── SELECT INFLUENCER ──
-function selectInf(el, id, name, img) {
+function selectInf(el, id, name, img, avatarUrl) {
   document.querySelectorAll('.inf-card').forEach(c => c.classList.remove('sel'));
   el.classList.add('sel');
-  selectedInf = { id, name, img };
+  selectedInf = { id, name, img, avatarUrl: avatarUrl || img };
   const area = document.getElementById('videoArea');
   area.innerHTML = `
     <img class="va-img" src="${img}" alt="${name}"
@@ -637,8 +638,9 @@ async function generate() {
     } else if (currentSource === 'url') {
       audioUrl = document.querySelector('#src-url input').value.trim();
     } else if (currentSource === 'script') {
-      // TTS — pass script as audio_url with tts: prefix
-      audioUrl = 'tts:' + document.getElementById('scriptText').value.trim();
+      overlay.classList.remove('show');
+      alert('Script/TTS feature coming soon! Please use "Audio URL" tab and paste a direct MP3 link.\n\nExample: https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+      return;
     }
 
     loadTitle.textContent = 'Starting Lip Sync...';
@@ -647,6 +649,11 @@ async function generate() {
 
     const hd = cfg.quality?.includes('1080') || false;
 
+    // Use influencer's real avatar_url if available, not base64
+    const imageUrl = (selectedInf.avatarUrl && selectedInf.avatarUrl.startsWith('http'))
+      ? selectedInf.avatarUrl
+      : selectedInf.img;
+
     const res = await fetch(`${API_BASE}/api/generate/lipsync`, {
       method: 'POST',
       headers: {
@@ -654,7 +661,7 @@ async function generate() {
         Authorization: `Bearer ${getToken()}`
       },
       body: JSON.stringify({
-        image_url: selectedInf.img,
+        image_url: imageUrl,
         audio_url: audioUrl,
         hd,
         influencer_id: selectedInf.id !== 'custom' ? selectedInf.id : null
