@@ -499,7 +499,7 @@ async function loadInfluencers() {
       grid.insertAdjacentHTML('beforeend', `
         <div class="inf-card" onclick="selectInf(this,${idStr},${nameStr},${imgStr})">
           <img src="${img}" alt="${inf.name}" loading="lazy"
-               onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(inf.name)}&background=784CFE&color=fff&size=200'">
+               onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200'">
           <div class="inf-card-name">${inf.name}</div>
           <div class="inf-ck">✓</div>
         </div>`);
