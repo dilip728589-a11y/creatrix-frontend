@@ -151,7 +151,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);}
     <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
   </div>
   <div class="tb-right">
-    <div class="credits-pill"><span class="cv">38</span><span class="cl">credits</span></div>
+    <div class="credits-pill"><span class="cv" id="creditsCount">--</span><span class="cl">credits</span></div>
     <a href="creatrix-video-generator.html" class="btn-create">✨ Create New</a>
   </div>
 </div>
@@ -231,76 +231,183 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);}
 </div>
 
 <script>
-const creations = [
-  {id:1,title:'Aria — Fashion Walk',type:'video',influencer:'Aria Nova',style:'Fashion Walk',dur:'0:15',format:'portrait',date:'2025-04-29',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
-  {id:2,title:'Luna — Talking Head',type:'video',influencer:'Luna Ray',style:'Talking Head',dur:'0:30',format:'portrait',date:'2025-04-29',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&q=80&fit=crop&crop=top'},
-  {id:3,title:'Aria — Hindi Script',type:'lipsync',influencer:'Aria Nova',style:'Lip Sync',dur:'0:22',format:'portrait',date:'2025-04-28',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
-  {id:4,title:'Zara — English Audio',type:'lipsync',influencer:'Zara Khan',style:'Lip Sync',dur:'0:15',format:'portrait',date:'2025-04-28',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80&fit=crop&crop=top'},
-  {id:5,title:'Kai — Fitness Demo',type:'video',influencer:'Kai Storm',style:'Fitness Demo',dur:'0:20',format:'portrait',date:'2025-04-27',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80&fit=crop&crop=top'},
-  {id:6,title:'Maya — Outfit Reveal',type:'video',influencer:'Maya Singh',style:'Outfit Reveal',dur:'0:12',format:'portrait',date:'2025-04-27',img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80&fit=crop&crop=top'},
-  {id:7,title:'Aria — Dancing',type:'motion',influencer:'Aria Nova',style:'Motion',dur:'0:08',format:'portrait',date:'2025-04-26',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
-  {id:8,title:'Luna — Walking',type:'motion',influencer:'Luna Ray',style:'Motion',dur:'0:10',format:'portrait',date:'2025-04-26',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&q=80&fit=crop&crop=top'},
-  {id:9,title:'Aria — Luxe Skin Co.',type:'ugc',influencer:'Aria Nova',style:'UGC Review',dur:'0:30',format:'portrait',date:'2025-04-25',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
-  {id:10,title:'Zara — Luxury Lifestyle',type:'video',influencer:'Zara Khan',style:'Luxury Lifestyle',dur:'0:15',format:'landscape',date:'2025-04-25',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80&fit=crop&crop=top'},
-  {id:11,title:'Luna — Spanish Sync',type:'lipsync',influencer:'Luna Ray',style:'Lip Sync',dur:'0:30',format:'portrait',date:'2025-04-24',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&q=80&fit=crop&crop=top'},
-  {id:12,title:'Kai — Product Review',type:'video',influencer:'Kai Storm',style:'Product Review',dur:'0:45',format:'portrait',date:'2025-04-24',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80&fit=crop&crop=top'},
-  {id:13,title:'Rohan — Walking Motion',type:'motion',influencer:'Rohan Dev',style:'Motion',dur:'0:08',format:'portrait',date:'2025-04-23',img:'https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=300&q=80&fit=crop&crop=top'},
-  {id:14,title:'Maya — FitWear UGC',type:'ugc',influencer:'Maya Singh',style:'UGC Tutorial',dur:'0:45',format:'portrait',date:'2025-04-23',img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80&fit=crop&crop=top'},
-  {id:15,title:'Aria — Story Vlog',type:'video',influencer:'Aria Nova',style:'Story / Vlog',dur:'0:60',format:'portrait',date:'2025-04-22',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
-  {id:16,title:'Zara — Kai Audio Sync',type:'lipsync',influencer:'Zara Khan',style:'Lip Sync',dur:'0:18',format:'portrait',date:'2025-04-22',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80&fit=crop&crop=top'},
-  {id:17,title:'Luna — Dance Motion',type:'motion',influencer:'Luna Ray',style:'Motion',dur:'0:10',format:'portrait',date:'2025-04-21',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&q=80&fit=crop&crop=top'},
-  {id:18,title:'Kai — Protein Plus UGC',type:'ugc',influencer:'Kai Storm',style:'UGC Testimonial',dur:'0:60',format:'portrait',date:'2025-04-21',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80&fit=crop&crop=top'},
-];
+// ═══════════════════════════════════════════
+//  CREATRIX — My Creations (Backend Connected)
+// ═══════════════════════════════════════════
 
-const typeBadge = {
-  video:'<span class="cc-type-badge badge-video">🎬 AI Video</span>',
-  lipsync:'<span class="cc-type-badge badge-lipsync">👄 Lip Sync</span>',
-  motion:'<span class="cc-type-badge badge-motion">🕹️ Motion</span>',
-  ugc:'<span class="cc-type-badge badge-ugc">🎥 UGC</span>',
-};
+const API_BASE = 'https://creatrix-backend-production.up.railway.app';
 
-let filtered = [...creations];
+// ── TOKEN ──
+function getToken() {
+  return localStorage.getItem('creatrix_access_token') ||
+         localStorage.getItem('creatrix_token') ||
+         localStorage.getItem('token') || null;
+}
+
+// ── AUTH GUARD ──
+if (!getToken()) window.location.href = 'creatrix-auth.html';
+
+let allCreations = [];
+let filtered = [];
 let currentFilter = 'all';
 let currentView = 'grid';
 let deleteTargetId = null;
 
+const typeBadge = {
+  video:   '<span class="cc-type-badge badge-video">🎬 AI Video</span>',
+  lipsync: '<span class="cc-type-badge badge-lipsync">👄 Lip Sync</span>',
+  motion:  '<span class="cc-type-badge badge-motion">🕹️ Motion</span>',
+  ugc:     '<span class="cc-type-badge badge-ugc">🎥 UGC</span>',
+  image:   '<span class="cc-type-badge badge-image">🖼️ Image</span>',
+};
+
+// ── LOAD CREDITS ──
+async function loadCredits() {
+  try {
+    const res = await fetch(`${API_BASE}/api/credits/balance`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const val = data.total ?? data.credits ?? '--';
+    document.getElementById('creditsCount').textContent = val;
+  } catch(e) { console.warn('Credits failed:', e.message); }
+}
+
+// ── LOAD CREATIONS ──
+async function loadCreations() {
+  showSkeleton();
+  try {
+    const res = await fetch(`${API_BASE}/api/creations/list`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+
+    if (res.status === 401) { window.location.href = 'creatrix-auth.html'; return; }
+
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data?.creations || []);
+
+    allCreations = list.map(normalizeCreation);
+    filtered = [...allCreations];
+
+    render(filtered);
+    updateStats();
+    document.getElementById('pageCount').textContent = `${allCreations.length} creation${allCreations.length !== 1 ? 's' : ''}`;
+
+  } catch(err) {
+    console.error('loadCreations:', err);
+    showError(err.message);
+  }
+}
+
+// ── NORMALIZE ──
+function normalizeCreation(c) {
+  const typeIcons = { video:'🎬', lipsync:'👄', motion:'🕹️', ugc:'🎥', image:'🖼️' };
+  const icon = typeIcons[c.type] || '🎬';
+  const date = c.created_at || c.createdAt || '';
+  const dateFormatted = date ? formatDate(date) : '';
+
+  return {
+    id:         c.id,
+    title:      c.type ? `${c.type.charAt(0).toUpperCase() + c.type.slice(1)} · ${dateFormatted}` : 'Creation',
+    type:       c.type || 'video',
+    influencer: c.influencer_name || 'My Influencer',
+    style:      c.type || 'video',
+    dur:        '—',
+    format:     'portrait',
+    date:       date,
+    img:        c.thumbnail_url || c.url || '',
+    url:        c.url || c.result_url || '',
+    status:     c.status || 'done'
+  };
+}
+
+// ── SKELETON ──
+function showSkeleton() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  document.getElementById('emptyState').classList.remove('show');
+  for (let i = 0; i < 6; i++) {
+    grid.insertAdjacentHTML('beforeend', `
+      <div style="background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--border);">
+        <div style="aspect-ratio:9/16;background:linear-gradient(90deg,var(--card2) 25%,var(--card3,#1C1C32) 50%,var(--card2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;"></div>
+        <div style="padding:0.9rem;">
+          <div style="height:14px;width:70%;background:var(--card2);border-radius:6px;margin-bottom:8px;animation:shimmer 1.5s infinite;"></div>
+          <div style="height:11px;width:50%;background:var(--card2);border-radius:6px;animation:shimmer 1.5s infinite;"></div>
+        </div>
+      </div>`);
+  }
+  const s = document.createElement('style');
+  s.textContent = '@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}';
+  document.head.appendChild(s);
+}
+
+// ── SHOW ERROR ──
+function showError(msg) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = `
+    <div style="grid-column:1/-1;text-align:center;padding:4rem 2rem;color:var(--muted);">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">⚠️</div>
+      <div style="font-family:var(--font-h);font-size:1.1rem;margin-bottom:0.5rem;color:var(--white);">Couldn't load creations</div>
+      <div style="font-size:0.85rem;margin-bottom:1.5rem;">${msg}</div>
+      <button onclick="loadCreations()" style="padding:0.6rem 1.5rem;background:var(--card2);border:1px solid var(--border2);color:var(--white);border-radius:100px;cursor:pointer;font-size:0.85rem;">🔄 Retry</button>
+    </div>`;
+}
+
+// ── BUILD CARD ──
 function buildCard(c) {
-  const fmtClass = c.format === 'landscape' ? 'landscape' : c.format === 'square' ? 'square' : '';
+  const fmtClass = c.format === 'landscape' ? 'landscape' : '';
+  const hasVideo = c.url && (c.url.includes('.mp4') || c.url.includes('replicate'));
+  const thumbContent = c.img
+    ? `<img class="cc-thumb-img" src="${c.img}" alt="${c.title}" loading="lazy"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : '';
+  const placeholderStyle = c.img ? 'display:none' : 'display:flex';
+  const typeEmoji = {video:'🎬',lipsync:'👄',motion:'🕹️',ugc:'🎥',image:'🖼️'}[c.type] || '🎬';
+
   return `
-  <div class="creation-card" data-id="${c.id}" data-type="${c.type}">
+  <div class="creation-card" data-id="${c.id}" data-type="${c.type}"
+       onclick="${c.url ? `window.open('${c.url}','_blank')` : ''}">
     <div class="cc-thumb ${fmtClass}">
-      <img class="cc-thumb-img" src="${c.img}" alt="${c.title}" loading="lazy">
+      ${thumbContent}
+      <div style="${placeholderStyle};aspect-ratio:9/16;background:linear-gradient(135deg,var(--card2),var(--card3,#1C1C32));align-items:center;justify-content:center;font-size:3rem;opacity:0.4;">${typeEmoji}</div>
       ${typeBadge[c.type] || ''}
-      <div class="cc-dur">${c.dur}</div>
-      <div class="cc-play">▶</div>
+      ${c.status === 'processing' ? '<div class="cc-dur" style="background:rgba(120,76,254,0.8);">Processing...</div>' : c.dur !== '—' ? `<div class="cc-dur">${c.dur}</div>` : ''}
+      ${c.url ? '<div class="cc-play">▶</div>' : ''}
       <div class="cc-overlay">
-        <div class="cc-action-btn" onclick="event.stopPropagation();downloadItem(${c.id})" title="Download">⬇</div>
-        <div class="cc-action-btn" onclick="event.stopPropagation();shareItem(${c.id})" title="Share">📤</div>
-        <div class="cc-action-btn del" onclick="event.stopPropagation();openDelete(${c.id})" title="Delete">🗑️</div>
+        ${c.url ? `<a class="cc-action-btn" href="${c.url}" download target="_blank" onclick="event.stopPropagation()" title="Download">⬇</a>` : ''}
+        <div class="cc-action-btn" onclick="event.stopPropagation();copyLink('${c.url}')" title="Copy Link">📤</div>
+        <div class="cc-action-btn del" onclick="event.stopPropagation();openDelete('${c.id}')" title="Delete">🗑️</div>
       </div>
     </div>
     <div class="cc-info">
       <div class="cc-title">${c.title}</div>
       <div class="cc-meta">
         <span class="cc-tag">${c.influencer}</span>
-        <span class="cc-tag">${c.style}</span>
+        <span class="cc-tag">${c.type}</span>
+        ${c.status === 'processing' ? '<span class="cc-tag" style="color:var(--accent2);">⏳ Processing</span>' : ''}
       </div>
       <div class="cc-footer">
         <span class="cc-date">${formatDate(c.date)}</span>
         <div class="cc-btns">
-          <div class="ccb download" onclick="event.stopPropagation();downloadItem(${c.id})">⬇ Download</div>
-          <div class="ccb" onclick="event.stopPropagation();shareItem(${c.id})">📤 Share</div>
+          ${c.url ? `<a class="ccb download" href="${c.url}" download target="_blank" onclick="event.stopPropagation()">⬇ Download</a>` : '<div class="ccb" style="opacity:0.4;">⏳ Processing</div>'}
+          <div class="ccb" onclick="event.stopPropagation();copyLink('${c.url}')">📤 Share</div>
         </div>
       </div>
     </div>
   </div>`;
 }
 
-function formatDate(d) {
-  const date = new Date(d);
-  return date.toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'});
+function copyLink(url) {
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => showToast('📤', 'Copied!', 'Link copied to clipboard'));
 }
 
+function formatDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ── RENDER ──
 function render(list) {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
@@ -310,9 +417,18 @@ function render(list) {
     document.getElementById('emptyState').classList.remove('show');
     list.forEach(c => grid.insertAdjacentHTML('beforeend', buildCard(c)));
   }
-  document.getElementById('pageCount').textContent = creations.length + ' creations';
+  document.getElementById('pageCount').textContent = `${allCreations.length} creation${allCreations.length !== 1 ? 's' : ''}`;
 }
 
+// ── STATS ──
+function updateStats() {
+  document.getElementById('statVideos').textContent   = allCreations.filter(c => c.type === 'video').length;
+  document.getElementById('statLipsync').textContent  = allCreations.filter(c => c.type === 'lipsync').length;
+  document.getElementById('statMotion').textContent   = allCreations.filter(c => c.type === 'motion').length;
+  document.getElementById('statUGC').textContent      = allCreations.filter(c => c.type === 'ugc').length;
+}
+
+// ── FILTER ──
 function filterBy(el, type) {
   document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
@@ -321,10 +437,11 @@ function filterBy(el, type) {
 }
 
 function applyFilters() {
-  filtered = currentFilter === 'all' ? [...creations] : creations.filter(c => c.type === currentFilter);
+  filtered = currentFilter === 'all' ? [...allCreations] : allCreations.filter(c => c.type === currentFilter);
   render(filtered);
 }
 
+// ── SORT ──
 function sortBy(val) {
   if (val === 'newest') filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
   else if (val === 'oldest') filtered.sort((a,b) => new Date(a.date) - new Date(b.date));
@@ -332,16 +449,18 @@ function sortBy(val) {
   render(filtered);
 }
 
+// ── SEARCH ──
 function searchCreations(q) {
   const query = q.toLowerCase();
-  const list = creations.filter(c =>
+  const list = allCreations.filter(c =>
     c.title.toLowerCase().includes(query) ||
-    c.influencer.toLowerCase().includes(query) ||
-    c.style.toLowerCase().includes(query)
+    c.type.toLowerCase().includes(query) ||
+    c.influencer.toLowerCase().includes(query)
   );
   render(list);
 }
 
+// ── VIEW ──
 function setView(view) {
   currentView = view;
   const grid = document.getElementById('grid');
@@ -350,44 +469,47 @@ function setView(view) {
   grid.classList.toggle('list-view', view === 'list');
 }
 
-// Actions
-function downloadItem(id) {
-  const c = creations.find(i => i.id === id);
-  showToast('⬇️', 'Downloading...', c?.title + ' is being prepared');
-}
-function shareItem(id) {
-  const c = creations.find(i => i.id === id);
-  showToast('📤', 'Link Copied!', 'Share link for ' + c?.title);
-}
+// ── DELETE ──
 function openDelete(id) {
   deleteTargetId = id;
-  const c = creations.find(i => i.id === id);
+  const c = allCreations.find(i => String(i.id) === String(id));
   document.getElementById('deleteName').textContent = c?.title || 'this creation';
   document.getElementById('deleteModal').classList.add('show');
 }
+
 function closeDelete() {
   document.getElementById('deleteModal').classList.remove('show');
   deleteTargetId = null;
 }
-function confirmDelete() {
-  const idx = creations.findIndex(i => i.id === deleteTargetId);
-  if (idx !== -1) {
-    const name = creations[idx].title;
-    creations.splice(idx, 1);
-    filtered = filtered.filter(i => i.id !== deleteTargetId);
+
+async function confirmDelete() {
+  const btn = document.querySelector('.modal-delete');
+  btn.textContent = 'Deleting...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/creations/${deleteTargetId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+
+    if (!res.ok) throw new Error('Delete failed');
+
+    const name = allCreations.find(i => String(i.id) === String(deleteTargetId))?.title || 'Creation';
+    allCreations = allCreations.filter(i => String(i.id) !== String(deleteTargetId));
+    filtered     = filtered.filter(i => String(i.id) !== String(deleteTargetId));
     render(filtered);
+    updateStats();
     closeDelete();
     showToast('🗑️', 'Deleted!', name + ' removed');
-    updateStats();
+  } catch(err) {
+    showToast('❌', 'Failed', err.message);
+    btn.textContent = 'Delete';
+    btn.disabled = false;
   }
 }
-function updateStats() {
-  document.getElementById('statVideos').textContent = creations.filter(c=>c.type==='video').length;
-  document.getElementById('statLipsync').textContent = creations.filter(c=>c.type==='lipsync').length;
-  document.getElementById('statMotion').textContent = creations.filter(c=>c.type==='motion').length;
-  document.getElementById('statUGC').textContent = creations.filter(c=>c.type==='ugc').length;
-}
 
+// ── TOAST ──
 function showToast(icon, title, sub) {
   document.getElementById('toastIcon').textContent = icon;
   document.getElementById('toastT').textContent = title;
@@ -401,62 +523,13 @@ document.getElementById('deleteModal').addEventListener('click', function(e) {
   if (e.target === this) closeDelete();
 });
 
-render(creations);
-
-// ══════════════════════════════════════
-// BACKEND INTEGRATION
-// ══════════════════════════════════════
-async function loadRealCreations() {
-  if (typeof CreatrixAPI === 'undefined' || !CreatrixAPI.Auth.isLoggedIn()) return;
-
-  try {
-    const data = await CreatrixAPI.Creations.list();
-    if (!data || !data.creations || data.creations.length === 0) return;
-
-    // Map backend data to card format
-    const realCreations = data.creations.map(c => ({
-      id: c.id,
-      title: c.type.charAt(0).toUpperCase() + c.type.slice(1) + ' — ' + formatDate(c.created_at),
-      type: c.type,
-      influencer: 'My Influencer',
-      style: c.type,
-      dur: '0:15',
-      format: 'portrait',
-      date: c.created_at,
-      img: c.thumbnail_url || 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80',
-      url: c.url,
-      status: c.status
-    }));
-
-    // Replace static with real
-    filtered = [...realCreations];
-    document.getElementById('pageCount').textContent = realCreations.length + ' creations';
-    render(realCreations);
-  } catch(err) {
-    console.error('loadRealCreations:', err);
-  }
-}
-
-// Override downloadItem to use real URL
-const _origDownload = window.downloadItem;
-window.downloadItem = function(id) {
-  const allCreations = filtered;
-  const item = allCreations.find(c => c.id == id);
-  if (item && item.url) {
-    const a = document.createElement('a');
-    a.href = item.url;
-    a.download = (item.title || 'creation') + '.mp4';
-    a.target = '_blank';
-    a.click();
-  } else if (_origDownload) {
-    _origDownload(id);
-  }
-};
-
-// Load on page ready
-document.addEventListener('DOMContentLoaded', () => {
-  loadRealCreations();
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDelete();
 });
+
+// ── INIT ──
+loadCredits();
+loadCreations();
 </script>
 <script src="api.js"></script>
 </body>
