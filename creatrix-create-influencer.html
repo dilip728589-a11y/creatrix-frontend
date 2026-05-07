@@ -700,19 +700,63 @@ function updateReview(){
 }
 
 // ── GENERATE ──
-function generate(){
+async function generate(){
+  // Auth check
+  if(typeof CreatrixAPI === 'undefined' || !CreatrixAPI.Auth.isLoggedIn()){
+    window.location.href='creatrix-auth.html'; return;
+  }
+
   const btn=document.querySelector('.gen-btn');
   btn.disabled=true;
   if(!document.getElementById('sp')){ const s=document.createElement('style'); s.id='sp'; s.textContent='@keyframes spin{to{transform:rotate(360deg)}}'; document.head.appendChild(s); }
-  btn.innerHTML='<span style="display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></span>&nbsp; Generating your influencer...';
-  setTimeout(()=>{
+  btn.innerHTML='<span style="display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></span>&nbsp; Creating your influencer...';
+
+  // Get influencer name from review section
+  const nameEl = document.querySelector('.rv-name') || document.querySelector('[data-field="name"]');
+  const influencerName = cfg.gender + ' Influencer — ' + cfg.ethnicity + ' ' + cfg.personality;
+
+  try {
+    // Save influencer to backend
+    const data = await CreatrixAPI.Influencer.create(
+      influencerName,
+      cfg.personality,
+      {
+        gender: cfg.gender,
+        age: cfg.age,
+        ethnicity: cfg.ethnicity,
+        hairColor: cfg.hairColor,
+        hairStyle: cfg.hairStyle,
+        eyeColor: cfg.eyeColor,
+        features: cfg.features,
+        bodyShape: cfg.bodyShape,
+        voice: cfg.voice,
+        outfit: cfg.outfit
+      },
+      null
+    );
+
+    if(data && data.error){
+      btn.innerHTML='❌ ' + data.error;
+      btn.disabled=false;
+      return;
+    }
+
+    // Also generate image via API
+    const prompt = `${cfg.gender} ${cfg.ethnicity} influencer, ${cfg.hairColor} ${cfg.hairStyle} hair, ${cfg.personality} personality, ${cfg.outfit}, professional photo, high quality`;
+    const imgJob = await CreatrixAPI.Generate.image(prompt, data.influencer?.id || null);
+
     btn.innerHTML='✅ Done! View in My Influencers';
     btn.disabled=false;
     btn.style.background='linear-gradient(135deg,var(--accent3),var(--accent2))';
-    btn.onclick=()=>{window.location.href='creatrix-dashboard.html';};
+    btn.onclick=()=>{window.location.href='creatrix-my-influencers.html';};
     const t=document.getElementById('toast'); t.classList.add('show');
     setTimeout(()=>t.classList.remove('show'),4000);
-  },3200);
+
+  } catch(err) {
+    console.error('generate error:', err);
+    btn.innerHTML='❌ Failed. Try again';
+    btn.disabled=false;
+  }
 }
 
 // ── INIT ──
@@ -726,5 +770,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 function updatePreview(){ updateReview(); }
 </script>
+<script src="api.js"></script>
 </body>
 </html>
