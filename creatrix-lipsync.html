@@ -572,14 +572,30 @@ function selectInf(el, id, name, img) {
   document.getElementById('sv-inf').textContent = name;
 }
 
-// ── CONVERT FILE TO BASE64 ──
-async function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result); // data:audio/mp3;base64,...
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+// ── UPLOAD AUDIO TO GET PUBLIC URL ──
+async function uploadAudioFile(file) {
+  // Convert to base64
+  const base64 = await fileToBase64(file);
+
+  const res = await fetch(`${API_BASE}/api/upload`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`
+    },
+    body: JSON.stringify({
+      base64: base64,
+      filename: file.name.replace(/\.[^/.]+$/, ''),
+      mimetype: file.type || 'audio/mpeg'
+    })
   });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || 'Audio upload failed');
+  }
+  const data = await res.json();
+  return data.url;
 }
 
 // ── GENERATE ──
@@ -614,10 +630,10 @@ async function generate() {
 
     // ── Get audio URL ──
     if (currentSource === 'upload' && audioFile) {
-      loadTitle.textContent = 'Processing Audio...';
-      loadSub.textContent = 'Preparing your audio file...';
+      loadTitle.textContent = 'Uploading Audio...';
+      loadSub.textContent = 'Uploading audio file to server...';
       bar.style.width = '20%';
-      audioUrl = await fileToBase64(audioFile);
+      audioUrl = await uploadAudioFile(audioFile);
     } else if (currentSource === 'url') {
       audioUrl = document.querySelector('#src-url input').value.trim();
     } else if (currentSource === 'script') {
