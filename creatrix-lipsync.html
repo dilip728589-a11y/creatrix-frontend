@@ -399,50 +399,25 @@ input[type=file]{display:none;}
       <div class="recent-grid" id="recentGrid"></div>
     </div>
 
-  </div>
-
-  <!-- ══ RIGHT PANEL ══ -->
-  <div class="right-panel">
-
-    <!-- Preview -->
-    <div class="preview-box">
-      <div class="preview-head">
-        <div class="ph-title">Preview</div>
-        <div class="ph-live"><div class="live-dot"></div>Live</div>
-      </div>
-      <div class="video-area" id="videoArea">
-        <div class="va-empty">
-          <div class="va-empty-icon">👄</div>
-          <div class="va-empty-text">Select influencer to preview</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Summary -->
-    <div class="summary-box">
-      <div class="sb-title">Lip Sync Settings</div>
-      <div class="sb-grid">
-        <div class="sb-item"><div class="sb-key">Influencer</div><div class="sb-val" id="sv-inf">—</div></div>
-        <div class="sb-item"><div class="sb-key">Audio Source</div><div class="sb-val" id="sv-source">Upload</div></div>
-        <div class="sb-item"><div class="sb-key">Language</div><div class="sb-val" id="sv-lang">Hindi</div></div>
-        <div class="sb-item"><div class="sb-key">Quality</div><div class="sb-val" id="sv-quality">Standard</div></div>
-      </div>
-    </div>
-
     <!-- Cost -->
-    <div class="cost-box">
+    <div class="cost-box" style="margin-top:1.75rem;">
       <div class="cb-left">Cost: <strong id="costLabel">4 credits</strong></div>
       <div class="cb-right"><span id="creditsRemaining">--</span> remaining</div>
     </div>
 
     <!-- Generate -->
-    <button class="gen-btn" onclick="generate()">👄 Generate Lip Sync · 4 credits</button>
+    <button class="gen-btn" onclick="generate()" style="margin-top:0.75rem;">👄 Generate Lip Sync · 4 credits</button>
 
-  </div>
-
+  <!-- Hidden elements needed by JS (summary + preview) -->
+<div style="display:none;">
+  <div id="videoArea"></div>
+  <div id="sv-inf"></div>
+  <div id="sv-source"></div>
+  <div id="sv-lang"></div>
+  <div id="sv-quality"></div>
 </div>
 
-<!-- LOADING -->
+</div><!-- close page-wrap -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-ring"></div>
   <div class="loading-title">Syncing Lips...</div>
