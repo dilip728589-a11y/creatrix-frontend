@@ -495,7 +495,7 @@ async function loadInfluencers() {
       const idStr = JSON.stringify(inf.id);
       const nameStr = JSON.stringify(inf.name);
       const imgStr = JSON.stringify(img);
-      const avatarStr = JSON.stringify(inf.avatar_url || '');
+      const avatarStr = JSON.stringify(inf.avatar_url && inf.avatar_url.startsWith('http') ? inf.avatar_url : img);
 
       grid.insertAdjacentHTML('beforeend', `
         <div class="inf-card" onclick="selectInf(this,${idStr},${nameStr},${imgStr},${avatarStr})">
@@ -707,9 +707,18 @@ async function generate() {
 
         const resultUrl = status.result_url || status.output_url || status.creation?.url;
         if (resultUrl) {
-          document.getElementById('videoArea').innerHTML = `
-            <video class="va-img" src="${resultUrl}" controls autoplay loop style="opacity:1;border-radius:16px;object-fit:cover;"></video>
-            <div class="va-inf-name show">${selectedInf.name} ✅</div>`;
+          // Show video in modal
+          const modal = document.createElement('div');
+          modal.style.cssText = 'position:fixed;inset:0;background:rgba(4,4,10,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;';
+          modal.innerHTML = `
+            <div style="font-family:var(--font-h);font-size:1.2rem;font-weight:700;color:var(--accent3);">🎉 Lip Sync Ready!</div>
+            <video src="${resultUrl}" controls autoplay style="max-height:70vh;max-width:100%;border-radius:16px;box-shadow:0 0 40px rgba(255,60,172,0.3);"></video>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+              <a href="${resultUrl}" download target="_blank" style="padding:0.75rem 1.5rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:12px;font-family:var(--font-h);font-weight:700;text-decoration:none;font-size:0.9rem;">⬇ Download Video</a>
+              <button onclick="this.closest('div[style]').remove()" style="padding:0.75rem 1.5rem;background:var(--card2);border:1px solid var(--border2);color:var(--muted);border-radius:12px;font-family:var(--font-h);font-weight:700;cursor:pointer;font-size:0.9rem;">✕ Close</button>
+            </div>`;
+          modal.addEventListener('click', e => { if(e.target === modal) modal.remove(); });
+          document.body.appendChild(modal);
         }
 
         // Refresh credits & recent
