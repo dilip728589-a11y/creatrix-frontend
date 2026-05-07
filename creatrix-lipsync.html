@@ -683,7 +683,7 @@ async function generate() {
 
     const jobId = job.job_id || job.id;
     let attempts = 0;
-    const maxAttempts = 60; // 5 minutes (60 x 5sec)
+    const maxAttempts = 2160; // 3 hours (2160 x 5sec)
 
     const poll = async () => {
       attempts++;
@@ -720,11 +720,11 @@ async function generate() {
         overlay.classList.remove('show');
         alert('Generation failed: ' + (status.error || 'Unknown error. Please try again.'));
       } else {
-        setTimeout(poll, 5000);
+        setTimeout(poll, 8000);
       }
     };
 
-    setTimeout(poll, 5000);
+    setTimeout(poll, 15000); // Wait 15s before first check
 
   } catch(err) {
     overlay.classList.remove('show');
