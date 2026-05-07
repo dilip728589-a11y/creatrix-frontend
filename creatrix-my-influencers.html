@@ -364,7 +364,7 @@ async function loadInfluencers() {
   showGridSkeleton();
 
   try {
-    const data = await apiFetch('/api/influencer');
+    const data = await apiFetch('/api/influencer/list');
 
     // Normalize backend response → works whether it's an array or { influencers: [] }
     const raw = Array.isArray(data) ? data : (data?.influencers || data?.data || []);
@@ -384,10 +384,10 @@ async function loadInfluencers() {
 
 // ── NORMALIZE: map backend fields → UI fields ──
 function normalizeInfluencer(raw) {
-  // Backend may store appearance data nested or flat — handle both
-  const appearance = raw.appearance || raw.attributes || raw;
+  // Backend stores appearance data inside settings object
+  const settings = raw.settings || raw.appearance || raw.attributes || {};
+  const appearance = typeof settings === 'string' ? JSON.parse(settings) : settings;
 
-  // Determine status badge based on creation count or explicit status field
   let status = raw.status || 'active';
   const creations = raw.creations_count ?? raw.creations ?? 0;
   if (creations >= 20) status = 'popular';
@@ -399,19 +399,18 @@ function normalizeInfluencer(raw) {
     gender:      (appearance.gender || raw.gender || 'female').toLowerCase(),
     ethnicity:   appearance.ethnicity || raw.ethnicity || 'Unknown',
     age:         appearance.age || raw.age || '—',
-    hairColor:   appearance.hair_color || appearance.hairColor || raw.hair_color || '—',
-    hairStyle:   appearance.hair_style || appearance.hairStyle || raw.hair_style || '—',
-    eyeColor:    appearance.eye_color  || appearance.eyeColor  || raw.eye_color  || '—',
-    bodyShape:   appearance.body_shape || appearance.bodyShape || raw.body_shape || '—',
-    personality: raw.personality || appearance.personality || '—',
-    voice:       raw.voice_type  || raw.voice || appearance.voice || '—',
-    outfit:      raw.outfit_style || raw.outfit || appearance.outfit || '—',
-    niche:       (raw.niche || raw.category || 'lifestyle').toLowerCase(),
+    hairColor:   appearance.hairColor || appearance.hair_color || raw.hair_color || '—',
+    hairStyle:   appearance.hairStyle || appearance.hair_style || raw.hair_style || '—',
+    eyeColor:    appearance.eyeColor  || appearance.eye_color  || raw.eye_color  || '—',
+    bodyShape:   appearance.bodyShape || appearance.body_shape || raw.body_shape || '—',
+    personality: appearance.personality || raw.personality || raw.niche || '—',
+    voice:       appearance.voice || raw.voice_type || raw.voice || '—',
+    outfit:      appearance.outfit || raw.outfit_style || raw.outfit || '—',
+    niche:       (raw.niche || appearance.personality || 'lifestyle').toLowerCase(),
     status:      status,
     creations:   creations,
     createdAt:   raw.created_at || raw.createdAt || '',
-    // Image: use generated_image_url first, then image_url, then placeholder
-    img:         raw.generated_image_url || raw.image_url || raw.img ||
+    img:         raw.generated_image_url || raw.image_url || raw.avatar_url || raw.img ||
                  `https://ui-avatars.com/api/?name=${encodeURIComponent(raw.name || 'AI')}&background=784CFE&color=fff&size=400`
   };
 }

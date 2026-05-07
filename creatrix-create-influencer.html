@@ -186,7 +186,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-
     <div class="tb-div"></div>
     <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
   </div>
-  <div class="cp"><span class="cv">38</span><span class="cl">credits</span></div>
+  <div class="cp"><span class="cv" id="creditsCount">--</span><span class="cl">credits</span></div>
 </div>
 
 <div class="main">
@@ -706,57 +706,163 @@ async function generate(){
     window.location.href='creatrix-auth.html'; return;
   }
 
-  const btn=document.querySelector('.gen-btn');
-  btn.disabled=true;
-  if(!document.getElementById('sp')){ const s=document.createElement('style'); s.id='sp'; s.textContent='@keyframes spin{to{transform:rotate(360deg)}}'; document.head.appendChild(s); }
-  btn.innerHTML='<span style="display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></span>&nbsp; Creating your influencer...';
+  const btn = document.querySelector('.gen-btn');
+  btn.disabled = true;
 
-  // Get influencer name from review section
-  const nameEl = document.querySelector('.rv-name') || document.querySelector('[data-field="name"]');
-  const influencerName = cfg.gender + ' Influencer — ' + cfg.ethnicity + ' ' + cfg.personality;
+  // Spinner style
+  if(!document.getElementById('sp')){
+    const s = document.createElement('style');
+    s.id = 'sp';
+    s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(s);
+  }
+
+  const spinner = '<span style="display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></span>';
+
+  const setBtn = (html) => { btn.innerHTML = html; };
+
+  setBtn(spinner + '&nbsp; Saving influencer...');
+
+  // Build influencer name
+  const influencerName = cfg.ethnicity + ' ' + cfg.personality + ' ' + cfg.gender;
 
   try {
-    // Save influencer to backend
+    // ── STEP 1: Save influencer to backend ──
     const data = await CreatrixAPI.Influencer.create(
       influencerName,
-      cfg.personality,
+      cfg.niche || cfg.personality,   // niche field
       {
-        gender: cfg.gender,
-        age: cfg.age,
+        gender:    cfg.gender,
+        age:       cfg.age,
         ethnicity: cfg.ethnicity,
         hairColor: cfg.hairColor,
         hairStyle: cfg.hairStyle,
-        eyeColor: cfg.eyeColor,
-        features: cfg.features,
+        eyeColor:  cfg.eyeColor,
+        features:  cfg.features,
         bodyShape: cfg.bodyShape,
-        voice: cfg.voice,
-        outfit: cfg.outfit
+        voice:     cfg.voice,
+        outfit:    cfg.outfit,
+        personality: cfg.personality
       },
       null
     );
 
-    if(data && data.error){
-      btn.innerHTML='❌ ' + data.error;
-      btn.disabled=false;
+    if(!data || data.error){
+      setBtn('❌ ' + (data?.error || 'Failed to save. Try again.'));
+      btn.disabled = false;
       return;
     }
 
-    // Also generate image via API
-    const prompt = `${cfg.gender} ${cfg.ethnicity} influencer, ${cfg.hairColor} ${cfg.hairStyle} hair, ${cfg.personality} personality, ${cfg.outfit}, professional photo, high quality`;
-    const imgJob = await CreatrixAPI.Generate.image(prompt, data.influencer?.id || null);
+    const influencerId = data.influencer?.id || data.id || null;
 
-    btn.innerHTML='✅ Done! View in My Influencers';
-    btn.disabled=false;
-    btn.style.background='linear-gradient(135deg,var(--accent3),var(--accent2))';
-    btn.onclick=()=>{window.location.href='creatrix-my-influencers.html';};
-    const t=document.getElementById('toast'); t.classList.add('show');
-    setTimeout(()=>t.classList.remove('show'),4000);
+    // ── STEP 2: Generate image via Replicate ──
+    setBtn(spinner + '&nbsp; Generating AI image... (30–60s)');
+
+    const prompt = `Hyper-realistic portrait photo of a ${cfg.age}-year-old ${cfg.ethnicity} ${cfg.gender}, `
+      + `${cfg.hairColor} ${cfg.hairStyle} hair, ${cfg.eyeColor} eyes, ${cfg.bodyShape} body, `
+      + `${cfg.personality} personality, wearing ${cfg.outfit}, `
+      + `professional lifestyle photography, studio lighting, 4K, sharp focus`;
+
+    const imgJob = await CreatrixAPI.Generate.image(prompt, influencerId);
+
+    if(!imgJob || imgJob.error){
+      // Image generation failed but influencer is saved — still success
+      console.warn('Image gen failed:', imgJob?.error);
+      setBtn('✅ Influencer saved! (Image generating in background)');
+      btn.style.background = 'linear-gradient(135deg,var(--accent3),var(--accent2))';
+      btn.disabled = false;
+      btn.onclick = () => { window.location.href = 'creatrix-my-influencers.html'; };
+      showToast('✅', 'Influencer Created!', 'Image will appear shortly in My Influencers.');
+      return;
+    }
+
+    const jobId = imgJob.job_id || imgJob.id || null;
+
+    // ── STEP 3: Poll for image result ──
+    if(jobId){
+      setBtn(spinner + '&nbsp; AI is painting your influencer...');
+
+      let attempts = 0;
+      const maxAttempts = 24; // 2 minutes max (5s × 24)
+
+      const poll = async () => {
+        attempts++;
+        if(attempts > maxAttempts){
+          // Timed out — influencer still saved
+          setBtn('✅ Done! (Image still processing)');
+          btn.style.background = 'linear-gradient(135deg,var(--accent3),var(--accent2))';
+          btn.disabled = false;
+          btn.onclick = () => { window.location.href = 'creatrix-my-influencers.html'; };
+          showToast('✅', 'Influencer Created!', 'Image still processing — check back in a minute.');
+          return;
+        }
+
+        try {
+          const status = await CreatrixAPI.checkJobStatus(jobId);
+
+          if(status.status === 'done' || status.output_url || status.result_url){
+            // ✅ Image ready!
+            setBtn('🎉 Your influencer is ready!');
+            btn.style.background = 'linear-gradient(135deg,var(--accent3),var(--accent2))';
+            btn.disabled = false;
+            btn.onclick = () => { window.location.href = 'creatrix-my-influencers.html'; };
+            showToast('🎉', 'Influencer Created!', influencerName + ' is ready in My Influencers!');
+
+            // Update credits display
+            if(typeof CreatrixAPI !== 'undefined'){
+              const bal = await CreatrixAPI.Credits.getBalance();
+              if(bal?.total !== undefined){
+                document.querySelectorAll('.cv, #creditsCount').forEach(el => el.textContent = bal.total);
+              }
+            }
+          } else if(status.status === 'failed'){
+            setBtn('✅ Influencer saved! (Image failed)');
+            btn.style.background = 'linear-gradient(135deg,var(--accent3),var(--accent2))';
+            btn.disabled = false;
+            btn.onclick = () => { window.location.href = 'creatrix-my-influencers.html'; };
+            showToast('⚠️', 'Partial Success', 'Influencer saved but image failed. Try regenerating.');
+          } else {
+            // Still processing — poll again
+            const dotCount = (attempts % 3) + 1;
+            setBtn(spinner + '&nbsp; AI is painting your influencer' + '.'.repeat(dotCount));
+            setTimeout(poll, 5000);
+          }
+        } catch(pollErr){
+          console.warn('Poll error:', pollErr);
+          setTimeout(poll, 5000);
+        }
+      };
+
+      setTimeout(poll, 5000);
+
+    } else {
+      // No job ID returned — might be instant or different response format
+      setBtn('✅ Influencer created!');
+      btn.style.background = 'linear-gradient(135deg,var(--accent3),var(--accent2))';
+      btn.disabled = false;
+      btn.onclick = () => { window.location.href = 'creatrix-my-influencers.html'; };
+      showToast('✅', 'Done!', influencerName + ' added to My Influencers!');
+    }
 
   } catch(err) {
     console.error('generate error:', err);
-    btn.innerHTML='❌ Failed. Try again';
-    btn.disabled=false;
+    setBtn('❌ ' + (err.message || 'Failed. Try again'));
+    btn.disabled = false;
   }
+}
+
+// ── TOAST HELPER (if not already defined) ──
+function showToast(icon, title, sub){
+  const t = document.getElementById('toast');
+  if(!t) return;
+  const ti = t.querySelector('.toast-icon');
+  const tt = t.querySelector('.toast-t');
+  const ts = t.querySelector('.toast-s');
+  if(ti) ti.textContent = icon;
+  if(tt) tt.textContent = title;
+  if(ts) ts.textContent = sub;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4500);
 }
 
 // ── INIT ──
