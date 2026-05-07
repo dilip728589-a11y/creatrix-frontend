@@ -402,6 +402,62 @@ document.getElementById('deleteModal').addEventListener('click', function(e) {
 });
 
 render(creations);
+
+// ══════════════════════════════════════
+// BACKEND INTEGRATION
+// ══════════════════════════════════════
+async function loadRealCreations() {
+  if (typeof CreatrixAPI === 'undefined' || !CreatrixAPI.Auth.isLoggedIn()) return;
+
+  try {
+    const data = await CreatrixAPI.Creations.list();
+    if (!data || !data.creations || data.creations.length === 0) return;
+
+    // Map backend data to card format
+    const realCreations = data.creations.map(c => ({
+      id: c.id,
+      title: c.type.charAt(0).toUpperCase() + c.type.slice(1) + ' — ' + formatDate(c.created_at),
+      type: c.type,
+      influencer: 'My Influencer',
+      style: c.type,
+      dur: '0:15',
+      format: 'portrait',
+      date: c.created_at,
+      img: c.thumbnail_url || 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80',
+      url: c.url,
+      status: c.status
+    }));
+
+    // Replace static with real
+    filtered = [...realCreations];
+    document.getElementById('pageCount').textContent = realCreations.length + ' creations';
+    render(realCreations);
+  } catch(err) {
+    console.error('loadRealCreations:', err);
+  }
+}
+
+// Override downloadItem to use real URL
+const _origDownload = window.downloadItem;
+window.downloadItem = function(id) {
+  const allCreations = filtered;
+  const item = allCreations.find(c => c.id == id);
+  if (item && item.url) {
+    const a = document.createElement('a');
+    a.href = item.url;
+    a.download = (item.title || 'creation') + '.mp4';
+    a.target = '_blank';
+    a.click();
+  } else if (_origDownload) {
+    _origDownload(id);
+  }
+};
+
+// Load on page ready
+document.addEventListener('DOMContentLoaded', () => {
+  loadRealCreations();
+});
 </script>
+<script src="api.js"></script>
 </body>
 </html>
