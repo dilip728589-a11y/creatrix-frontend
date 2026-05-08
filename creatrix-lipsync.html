@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type="text/javascript">
-(function(c,l,a,r,i,t,y){
-c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window, document, "clarity", "script", "wnqtcqu7ae");
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lip Sync — Creatrix AI</title>
@@ -218,6 +211,672 @@ input[type=file]{display:none;}
 .inf-upload-card.has-img .iuc-label{color:var(--accent3);}
 
 </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <a href="creatrix-dashboard.html" class="back-btn">← Dashboard</a>
+    <div class="tb-div"></div>
+    <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
+  </div>
+  <div class="credits-pill"><span class="cv" id="creditsCount">--</span><span class="cl">credits</span></div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <a href="creatrix-video-generator.html" class="tab">🎬 AI Video</a>
+  <div class="tab active">👄 Lip Sync</div>
+  <a href="creatrix-video-generator.html" class="tab">🕹️ Motion Control</a>
+  <a href="creatrix-video-generator.html" class="tab">📸 AI Headshot</a>
+  <a href="creatrix-video-generator.html" class="tab">🎥 UGC Creator</a>
+</div>
+
+<div class="page-wrap">
+
+  <!-- ══ LEFT PANEL ══ -->
+  <div class="left-panel">
+    <div class="section-title">👄 Lip Sync</div>
+    <div class="section-sub">Upload audio or type a script — AI will sync your influencer's lips perfectly to every word.</div>
+
+    <!-- STEP 1: SELECT INFLUENCER -->
+    <div class="form-group">
+      <div class="form-label">Step 1 · Select Influencer <span class="req">*required</span></div>
+      <div class="inf-grid" id="infGrid"></div>
+    </div>
+
+    <!-- STEP 2: AUDIO SOURCE -->
+    <div class="form-group">
+      <div class="form-label">Step 2 · Audio Source <span class="req">*required</span></div>
+      <div class="source-tabs">
+        <div class="source-tab active" onclick="switchSource('upload',this)">🎵 Upload Audio</div>
+        <div class="source-tab" onclick="switchSource('script',this)">📝 Type Script</div>
+        <div class="source-tab" onclick="switchSource('url',this)">🔗 Audio URL</div>
+      </div>
+
+      <!-- Upload -->
+      <div id="src-upload">
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('audioFile').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+          <div id="uploadDefault">
+            <div class="uz-icon">🎵</div>
+            <div class="uz-title">Drop your audio file here</div>
+            <div class="uz-sub">MP3, WAV, M4A, OGG · Max 50MB</div>
+            <div class="uz-btn">📂 Browse Files</div>
+          </div>
+          <div class="uz-file-info" id="fileInfo">
+            <div class="uz-file-icon">🎵</div>
+            <div>
+              <div class="uz-file-name" id="fileName">audio.mp3</div>
+              <div class="uz-file-size" id="fileSize">2.4 MB</div>
+            </div>
+            <div class="uz-remove" onclick="event.stopPropagation();removeFile()" title="Remove">✕</div>
+          </div>
+        </div>
+        <div class="waveform" id="waveform" style="display:none;">
+          <div class="wave-bar" style="animation-delay:0s;"></div>
+          <div class="wave-bar" style="animation-delay:0.1s;"></div>
+          <div class="wave-bar" style="animation-delay:0.2s;"></div>
+          <div class="wave-bar" style="animation-delay:0.05s;"></div>
+          <div class="wave-bar" style="animation-delay:0.15s;"></div>
+          <div class="wave-bar" style="animation-delay:0.25s;"></div>
+          <div class="wave-bar" style="animation-delay:0.08s;"></div>
+          <div class="wave-bar" style="animation-delay:0.18s;"></div>
+          <div class="wave-bar" style="animation-delay:0.12s;"></div>
+          <div class="wave-bar" style="animation-delay:0.22s;"></div>
+          <div class="wave-bar" style="animation-delay:0.03s;"></div>
+          <div class="wave-bar" style="animation-delay:0.13s;"></div>
+          <div class="wave-bar" style="animation-delay:0.07s;"></div>
+          <div class="wave-bar" style="animation-delay:0.17s;"></div>
+          <div class="wave-bar" style="animation-delay:0.09s;"></div>
+          <div class="wave-bar" style="animation-delay:0.19s;"></div>
+          <div class="wave-bar" style="animation-delay:0.04s;"></div>
+          <div class="wave-bar" style="animation-delay:0.14s;"></div>
+          <div class="wave-bar" style="animation-delay:0.06s;"></div>
+          <div class="wave-bar" style="animation-delay:0.16s;"></div>
+        </div>
+        <input type="file" id="audioFile" accept=".mp3,.wav,.m4a,.ogg,.aac" onchange="handleFileSelect(this)">
+      </div>
+
+      <!-- Script -->
+      <div id="src-script" style="display:none;">
+        <div class="script-wrap">
+          <textarea class="script-ta" id="scriptText" rows="5" maxlength="1000" placeholder="Type what you want your influencer to say...&#10;&#10;e.g. Hey guys! Welcome back to my channel. Today I'm going to show you my absolute favourite skincare routine that transformed my skin in just 7 days!" oninput="updateCharCount(this)"></textarea>
+          <div class="char-count"><span id="charCount">0</span> / 1000 characters</div>
+        </div>
+        <!-- AI Voice selector for script mode -->
+        <div style="margin-top:1.1rem;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;">AI Voice</div>
+          <div class="voice-grid">
+            <div class="voice-card sel" onclick="pickVoice(this,'Aria — Warm & Friendly')">
+              <div class="vc-emoji">😊</div>
+              <div class="vc-name">Aria</div>
+              <div class="vc-desc">Warm & Friendly</div>
+            </div>
+            <div class="voice-card" onclick="pickVoice(this,'Luna — Soft & Dreamy')">
+              <div class="vc-emoji">🌙</div>
+              <div class="vc-name">Luna</div>
+              <div class="vc-desc">Soft & Dreamy</div>
+            </div>
+            <div class="voice-card" onclick="pickVoice(this,'Nova — Bold & Confident')">
+              <div class="vc-emoji">⚡</div>
+              <div class="vc-name">Nova</div>
+              <div class="vc-desc">Bold & Confident</div>
+            </div>
+            <div class="voice-card" onclick="pickVoice(this,'Zara — Seductive & Deep')">
+              <div class="vc-emoji">💋</div>
+              <div class="vc-name">Zara</div>
+              <div class="vc-desc">Seductive & Deep</div>
+            </div>
+            <div class="voice-card" onclick="pickVoice(this,'Maya — Energetic & Fun')">
+              <div class="vc-emoji">🔥</div>
+              <div class="vc-name">Maya</div>
+              <div class="vc-desc">Energetic & Fun</div>
+            </div>
+            <div class="voice-card" onclick="pickVoice(this,'Priya — Natural & Clear')">
+              <div class="vc-emoji">🌸</div>
+              <div class="vc-name">Priya</div>
+              <div class="vc-desc">Natural & Clear</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- URL -->
+      <div id="src-url" style="display:none;">
+        <input class="url-input" type="url" placeholder="Paste audio URL... https://example.com/audio.mp3" oninput="updateSummary()">
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:6px;">Supports direct links to MP3, WAV, M4A files</div>
+      </div>
+    </div>
+
+    <!-- STEP 3: LANGUAGE -->
+    <div class="form-group">
+      <div class="form-label">Step 3 · Language</div>
+      <div class="chip-grid">
+        <div class="chip sel" onclick="pickChip(this,'lang','Hindi')">🇮🇳 Hindi</div>
+        <div class="chip" onclick="pickChip(this,'lang','English')">🇬🇧 English</div>
+        <div class="chip" onclick="pickChip(this,'lang','Spanish')">🇪🇸 Spanish</div>
+        <div class="chip" onclick="pickChip(this,'lang','French')">🇫🇷 French</div>
+        <div class="chip" onclick="pickChip(this,'lang','Arabic')">🇦🇪 Arabic</div>
+        <div class="chip" onclick="pickChip(this,'lang','Korean')">🇰🇷 Korean</div>
+        <div class="chip" onclick="pickChip(this,'lang','Japanese')">🇯🇵 Japanese</div>
+        <div class="chip" onclick="pickChip(this,'lang','Portuguese')">🇧🇷 Portuguese</div>
+      </div>
+    </div>
+
+    <!-- STEP 4: VIDEO QUALITY -->
+    <div class="form-group">
+      <div class="form-label">Step 4 · Video Quality</div>
+      <div class="chip-grid">
+        <div class="chip sel" onclick="pickChip(this,'quality','Standard 720p')">📱 Standard 720p</div>
+        <div class="chip" onclick="pickChip(this,'quality','HD 1080p')">✨ HD 1080p <span style="font-size:0.62rem;color:var(--accent);">+1cr</span></div>
+      </div>
+    </div>
+
+    <!-- STEP 5: OPTIONS -->
+    <div class="form-group">
+      <div class="form-label">Step 5 · Options</div>
+      <div class="toggle-row">
+        <div><div class="ti-name">Auto Captions</div><div class="ti-sub">Add animated subtitles to video</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="ti-name">Background Music</div><div class="ti-sub">Add soft background music</div></div>
+        <label class="toggle"><input type="checkbox"><span class="tslider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="ti-name">Remove Watermark</div><div class="ti-sub">Clean output without Creatrix logo</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+      </div>
+    </div>
+
+    <!-- RECENT LIP SYNC VIDEOS -->
+    <div class="recent-section">
+      <div class="rs-head">
+        <div class="rs-title">Recent Lip Sync Videos</div>
+        <a href="creatrix-dashboard.html" class="rs-link">View all →</a>
+      </div>
+      <div class="recent-grid" id="recentGrid"></div>
+    </div>
+
+    <!-- Cost -->
+    <div class="cost-box" style="margin-top:1.75rem;">
+      <div class="cb-left">Cost: <strong id="costLabel">4 credits</strong></div>
+      <div class="cb-right"><span id="creditsRemaining">--</span> remaining</div>
+    </div>
+
+    <!-- Generate -->
+    <button class="gen-btn" onclick="generate()" style="margin-top:0.75rem;">👄 Generate Lip Sync · 4 credits</button>
+
+  <!-- Hidden elements needed by JS (summary + preview) -->
+<div style="display:none;">
+  <div id="videoArea"></div>
+  <div id="sv-inf"></div>
+  <div id="sv-source"></div>
+  <div id="sv-lang"></div>
+  <div id="sv-quality"></div>
+</div>
+
+</div><!-- close page-wrap -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-ring"></div>
+  <div class="loading-title">Syncing Lips...</div>
+  <div class="loading-sub">AI is analysing audio and syncing lips. ~30–60s</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loadBar"></div></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  CREATRIX — Lip Sync (Backend Connected)
+// ═══════════════════════════════════════════
+
+const API_BASE = 'https://creatrix-backend-production.up.railway.app';
+
+let selectedInf = null;
+let currentSource = 'upload';
+let hasFile = false;
+let audioFile = null;
+let cfg = { lang: 'Hindi', quality: 'Standard 720p' };
+
+// ── TOKEN ──
+function getToken() {
+  return localStorage.getItem('creatrix_access_token') ||
+         localStorage.getItem('creatrix_token') ||
+         localStorage.getItem('token') || null;
+}
+
+// ── AUTH GUARD ──
+if (!getToken()) window.location.href = 'creatrix-auth.html';
+
+// ── LOAD CREDITS ──
+async function loadCredits() {
+  try {
+    const res = await fetch(`${API_BASE}/api/credits/balance`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const val = data.total ?? data.credits ?? '--';
+    document.getElementById('creditsCount').textContent = val;
+    const rem = document.getElementById('creditsRemaining');
+    if (rem) rem.textContent = val;
+  } catch(e) { console.warn('Credits fetch failed:', e.message); }
+}
+
+// ── LOAD REAL INFLUENCERS ──
+async function loadInfluencers() {
+  const grid = document.getElementById('infGrid');
+
+  // Upload own image card — always first
+  grid.insertAdjacentHTML('beforeend', `
+    <div class="inf-upload-card" id="ownImageCard" onclick="document.getElementById('ownImageFile').click()">
+      <div class="iuc-icon">📸</div>
+      <div class="iuc-label">Upload Your Own</div>
+    </div>`);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/influencer/list`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data?.influencers || []);
+
+    if (list.length === 0) {
+      grid.insertAdjacentHTML('beforeend', `
+        <div style="grid-column:1/-1;font-size:0.78rem;color:var(--muted);padding:0.5rem;">
+          No influencers yet. <a href="creatrix-create-influencer.html" style="color:var(--accent2);">Create one →</a>
+        </div>`);
+      return;
+    }
+
+    list.forEach(inf => {
+      const settings = typeof inf.settings === 'string' ? JSON.parse(inf.settings) : (inf.settings || {});
+      const img = inf.avatar_url || inf.image_url ||
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(inf.name)}&background=784CFE&color=fff&size=200`;
+      const idStr = JSON.stringify(inf.id);
+      const nameStr = JSON.stringify(inf.name);
+      const imgStr = JSON.stringify(img);
+      const avatarStr = JSON.stringify(inf.avatar_url && inf.avatar_url.startsWith('http') ? inf.avatar_url : img);
+
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="inf-card" 
+             data-id="${inf.id}" 
+             data-name="${inf.name.replace(/"/g,'&quot;')}" 
+             data-img="${img}" 
+             data-avatar="${avatarStr.replace(/"/g,'&quot;')}"
+             onclick="selectInfCard(this)">
+          <img src="${img}" alt="${inf.name}" loading="lazy"
+               onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200'">
+          <div class="inf-card-name">${inf.name}</div>
+          <div class="inf-ck">✓</div>
+        </div>`);
+    });
+  } catch(e) {
+    console.error('Failed to load influencers:', e);
+    grid.insertAdjacentHTML('beforeend', `
+      <div style="grid-column:1/-1;font-size:0.78rem;color:var(--muted);">
+        Failed to load influencers. <span style="color:var(--accent2);cursor:pointer;" onclick="location.reload()">Retry</span>
+      </div>`);
+  }
+}
+
+// ── LOAD RECENT LIPSYNC CREATIONS ──
+async function loadRecent() {
+  try {
+    const res = await fetch(`${API_BASE}/api/creations/list?type=lipsync`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data?.creations || []);
+    const grid = document.getElementById('recentGrid');
+    grid.innerHTML = '';
+
+    if (list.length === 0) {
+      grid.innerHTML = `<div style="color:var(--muted);font-size:0.82rem;padding:1rem 0;">No lip sync videos yet.</div>`;
+      return;
+    }
+
+    list.slice(0, 8).forEach(r => {
+      const videoUrl = r.url || r.result_url || '';
+      const name = r.influencer_name || r.name || 'Lip Sync';
+      const date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '';
+
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="rc" onclick="window.open('${videoUrl}','_blank')" style="cursor:pointer;">
+          <div class="rc-thumb" style="background:linear-gradient(135deg,#1C1C32,#0F0F1E);display:flex;align-items:center;justify-content:center;">
+            ${videoUrl ? `<video src="${videoUrl}" style="width:100%;height:100%;object-fit:cover;" preload="metadata"></video>` : '<div style="font-size:2rem;opacity:0.3;">👄</div>'}
+            <div class="rc-badge">👄 Lip Sync</div>
+          </div>
+          <div class="rc-info">
+            <div class="rc-name">${name}</div>
+            <div class="rc-meta">${cfg.lang} · ${date}</div>
+            <div class="rc-actions">
+              <div class="rc-btn" onclick="event.stopPropagation();window.open('${videoUrl}','_blank')">⬇ Download</div>
+              <div class="rc-btn" onclick="event.stopPropagation();navigator.clipboard.writeText('${videoUrl}').then(()=>alert('Copied!'))">📤 Copy</div>
+            </div>
+          </div>
+        </div>`);
+    });
+  } catch(e) { console.warn('Recent load failed:', e.message); }
+}
+
+// ── SELECT INFLUENCER (via data attributes) ──
+function selectInfCard(el) {
+  const id = el.dataset.id;
+  const name = el.dataset.name;
+  const img = el.dataset.img;
+  const avatar = el.dataset.avatar || img;
+  selectInf(el, id, name, img, avatar);
+}
+
+// ── SELECT INFLUENCER ──
+function selectInf(el, id, name, img, avatarUrl) {
+  document.querySelectorAll('.inf-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedInf = { id, name, img, avatarUrl: avatarUrl || img };
+  const area = document.getElementById('videoArea');
+  area.innerHTML = `
+    <img class="va-img" src="${img}" alt="${name}"
+         onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=784CFE&color=fff&size=400'">
+    <div class="va-overlay"></div>
+    <div class="lips-anim" id="lipsAnim">
+      <div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div>
+      <div class="la-bar"></div><div class="la-bar"></div>
+    </div>
+    <div class="va-inf-name show" id="vaName">${name}</div>`;
+  document.getElementById('sv-inf').textContent = name;
+}
+
+// ── UPLOAD AUDIO TO GET PUBLIC URL ──
+async function uploadAudioFile(file) {
+  // Convert to base64
+  const base64 = await fileToBase64(file);
+
+  const res = await fetch(`${API_BASE}/api/upload`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`
+    },
+    body: JSON.stringify({
+      base64: base64,
+      filename: file.name.replace(/\.[^/.]+$/, ''),
+      mimetype: file.type || 'audio/mpeg'
+    })
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || 'Audio upload failed');
+  }
+  const data = await res.json();
+  return data.url;
+}
+
+// ── GENERATE ──
+async function generate() {
+  if (!selectedInf) { alert('Please select an influencer first!'); return; }
+
+  if (currentSource === 'upload' && !hasFile) {
+    alert('Please upload an audio file!'); return;
+  }
+  if (currentSource === 'script' && !document.getElementById('scriptText').value.trim()) {
+    document.getElementById('scriptText').focus();
+    document.getElementById('scriptText').style.borderColor = 'var(--accent)';
+    setTimeout(() => document.getElementById('scriptText').style.borderColor = 'var(--border2)', 2000);
+    alert('Please type your script!'); return;
+  }
+  if (currentSource === 'url' && !document.querySelector('#src-url input').value.trim()) {
+    alert('Please paste an audio URL!'); return;
+  }
+
+  if (!getToken()) { window.location.href = 'creatrix-auth.html'; return; }
+
+  const overlay = document.getElementById('loadingOverlay');
+  const bar = document.getElementById('loadBar');
+  const loadTitle = document.querySelector('.loading-title');
+  const loadSub = document.querySelector('.loading-sub');
+
+  overlay.classList.add('show');
+  bar.style.width = '0%';
+
+  try {
+    let audioUrl = '';
+
+    // ── Get audio URL ──
+    if (currentSource === 'upload' && audioFile) {
+      loadTitle.textContent = 'Uploading Audio...';
+      loadSub.textContent = 'Uploading audio file to server...';
+      bar.style.width = '20%';
+      audioUrl = await uploadAudioFile(audioFile);
+    } else if (currentSource === 'url') {
+      audioUrl = document.querySelector('#src-url input').value.trim();
+    } else if (currentSource === 'script') {
+      overlay.classList.remove('show');
+      alert('Script/TTS feature coming soon! Please use "Audio URL" tab and paste a direct MP3 link.\n\nExample: https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+      return;
+    }
+
+    loadTitle.textContent = 'Starting Lip Sync...';
+    loadSub.textContent = 'Sending to AI model...';
+    bar.style.width = '35%';
+
+    const hd = cfg.quality?.includes('1080') || false;
+
+    // Use influencer's real avatar_url if available, not base64
+    const imageUrl = (selectedInf.avatarUrl && selectedInf.avatarUrl.startsWith('http'))
+      ? selectedInf.avatarUrl
+      : selectedInf.img;
+
+    const res = await fetch(`${API_BASE}/api/generate/lipsync`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({
+        image_url: imageUrl,
+        audio_url: audioUrl,
+        hd,
+        influencer_id: selectedInf.id !== 'custom' ? selectedInf.id : null
+      })
+    });
+
+    const job = await res.json();
+
+    if (job.error) {
+      overlay.classList.remove('show');
+      alert('Error: ' + job.error);
+      return;
+    }
+
+    // ── Poll for result ──
+    loadTitle.textContent = 'Syncing Lips...';
+    loadSub.textContent = 'AI is analysing audio and syncing lips. ~30–60s';
+    bar.style.width = '50%';
+
+    const jobId = job.job_id || job.id;
+    let attempts = 0;
+    const maxAttempts = 2160; // 3 hours (2160 x 5sec)
+
+    const poll = async () => {
+      attempts++;
+      if (attempts > maxAttempts) {
+        overlay.classList.remove('show');
+        alert('Generation timed out. Check My Creations later — it may still complete.');
+        return;
+      }
+
+      const statusRes = await fetch(`${API_BASE}/api/generate/status/${jobId}`, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+      const status = await statusRes.json();
+
+      const pct = Math.min(50 + (attempts / maxAttempts) * 45, 95);
+      bar.style.width = pct + '%';
+
+      if (status.status === 'done' || status.result_url || status.creation?.url) {
+        bar.style.width = '100%';
+        overlay.classList.remove('show');
+
+        const resultUrl = status.result_url || status.output_url || status.creation?.url;
+        if (resultUrl) {
+          // Show video in modal
+          const modal = document.createElement('div');
+          modal.style.cssText = 'position:fixed;inset:0;background:rgba(4,4,10,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;';
+          modal.innerHTML = `
+            <div style="font-family:var(--font-h);font-size:1.2rem;font-weight:700;color:var(--accent3);">🎉 Lip Sync Ready!</div>
+            <video src="${resultUrl}" controls autoplay style="max-height:70vh;max-width:100%;border-radius:16px;box-shadow:0 0 40px rgba(255,60,172,0.3);"></video>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+              <a href="${resultUrl}" download target="_blank" style="padding:0.75rem 1.5rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:12px;font-family:var(--font-h);font-weight:700;text-decoration:none;font-size:0.9rem;">⬇ Download Video</a>
+              <button onclick="this.closest('div[style]').remove()" style="padding:0.75rem 1.5rem;background:var(--card2);border:1px solid var(--border2);color:var(--muted);border-radius:12px;font-family:var(--font-h);font-weight:700;cursor:pointer;font-size:0.9rem;">✕ Close</button>
+            </div>`;
+          modal.addEventListener('click', e => { if(e.target === modal) modal.remove(); });
+          document.body.appendChild(modal);
+        }
+
+        // Refresh credits & recent
+        loadCredits();
+        loadRecent();
+
+      } else if (status.status === 'failed') {
+        overlay.classList.remove('show');
+        alert('Generation failed: ' + (status.error || 'Unknown error. Please try again.'));
+      } else {
+        setTimeout(poll, 8000);
+      }
+    };
+
+    setTimeout(poll, 15000); // Wait 15s before first check
+
+  } catch(err) {
+    overlay.classList.remove('show');
+    console.error('Lipsync error:', err);
+    alert('Failed: ' + (err.message || 'Please try again.'));
+  }
+}
+
+// ── SOURCE SWITCHING ──
+function switchSource(type, el) {
+  document.querySelectorAll('.source-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentSource = type;
+  document.getElementById('src-upload').style.display = type === 'upload' ? 'block' : 'none';
+  document.getElementById('src-script').style.display = type === 'script' ? 'block' : 'none';
+  document.getElementById('src-url').style.display    = type === 'url'    ? 'block' : 'none';
+  const sourceMap = { upload: 'Upload', script: 'Script', url: 'URL' };
+  document.getElementById('sv-source').textContent = sourceMap[type];
+  const anim = document.getElementById('lipsAnim');
+  if (anim) anim.className = 'lips-anim' + (type === 'script' ? ' show' : '');
+}
+
+// ── FILE HANDLING ──
+function handleFileSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  audioFile = file;
+  setFile(file.name, (file.size / 1024 / 1024).toFixed(1) + ' MB');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('audio')) {
+    audioFile = file;
+    setFile(file.name, (file.size / 1024 / 1024).toFixed(1) + ' MB');
+  }
+}
+function setFile(name, size) {
+  hasFile = true;
+  document.getElementById('uploadDefault').style.display = 'none';
+  const fi = document.getElementById('fileInfo');
+  fi.classList.add('show');
+  document.getElementById('fileName').textContent = name;
+  document.getElementById('fileSize').textContent = size;
+  document.getElementById('uploadZone').classList.add('has-file');
+  document.getElementById('waveform').style.display = 'flex';
+  const anim = document.getElementById('lipsAnim');
+  if (anim) anim.classList.add('show');
+}
+function removeFile() {
+  hasFile = false;
+  audioFile = null;
+  document.getElementById('uploadDefault').style.display = 'block';
+  document.getElementById('fileInfo').classList.remove('show');
+  document.getElementById('uploadZone').classList.remove('has-file');
+  document.getElementById('waveform').style.display = 'none';
+  document.getElementById('audioFile').value = '';
+  const anim = document.getElementById('lipsAnim');
+  if (anim) anim.classList.remove('show');
+}
+
+// ── VOICE ──
+function pickVoice(el, name) {
+  document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+// ── CHIPS ──
+function pickChip(el, group, val) {
+  el.closest('.chip-grid').querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  cfg[group] = val;
+  if (group === 'lang') document.getElementById('sv-lang').textContent = val;
+  if (group === 'quality') {
+    document.getElementById('sv-quality').textContent = val.split(' ')[0];
+    const cost = val.includes('1080') ? 5 : 4;
+    document.getElementById('costLabel').textContent = cost + ' credits';
+    document.querySelector('.gen-btn').textContent = '👄 Generate Lip Sync · ' + cost + ' credits';
+  }
+}
+
+// ── CHAR COUNT ──
+function updateCharCount(el) {
+  document.getElementById('charCount').textContent = el.value.length;
+}
+
+function updateSummary() {}
+
+// ── OWN IMAGE UPLOAD ──
+function handleOwnImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const src = e.target.result;
+    const card = document.getElementById('ownImageCard');
+    card.classList.add('has-img');
+    card.style.cssText = 'position:relative;padding:0;overflow:hidden;border:2px solid var(--accent2);border-radius:14px;';
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:top;border-radius:11px;display:block;';
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:0.6rem;font-weight:700;color:var(--accent3);';
+    lbl.textContent = '✓ Your Image';
+    card.innerHTML = '';
+    card.appendChild(img);
+    card.appendChild(lbl);
+    document.querySelectorAll('.inf-card').forEach(c => c.classList.remove('sel'));
+    selectedInf = { id: 'custom', name: 'Your Image', img: src };
+    const area = document.getElementById('videoArea');
+    area.innerHTML = `
+      <img class="va-img" src="${src}" alt="Your Image">
+      <div class="va-overlay"></div>
+      <div class="lips-anim" id="lipsAnim">
+        <div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div>
+        <div class="la-bar"></div><div class="la-bar"></div>
+      </div>
+      <div class="va-inf-name show" id="vaName">Your Image</div>`;
+    document.getElementById('sv-inf').textContent = 'Your Image';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── INIT ──
+loadCredits();
+loadInfluencers();
+loadRecent();
+</script>
+
 <input type="file" id="ownImageFile" accept="image/*" style="display:none" onchange="handleOwnImage(this)">
 <script src="api.js"></script>
 </body>
