@@ -451,9 +451,6 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     <a class="nav-item" onclick="showPage('credits', this)">
       <span class="nav-icon">💎</span> Credits & Billing
     </a>
-    <a class="nav-item" onclick="showPage('overview', this)">
-      <span class="nav-icon">⚙️</span> Settings
-    </a>
   </nav>
 
   <div class="sidebar-bottom">
@@ -508,7 +505,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
       <div id="searchResults" style="display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--card2);border:1px solid var(--border2);border-radius:14px;padding:0.5rem;z-index:999;max-height:280px;overflow-y:auto;"></div>
     </div>
     <div class="topbar-btns">
-      <a href="creatrix-ai-v3.html" class="tb-btn" title="Go to Homepage" style="text-decoration:none;">🏠</a>
+      <a href="creatrix-ai-v3.html" class="tb-btn" title="Go to Homepage" style="text-decoration:none;" onclick="event.preventDefault();window.open('creatrix-ai-v3.html','_blank')">🏠</a>
       <div class="tb-btn tb-notif" onclick="showToast('🔔','Coming Soon!','Notifications will be available soon.')" title="Notifications">🔔</div>
       <div class="tb-btn" onclick="window.location='mailto:support@creatrixai.com'" title="Contact Us" style="cursor:pointer;">📧</div>
       <div class="tb-btn" onclick="openSettings()" title="Settings" style="cursor:pointer;">⚙️</div>
@@ -1281,6 +1278,90 @@ function showToast(icon, title, sub) {
   toast.style.transform = 'translateY(0)';
   toast.style.opacity = '1';
   setTimeout(() => { toast.style.transform = 'translateY(80px)'; toast.style.opacity = '0'; }, 3500);
+}
+
+// ── LOAD REAL STATS ──
+async function loadDashboardStats() {
+  try {
+    const token = localStorage.getItem('creatrix_access_token') || localStorage.getItem('token');
+    if (!token) return;
+
+    // Influencers count
+    const infRes = await fetch('https://creatrix-backend-production.up.railway.app/api/influencer/list', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const infData = await infRes.json();
+    const infList = Array.isArray(infData) ? infData : (infData?.influencers || []);
+    const infEl = document.getElementById('stat-influencers');
+    const infSubEl = document.getElementById('stat-influencers-sub');
+    if (infEl) infEl.textContent = infList.length;
+    if (infSubEl) infSubEl.textContent = infList.length + ' created';
+
+    // Creations count
+    const crRes = await fetch('https://creatrix-backend-production.up.railway.app/api/creations/list', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const crData = await crRes.json();
+    const crList = Array.isArray(crData) ? crData : (crData?.creations || []);
+    const doneCount = crList.filter(c => c.status === 'done').length;
+    const crEl = document.getElementById('stat-creations');
+    const crSubEl = document.getElementById('stat-creations-sub');
+    if (crEl) crEl.textContent = crList.length;
+    if (crSubEl) crSubEl.textContent = doneCount + ' completed';
+
+    // Credits
+    const credRes = await fetch('https://creatrix-backend-production.up.railway.app/api/credits/balance', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const credData = await credRes.json();
+    const total = credData.total ?? credData.credits ?? 0;
+    const cbEl = document.getElementById('stat-credits-balance');
+    const crRemEl = document.getElementById('stat-credits-remaining');
+    if (cbEl) cbEl.textContent = total;
+    if (crRemEl) crRemEl.textContent = total + ' available';
+
+    // Recent creations
+    loadRecentCreations(crList.slice(0, 5));
+
+    // Update badge
+    const badge = document.querySelector('.nav-badge.green');
+    if (badge) badge.textContent = crList.length;
+
+  } catch(err) {
+    console.warn('Stats load error:', err.message);
+  }
+}
+
+function loadRecentCreations(list) {
+  const container = document.getElementById('recentCreationsList');
+  if (!container) return;
+  const typeIcons = { video:'🎬', lipsync:'👄', motion:'🕹️', ugc:'🎥', image:'🖼️' };
+  const typeColors = {
+    video:'rgba(255,60,172,0.2),rgba(120,76,254,0.2)',
+    lipsync:'rgba(0,245,212,0.15),rgba(120,76,254,0.1)',
+    motion:'rgba(120,76,254,0.2),rgba(0,245,212,0.1)',
+    ugc:'rgba(255,209,102,0.15),rgba(255,60,172,0.1)',
+    image:'rgba(59,130,246,0.2),rgba(120,76,254,0.1)'
+  };
+  if (list.length === 0) {
+    container.innerHTML = `<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.85rem;">No creations yet. <a href="creatrix-create-influencer.html" style="color:var(--accent2);">Create your first!</a></div>`;
+    return;
+  }
+  container.innerHTML = list.map(c => {
+    const icon = typeIcons[c.type] || '🎬';
+    const color = typeColors[c.type] || typeColors.video;
+    const date = c.created_at ? new Date(c.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '';
+    const statusClass = c.status === 'done' ? 'status-done' : c.status === 'processing' ? 'status-proc' : 'status-draft';
+    const statusLabel = c.status === 'done' ? 'Done' : c.status === 'processing' ? 'Processing' : 'Draft';
+    return `<div class="creation-item" style="cursor:${c.url?'pointer':'default'}" onclick="${c.url?`window.open('${c.url}','_blank')`:''}">
+      <div class="creation-thumb" style="background:linear-gradient(135deg,${color})">${icon}</div>
+      <div class="creation-info">
+        <div class="creation-name">${c.type ? c.type.charAt(0).toUpperCase()+c.type.slice(1) : 'Creation'} · ${date}</div>
+        <div class="creation-meta">${c.type || 'Creation'} · ${date}</div>
+      </div>
+      <div class="creation-status ${statusClass}">${statusLabel}</div>
+    </div>`;
+  }).join('');
 }
 
 // ── INIT ──

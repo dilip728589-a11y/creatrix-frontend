@@ -444,8 +444,9 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     <li><a href="#pricing">Pricing</a></li>
   </ul>
   <div class="nav-right">
-    <a href="creatrix-auth.html" class="btn-login">Log in</a>
-    <a href="creatrix-auth.html" class="btn-signup">Sign Up Free</a>
+    <a href="creatrix-auth.html" class="btn-login" id="navLogin">Log in</a>
+    <a href="creatrix-auth.html" class="btn-signup" id="navSignup">Sign Up Free</a>
+    <a href="creatrix-dashboard.html" class="btn-signup" id="navDashboard" style="display:none;background:linear-gradient(135deg,#784CFE,#FF3CAC);">🚀 Dashboard</a>
   </div>
 </nav>
 
@@ -1010,5 +1011,18 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 
 
+<script>
+// Show Dashboard button if logged in
+if (localStorage.getItem("creatrix_access_token") || localStorage.getItem("token")) {
+  document.addEventListener("DOMContentLoaded", function() {
+    const login = document.getElementById("navLogin");
+    const signup = document.getElementById("navSignup");
+    const dash = document.getElementById("navDashboard");
+    if (login) login.style.display = "none";
+    if (signup) signup.style.display = "none";
+    if (dash) dash.style.display = "inline-flex";
+  });
+}
+</script>
 </body>
 </html>
