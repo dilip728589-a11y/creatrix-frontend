@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type="text/javascript">
-(function(c,l,a,r,i,t,y){
-c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window, document, "clarity", "script", "wnqtcqu7ae");
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Motion Control — Creatrix AI</title>
@@ -211,6 +204,610 @@ input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 5px rgba(120,76,2
 .slot-formats{font-size:0.62rem;color:var(--muted2);text-align:center;background:var(--card2);padding:3px 8px;border-radius:100px;margin-top:2px;}
 
 </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <a href="creatrix-dashboard.html" class="back-btn">← Dashboard</a>
+    <div class="tb-div"></div>
+    <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
+  </div>
+  <div class="credits-pill"><span class="cv" id="creditsCount">--</span><span class="cl">credits</span></div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <a href="creatrix-video-generator.html" class="tab">🎬 AI Video</a>
+  <a href="creatrix-lipsync.html" class="tab">👄 Lip Sync</a>
+  <div class="tab active">🕹️ Motion Control</div>
+  <a href="creatrix-video-generator.html" class="tab">📸 AI Headshot</a>
+  <a href="creatrix-video-generator.html" class="tab">🎥 UGC Creator</a>
+</div>
+
+<div class="page-wrap">
+
+  <!-- ══ LEFT PANEL ══ -->
+  <div class="left-panel">
+
+    <div class="section-title">🕹️ Motion Control</div>
+    <div class="section-sub">Upload an image of your AI influencer and bring it to life with realistic AI-powered motion.</div>
+
+    <!-- INFO BOX -->
+    <div class="info-box">
+      <div class="ib-title">ℹ️ How Motion Control Works</div>
+      <ul class="ib-list">
+        <li><strong style="color:var(--white);">Motion Reference</strong> — Upload a video or image showing the exact movement you want to copy (dance, walk, pose etc.)</li>
+        <li><strong style="color:var(--white);">Character Image</strong> — Upload your AI influencer's photo. The motion will be applied to them.</li>
+        <li>Motion video: MP4/MOV/GIF · max 50MB · 2–15 sec recommended</li>
+        <li>Character image: JPG/PNG · max 10MB · clear front-facing photo works best</li>
+        <li>AI analyzes the motion reference and transfers it onto your character</li>
+      </ul>
+    </div>
+
+    <!-- STEP 1: UPLOAD IMAGE -->
+    <div class="form-group">
+      <div class="form-label">Step 1 · Upload Image <span class="req">*required</span></div>
+      <div class="image-slots">
+        <!-- Slot 1 — Required -->
+        <div class="img-slot" id="slot1" onclick="triggerUpload(1)">
+          <div class="slot-badge required">Motion Reference</div>
+          <div class="slot-icon">🎬</div>
+          <div class="slot-label">Upload Movement</div>
+          <div class="slot-sub">Upload the movement you want to copy</div>
+          <div class="slot-overlay"><div class="slot-change">Change Image</div></div>
+          <div class="slot-remove" onclick="event.stopPropagation();removeSlot(1)">✕</div>
+        </div>
+        <!-- Slot 2 — Optional -->
+        <div class="img-slot optional" id="slot2" onclick="triggerUpload(2)">
+          <div class="slot-badge required" style="background:rgba(0,245,212,0.2);color:var(--accent3);border-color:rgba(0,245,212,0.3);">Character</div>
+          <div class="slot-icon">🧑‍🎤</div>
+          <div class="slot-label">Upload Image</div>
+          <div class="slot-sub">Upload character image to apply motion to</div>
+          <div class="slot-overlay"><div class="slot-change">Change Image</div></div>
+          <div class="slot-remove" onclick="event.stopPropagation();removeSlot(2)">✕</div>
+        </div>
+      </div>
+      <input type="file" id="upload1" accept="image/*,video/*,.mp4,.mov,.gif" onchange="handleSlotUpload(1,this)">
+      <input type="file" id="upload2" accept="image/*" onchange="handleSlotUpload(2,this)">
+    </div>
+
+        <!-- STEP 2: PROMPT -->
+    <div class="form-group">
+      <div class="form-label">Step 2 · Prompt <span style="font-size:0.62rem;text-transform:none;letter-spacing:0;color:var(--muted2);font-weight:400;">(optional)</span></div>
+      <div style="position:relative;">
+        <textarea id="promptBox" rows="4" style="width:100%;background:var(--card);border:1.5px solid var(--border2);color:var(--white);padding:0.9rem 1rem;border-radius:14px;font-size:0.88rem;font-family:var(--font-b);resize:none;outline:none;line-height:1.65;transition:border-color 0.2s;" placeholder="Describe the motion in detail...&#10;&#10;e.g. The woman is dancing energetically to upbeat music, moving her arms and hips with confidence" onfocus="this.style.borderColor='var(--accent2)'" onblur="this.style.borderColor='var(--border2)'"></textarea>
+        <div style="text-align:right;font-size:0.68rem;color:var(--muted2);margin-top:4px;"><span id="pCharCount">0</span> / 500</div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+        <span onclick="addPrompt('Dancing energetically to upbeat music')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">💃 Dancing</span>
+        <span onclick="addPrompt('Walking confidently on a runway')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">🚶 Walking</span>
+        <span onclick="addPrompt('Striking a powerful fashion pose')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📸 Posing</span>
+        <span onclick="addPrompt('Running through a scenic location')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">🏃 Running</span>
+        <span onclick="addPrompt('Waving and smiling at the camera')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">👋 Waving</span>
+        <span onclick="addPrompt('Doing yoga stretches gracefully')" style="font-size:0.68rem;padding:3px 9px;border-radius:100px;background:var(--card2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">🧘 Yoga</span>
+      </div>
+    </div>
+
+    <!-- STEP 3: MOTION AMOUNT -->
+    <div class="form-group">
+      <div class="form-label">Step 3 · Motion Amount</div>
+      <div class="motion-slider-wrap">
+        <div class="ms-header">
+          <span class="ms-title">Intensity</span>
+          <span class="ms-value" id="motionVal">5</span>
+        </div>
+        <input type="range" min="1" max="10" value="5" id="motionSlider" oninput="updateMotion(this)">
+        <div class="ms-labels">
+          <span class="ms-lbl">Subtle</span>
+          <span class="ms-lbl">Moderate</span>
+          <span class="ms-lbl">Intense</span>
+        </div>
+        <div class="ms-desc" id="motionDesc">Balanced natural motion — great for social media content</div>
+      </div>
+    </div>
+
+    <!-- STEP 5: DURATION -->
+    <div class="form-group">
+      <div class="form-label">Step 4 · Duration</div>
+      <div class="dur-grid">
+        <div class="dur-chip" onclick="pickDur(this,'5 sec')">5 sec</div>
+        <div class="dur-chip sel" onclick="pickDur(this,'8 sec')">8 sec</div>
+        <div class="dur-chip" onclick="pickDur(this,'10 sec')">10 sec</div>
+        <div class="dur-chip" onclick="pickDur(this,'15 sec')">15 sec</div>
+      </div>
+    </div>
+
+    <!-- STEP 6: OPTIONS -->
+    <div class="form-group">
+      <div class="form-label">Step 5 · Options</div>
+      <div class="toggle-row">
+        <div><div class="ti-name">HD Quality (1080p)</div><div class="ti-sub">+1 extra credit</div></div>
+        <label class="toggle"><input type="checkbox" id="hdToggle" onchange="updateCost()"><span class="tslider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="ti-name">Loop Video</div><div class="ti-sub">Seamlessly loop the output</div></div>
+        <label class="toggle"><input type="checkbox"><span class="tslider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="ti-name">Remove Watermark</div><div class="ti-sub">Clean output without logo</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+      </div>
+    </div>
+
+    <!-- RECENT -->
+    <div class="recent-section">
+      <div class="rs-head">
+        <div class="rs-title">Recent Motion Videos</div>
+        <a href="creatrix-dashboard.html" style="font-size:0.78rem;color:var(--accent2);text-decoration:none;">View all →</a>
+      </div>
+      <div class="recent-grid" id="recentGrid"></div>
+    </div>
+
+    <!-- Cost -->
+    <div class="cost-box" style="margin-top:1.75rem;">
+      <div class="cb-left">Cost: <strong id="costLabel">5 credits</strong></div>
+      <div class="cb-right"><span id="creditsRemaining">--</span> remaining</div>
+    </div>
+
+    <!-- Generate -->
+    <button class="gen-btn" id="genBtn" onclick="generate()" style="margin-top:0.75rem;">🕹️ Generate Motion Video · 5 credits</button>
+
+  </div>
+
+</div>
+
+<!-- Hidden elements needed by JS -->
+<div style="display:none;">
+  <div id="previewArea"></div>
+  <div id="sv-motion">Walking</div>
+  <div id="sv-intensity">5 / 10</div>
+  <div id="sv-dur">8 sec</div>
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-ring"></div>
+  <div class="loading-title">Generating Motion...</div>
+  <div class="loading-sub">AI is animating your image. ~30–60 seconds</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loadBar"></div></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  CREATRIX — Motion Control (Backend Connected)
+// ═══════════════════════════════════════════
+
+const API_BASE = 'https://creatrix-backend-production.up.railway.app';
+
+let slot1Img = null, slot2Img = null;
+let slot1File = null, slot2File = null;
+let currentMotion = 'Walking';
+let currentCamera = 'Static';
+let currentDur = '8 sec';
+
+const motionDescriptions = {
+  1:'Very subtle movement — almost still, just breathing',
+  2:'Minimal motion — gentle sway',
+  3:'Light natural movement',
+  4:'Moderate, smooth motion',
+  5:'Balanced natural motion — great for social media content',
+  6:'Active, lively movement',
+  7:'Dynamic, energetic motion',
+  8:'High energy, dramatic movement',
+  9:'Very intense, fast motion',
+  10:'Maximum intensity — extreme action'
+};
+
+// ── TOKEN ──
+function getToken() {
+  return localStorage.getItem('creatrix_access_token') ||
+         localStorage.getItem('creatrix_token') ||
+         localStorage.getItem('token') || null;
+}
+
+// ── AUTH GUARD ──
+if (!getToken()) window.location.href = 'creatrix-auth.html';
+
+// ── LOAD CREDITS ──
+async function loadCredits() {
+  try {
+    const res = await fetch(`${API_BASE}/api/credits/balance`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const val = data.total ?? data.credits ?? '--';
+    document.getElementById('creditsCount').textContent = val;
+    const rem = document.getElementById('creditsRemaining');
+    if (rem) rem.textContent = val;
+  } catch(e) { console.warn('Credits fetch failed:', e.message); }
+}
+
+// ── UPLOAD IMAGE TO SUPABASE ──
+async function uploadImageFile(file, prefix = 'motion') {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      try {
+        const base64 = e.target.result;
+        const res = await fetch(`${API_BASE}/api/upload`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({
+            base64,
+            filename: `${prefix}_${Date.now()}`,
+            mimetype: file.type || 'image/jpeg'
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        resolve(data.url);
+      } catch(err) { reject(err); }
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── LOAD RECENT ──
+async function loadRecent() {
+  try {
+    const res = await fetch(`${API_BASE}/api/creations/list?type=motion`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data?.creations || []);
+    const grid = document.getElementById('recentGrid');
+    grid.innerHTML = '';
+
+    if (list.length === 0) {
+      grid.innerHTML = `<div style="color:var(--muted);font-size:0.82rem;padding:1rem 0;">No motion videos yet.</div>`;
+      return;
+    }
+
+    list.slice(0, 8).forEach(r => {
+      const videoUrl = r.url || r.result_url || '';
+      const name = r.influencer_name || r.name || 'Motion Video';
+      const date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '';
+
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="rc" onclick="window.open('${videoUrl}','_blank')">
+          <div class="rc-thumb" style="background:linear-gradient(135deg,#1C1C32,#0F0F1E);display:flex;align-items:center;justify-content:center;">
+            ${videoUrl ? `<video src="${videoUrl}" style="width:100%;height:100%;object-fit:cover;" preload="metadata"></video>` : '<div style="font-size:2rem;opacity:0.3;">🕹️</div>'}
+            <div class="rc-badge">🕹️ Motion</div>
+          </div>
+          <div class="rc-info">
+            <div class="rc-name">${name}</div>
+            <div class="rc-meta">${date}</div>
+            <div class="rc-actions">
+              <div class="rc-btn" onclick="event.stopPropagation();window.open('${videoUrl}','_blank')">⬇ Download</div>
+              <div class="rc-btn" onclick="event.stopPropagation();navigator.clipboard.writeText('${videoUrl}').then(()=>alert('Copied!'))">📤 Copy</div>
+            </div>
+          </div>
+        </div>`);
+    });
+  } catch(e) { console.warn('Recent load failed:', e.message); }
+}
+
+// ── UPLOAD HANDLERS ──
+function triggerUpload(slot) {
+  document.getElementById('upload' + slot).click();
+}
+
+function handleSlotUpload(slot, input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (slot === 1) slot1File = file;
+  else slot2File = file;
+
+  const isVideo = file.type.startsWith('video/');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const src = e.target.result;
+    if (slot === 1) slot1Img = src;
+    else slot2Img = src;
+
+    // Update slot UI
+    const el = document.getElementById('slot' + slot);
+    el.classList.add('has-img');
+    const badge = el.querySelector('.slot-badge');
+    const overlay = el.querySelector('.slot-overlay');
+    const remove = el.querySelector('.slot-remove');
+    el.innerHTML = '';
+    if (isVideo) {
+      const vid = document.createElement('video');
+      vid.src = src;
+      vid.className = 'slot-preview';
+      vid.autoplay = true;
+      vid.loop = true;
+      vid.muted = true;
+      vid.playsInline = true;
+      el.appendChild(badge);
+      el.appendChild(vid);
+    } else {
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'slot-preview';
+      el.appendChild(badge);
+      el.appendChild(img);
+    }
+    el.appendChild(overlay);
+    el.appendChild(remove);
+    if (slot === 2) updatePreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateSlotUI(slot, src) {
+  const el = document.getElementById('slot' + slot);
+  el.classList.add('has-img');
+  const badge = el.querySelector('.slot-badge');
+  const overlay = el.querySelector('.slot-overlay');
+  const remove = el.querySelector('.slot-remove');
+  el.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = src;
+  img.className = 'slot-preview';
+  el.appendChild(badge);
+  el.appendChild(img);
+  el.appendChild(overlay);
+  el.appendChild(remove);
+}
+
+function removeSlot(slot) {
+  if (slot === 1) { slot1Img = null; slot1File = null; }
+  else { slot2Img = null; slot2File = null; }
+  const el = document.getElementById('slot' + slot);
+  el.classList.remove('has-img');
+  document.getElementById('upload' + slot).value = '';
+  if (slot === 1) {
+    el.innerHTML = `<div class="slot-badge required">Motion Reference</div><div class="slot-icon">🎬</div><div class="slot-label">Upload Movement</div><div class="slot-sub">Upload the movement you want to copy</div><div class="slot-formats">MP4 · MOV · GIF · JPG · PNG</div><div class="slot-overlay"><div class="slot-change">Change File</div></div><div class="slot-remove" onclick="event.stopPropagation();removeSlot(1)">✕</div>`;
+  } else {
+    el.innerHTML = `<div class="slot-badge required" style="background:rgba(0,245,212,0.2);color:var(--accent3);border-color:rgba(0,245,212,0.3);">Character</div><div class="slot-icon">🧑‍🎤</div><div class="slot-label">Upload Image</div><div class="slot-sub">Upload character image to apply motion to</div><div class="slot-formats">JPG · PNG · WEBP</div><div class="slot-overlay"><div class="slot-change">Change Image</div></div><div class="slot-remove" onclick="event.stopPropagation();removeSlot(2)">✕</div>`;
+  }
+  if (slot === 2) updatePreview();
+}
+
+function updatePreview() {
+  const area = document.getElementById('previewArea');
+  if (!area) return;
+  if (!slot2Img) {
+    area.innerHTML = `<div class="pa-empty"><div class="pa-empty-icon">🕹️</div><div class="pa-empty-text">Upload your character image to preview</div></div><div class="motion-arrows" id="motionArrows"></div>`;
+    return;
+  }
+  area.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = slot2Img;
+  img.className = 'pa-img';
+  const overlay = document.createElement('div');
+  overlay.className = 'pa-overlay';
+  const arrows = document.createElement('div');
+  arrows.className = 'motion-arrows show';
+  arrows.id = 'motionArrows';
+  updateArrows(arrows);
+  area.appendChild(img);
+  area.appendChild(overlay);
+  area.appendChild(arrows);
+}
+
+// ── MOTION ARROWS ──
+function updateArrows(container) {
+  container = container || document.getElementById('motionArrows');
+  if (!container) return;
+  container.innerHTML = '';
+  const arrowMap = {
+    'Walking': [{x:'40%',y:'30%',dx:'0',dy:'-12px',e:'⬆️'},{x:'55%',y:'55%',dx:'0',dy:'-12px',e:'⬆️'}],
+    'Dancing': [{x:'30%',y:'40%',dx:'-10px',dy:'-8px',e:'↙️'},{x:'60%',y:'35%',dx:'10px',dy:'-8px',e:'↗️'},{x:'50%',y:'60%',dx:'0',dy:'8px',e:'⬇️'}],
+    'Posing': [{x:'45%',y:'25%',dx:'8px',dy:'0',e:'↗️'}],
+    'Running': [{x:'35%',y:'45%',dx:'15px',dy:'-5px',e:'➡️'},{x:'55%',y:'30%',dx:'15px',dy:'-5px',e:'➡️'}],
+    'Yoga': [{x:'50%',y:'30%',dx:'0',dy:'-10px',e:'⬆️'},{x:'30%',y:'55%',dx:'-8px',dy:'8px',e:'↙️'},{x:'65%',y:'55%',dx:'8px',dy:'8px',e:'↘️'}],
+    'Waving': [{x:'65%',y:'25%',dx:'10px',dy:'-10px',e:'👋'}],
+    'Laughing': [{x:'45%',y:'35%',dx:'0',dy:'-5px',e:'😄'}],
+    'Jumping': [{x:'40%',y:'40%',dx:'0',dy:'-18px',e:'⬆️'},{x:'55%',y:'40%',dx:'0',dy:'-18px',e:'⬆️'}],
+  };
+  const arrows = arrowMap[currentMotion] || arrowMap['Walking'];
+  arrows.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'arrow';
+    div.textContent = a.e;
+    div.style.left = a.x;
+    div.style.top = a.y;
+    div.style.setProperty('--dx', a.dx);
+    div.style.setProperty('--dy', a.dy);
+    div.style.animationDelay = (i * 0.3) + 's';
+    container.appendChild(div);
+  });
+}
+
+// ── PICKERS ──
+function pickMotion(el, motion) {
+  document.querySelectorAll('.mc').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  currentMotion = motion;
+  const sv = document.getElementById('sv-motion');
+  if (sv) sv.textContent = motion;
+  if (slot1Img) updateArrows();
+}
+
+function pickCamera(el, cam) {
+  document.querySelectorAll('.cam-btn').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  currentCamera = cam;
+  const sv = document.getElementById('sv-camera');
+  if (sv) sv.textContent = cam;
+}
+
+function pickDur(el, dur) {
+  document.querySelectorAll('.dur-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  currentDur = dur;
+  const sv = document.getElementById('sv-dur');
+  if (sv) sv.textContent = dur;
+}
+
+function updateMotion(input) {
+  const v = input.value;
+  const pct = ((v - 1) / 9 * 100) + '%';
+  input.style.setProperty('--pct', pct);
+  document.getElementById('motionVal').textContent = v;
+  const svi = document.getElementById('sv-intensity');
+  if (svi) svi.textContent = v + ' / 10';
+  document.getElementById('motionDesc').textContent = motionDescriptions[v];
+}
+
+function updateCost() {
+  const hd = document.getElementById('hdToggle').checked;
+  const cost = 5 + (hd ? 1 : 0);
+  document.getElementById('costLabel').textContent = cost + ' credits';
+  document.getElementById('genBtn').textContent = '🕹️ Generate Motion Video · ' + cost + ' credits';
+}
+
+// ── GENERATE ──
+async function generate() {
+  if (!slot1Img) { alert('Please upload a Motion Reference first!'); return; }
+  if (!slot2Img) { alert('Please upload your Character Image!'); return; }
+  if (!getToken()) { window.location.href = 'creatrix-auth.html'; return; }
+
+  const overlay = document.getElementById('loadingOverlay');
+  const bar = document.getElementById('loadBar');
+  const loadTitle = document.querySelector('.loading-title');
+  const loadSub = document.querySelector('.loading-sub');
+
+  overlay.classList.add('show');
+  bar.style.width = '0%';
+
+  try {
+    // Upload both images to Supabase
+    loadTitle.textContent = 'Uploading Images...';
+    loadSub.textContent = 'Preparing your files...';
+    bar.style.width = '15%';
+
+    let motionUrl = slot1Img;
+    let characterUrl = slot2Img;
+
+    if (slot1File) {
+      motionUrl = await uploadImageFile(slot1File, 'motion_ref');
+      console.log('Motion ref uploaded:', motionUrl);
+    }
+    bar.style.width = '25%';
+
+    if (slot2File) {
+      characterUrl = await uploadImageFile(slot2File, 'character');
+      console.log('Character uploaded:', characterUrl);
+    }
+    bar.style.width = '35%';
+
+    const prompt = document.getElementById('promptBox')?.value?.trim() || currentMotion;
+    const hd = document.getElementById('hdToggle')?.checked || false;
+
+    loadTitle.textContent = 'Starting Motion AI...';
+    loadSub.textContent = 'Sending to AI model...';
+    bar.style.width = '40%';
+
+    const res = await fetch(`${API_BASE}/api/generate/motion`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({
+        image_url: characterUrl,
+        motion_video_url: motionUrl,
+        prompt: prompt,
+        hd,
+        influencer_id: null
+      })
+    });
+
+    const job = await res.json();
+    if (job.error) { overlay.classList.remove('show'); alert('Error: ' + job.error); return; }
+
+    // ── Poll for result ──
+    loadTitle.textContent = 'Generating Motion...';
+    loadSub.textContent = 'AI is animating your character. ~1–3 minutes';
+    bar.style.width = '50%';
+
+    const jobId = job.job_id || job.id;
+    let attempts = 0;
+    const maxAttempts = 2160; // 3 hours
+
+    const poll = async () => {
+      attempts++;
+      try {
+        const statusRes = await fetch(`${API_BASE}/api/generate/status/${jobId}`, {
+          headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        const status = await statusRes.json();
+
+        const pct = Math.min(50 + (attempts / 60) * 45, 95);
+        bar.style.width = pct + '%';
+
+        if (status.status === 'done' || status.result_url || status.creation?.url) {
+          bar.style.width = '100%';
+          overlay.classList.remove('show');
+
+          const resultUrl = status.result_url || status.output_url || status.creation?.url;
+          if (resultUrl) {
+            // Show video modal
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(4,4,10,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;';
+            modal.innerHTML = `
+              <div style="font-family:var(--font-h);font-size:1.2rem;font-weight:700;color:var(--accent3);">🎉 Motion Video Ready!</div>
+              <video src="${resultUrl}" controls autoplay style="max-height:70vh;max-width:100%;border-radius:16px;box-shadow:0 0 40px rgba(120,76,254,0.3);"></video>
+              <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+                <a href="${resultUrl}" download target="_blank" style="padding:0.75rem 1.5rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:12px;font-family:var(--font-h);font-weight:700;text-decoration:none;font-size:0.9rem;">⬇ Download</a>
+                <button onclick="this.closest('div[style]').remove()" style="padding:0.75rem 1.5rem;background:var(--card2);border:1px solid var(--border2);color:var(--muted);border-radius:12px;font-family:var(--font-h);font-weight:700;cursor:pointer;font-size:0.9rem;">✕ Close</button>
+              </div>`;
+            modal.addEventListener('click', e => { if(e.target === modal) modal.remove(); });
+            document.body.appendChild(modal);
+          }
+
+          loadCredits();
+          loadRecent();
+
+        } else if (status.status === 'failed') {
+          overlay.classList.remove('show');
+          alert('Generation failed: ' + (status.error || 'Please try again.'));
+        } else {
+          setTimeout(poll, 8000);
+        }
+      } catch(pollErr) {
+        console.warn('Poll error:', pollErr);
+        setTimeout(poll, 8000);
+      }
+    };
+
+    setTimeout(poll, 15000);
+
+  } catch(err) {
+    overlay.classList.remove('show');
+    console.error('Motion error:', err);
+    alert('Failed: ' + (err.message || 'Please try again.'));
+  }
+}
+
+function addPrompt(text) {
+  const box = document.getElementById('promptBox');
+  if (box) { box.value = text; document.getElementById('pCharCount').textContent = text.length; }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const pb = document.getElementById('promptBox');
+  if (pb) pb.addEventListener('input', function() {
+    document.getElementById('pCharCount').textContent = this.value.length;
+  });
+  const sl = document.getElementById('motionSlider');
+  if (sl) sl.style.setProperty('--pct', '44.4%');
+});
+
+// ── INIT ──
+loadCredits();
+loadRecent();
+</script>
 <script src="api.js"></script>
 </body>
 </html>
