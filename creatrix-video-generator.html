@@ -675,7 +675,7 @@ async function loadRealInfluencers() {
         const nameStr = JSON.stringify(inf.name);
         const imgStr = JSON.stringify(img);
         el.insertAdjacentHTML('beforeend', `
-          <div class="inf-sel-card" onclick="pickInfluencer(this,${idStr},${nameStr},${imgStr},'${id}')">
+          <div class="inf-sel-card" data-id="${inf.id}" data-name="${inf.name.replace(/"/g,'&quot;')}" data-img="${img}" data-grid="${id}" onclick="pickInfluencer(this)">
             <img class="inf-sel-img" src="${img}" alt="${inf.name}" loading="lazy"
                  onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200'">
             <div class="inf-sel-name">${inf.name}</div>
@@ -739,7 +739,7 @@ function buildInfSelectors(containerId) {
     const nameStr = JSON.stringify(inf.name);
     const imgStr = JSON.stringify(img);
     el.insertAdjacentHTML('beforeend', `
-      <div class="inf-sel-card" onclick="pickInfluencer(this,${idStr},${nameStr},${imgStr},'${containerId}')">
+      <div class="inf-sel-card" data-id="${inf.id}" data-name="${inf.name.replace(/"/g,'&quot;')}" data-img="${img}" data-grid="${containerId}" onclick="pickInfluencer(this)">
         <img class="inf-sel-img" src="${img}" alt="${inf.name}" loading="lazy"
              onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200'">
         <div class="inf-sel-name">${inf.name}</div>
@@ -748,11 +748,14 @@ function buildInfSelectors(containerId) {
   });
 }
 
-function pickInfluencer(el, id, name, img, gridId) {
+function pickInfluencer(el) {
+  const gridId = el.dataset.grid;
+  const id = el.dataset.id;
+  const name = el.dataset.name;
+  const img = el.dataset.img;
   document.querySelectorAll(`#${gridId} .inf-sel-card`).forEach(c => c.classList.remove('sel'));
   el.classList.add('sel');
   selectedInf = {id, name, img};
-  // Update preview
   const prev = document.getElementById('videoPreview');
   prev.innerHTML = `<img class="vp-img" src="${img}" alt="${name}"><div class="vp-overlay"></div><div class="vp-play">▶</div><div class="vp-duration" id="vpDur">0:15</div>`;
   document.getElementById('sv-inf').textContent = name;
