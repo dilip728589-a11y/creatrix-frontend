@@ -109,9 +109,9 @@ input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 5px rgba(120,76,2
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 
 /* Video preview area */
-.video-preview{position:relative;aspect-ratio:9/16;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;max-height:380px;}
-.video-preview.landscape{aspect-ratio:16/9;max-height:200px;}
-.video-preview.square{aspect-ratio:1;max-height:260px;}
+.video-preview{position:relative;aspect-ratio:9/16;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;max-height:500px;}
+.video-preview.landscape{aspect-ratio:16/9;max-height:280px;}
+.video-preview.square{aspect-ratio:1;max-height:400px;}
 .vp-img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;opacity:1;}
 .vp-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,0.85),rgba(4,4,10,0.2) 60%,transparent 100%);}
 .vp-empty{text-align:center;padding:2rem;}
@@ -686,12 +686,7 @@ async function loadRealInfluencers() {
   } catch(e) { console.warn('Failed to load influencers:', e.message); }
 }
 
-const recentVideos = [
-  {name:'Aria — Fashion Walk',style:'Fashion Walk',duration:'15s',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top',date:'2h ago'},
-  {name:'Luna — Talking Head',style:'Talking Head',duration:'30s',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top',date:'5h ago'},
-  {name:'Kai — Fitness Demo',style:'Fitness Demo',duration:'20s',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=top',date:'1d ago'},
-  {name:'Zara — Outfit Reveal',style:'Outfit Reveal',duration:'12s',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top',date:'2d ago'},
-];
+const recentVideos = []; // replaced by loadRecentVideos()
 
 
 let selectedModel = {name:'Great Quality · Kling v3.0', cost:7};
@@ -916,27 +911,49 @@ function generateVideo(type, credits) {
 }
 
 // Build recent videos
-function buildRecentVideos() {
+async function buildRecentVideos() {
   const grid = document.getElementById('recentVideos');
-  recentVideos.forEach(v => {
-    grid.insertAdjacentHTML('beforeend', `
-      <div class="vid-card">
-        <div class="vid-thumb">
-          <img src="${v.img}" alt="${v.name}" loading="lazy">
-          <div class="vid-play"><div class="vid-play-btn">▶</div></div>
-          <div class="vid-duration">${v.duration}</div>
-          <div class="vid-style-badge">${v.style}</div>
-        </div>
-        <div class="vid-info">
-          <div class="vid-name">${v.name}</div>
-          <div class="vid-meta">${v.date}</div>
-          <div class="vid-actions">
-            <div class="vid-btn">⬇ Download</div>
-            <div class="vid-btn">📤 Share</div>
+  if (!grid) return;
+  try {
+    const token = localStorage.getItem('creatrix_access_token') ||
+                  localStorage.getItem('creatrix_token') ||
+                  localStorage.getItem('token');
+    const res = await fetch('https://creatrix-backend-production.up.railway.app/api/creations/list?type=video', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data?.creations || []);
+    grid.innerHTML = '';
+    if (list.length === 0) {
+      grid.innerHTML = `<div style="color:var(--muted);font-size:0.82rem;padding:1rem;">No videos yet. Generate your first!</div>`;
+      return;
+    }
+    list.slice(0, 4).forEach(v => {
+      const isVideo = v.url && (v.url.includes('.mp4') || v.url.includes('replicate') || v.url.includes('delivery'));
+      const date = v.created_at ? new Date(v.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '';
+      const thumb = isVideo
+        ? `<video src="${v.url}" style="width:100%;height:100%;object-fit:cover;" muted preload="metadata" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video>`
+        : v.url ? `<img src="${v.url}" alt="video" loading="lazy" style="width:100%;height:100%;object-fit:cover;">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;opacity:0.3;">🎬</div>`;
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="vid-card" onclick="${v.url ? `window.open('${v.url}','_blank')` : ''}">
+          <div class="vid-thumb">
+            ${thumb}
+            ${v.url ? '<div class="vid-play"><div class="vid-play-btn">▶</div></div>' : ''}
+            <div class="vid-style-badge">${v.type || 'video'}</div>
           </div>
-        </div>
-      </div>`);
-  });
+          <div class="vid-info">
+            <div class="vid-name">${v.type ? v.type.charAt(0).toUpperCase()+v.type.slice(1) : 'Video'} · ${date}</div>
+            <div class="vid-meta">${date}</div>
+            <div class="vid-actions">
+              ${v.url ? `<a class="vid-btn" href="${v.url}" download target="_blank" onclick="event.stopPropagation()">⬇ Download</a>` : '<div class="vid-btn" style="opacity:0.4;">⏳ Processing</div>'}
+              <div class="vid-btn" onclick="event.stopPropagation();navigator.clipboard.writeText('${v.url||''}').then(()=>alert('Copied!'))">📤 Share</div>
+            </div>
+          </div>
+        </div>`);
+    });
+  } catch(e) {
+    console.warn('Recent videos failed:', e.message);
+  }
 }
 
 // Init
