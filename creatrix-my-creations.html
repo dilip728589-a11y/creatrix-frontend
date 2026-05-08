@@ -482,6 +482,8 @@ function openDelete(id) {
 function closeDelete() {
   document.getElementById('deleteModal').classList.remove('show');
   deleteTargetId = null;
+  const btn = document.querySelector('.modal-delete');
+  if (btn) { btn.textContent = 'Delete'; btn.disabled = false; }
 }
 
 async function confirmDelete() {
