@@ -1030,20 +1030,28 @@ function renderUserData(user) {
 
 // ── LOAD USER FROM BACKEND ──
 async function loadUserData() {
-  // Show cached user instantly (no flash)
-  const cached = CreatrixAPI.Auth.getUser();
-  if (cached) renderUserData(cached);
+  const token = localStorage.getItem('creatrix_access_token') ||
+                localStorage.getItem('creatrix_token') ||
+                localStorage.getItem('token');
+  if (!token) { window.location.href = 'creatrix-auth.html'; return; }
 
-  // Then fetch fresh data from backend
   try {
-    const data = await CreatrixAPI.Auth.me();
-    if (data && data.user) {
-      // Save updated user to localStorage
-      localStorage.setItem('creatrix_user', JSON.stringify(data.user));
-      renderUserData(data.user);
+    const res = await fetch('https://creatrix-backend-production.up.railway.app/api/auth/me', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    const user = data.user || data;
+    if (user && user.name) {
+      localStorage.setItem('creatrix_user', JSON.stringify(user));
+      renderUserData(user);
     }
   } catch (err) {
     console.error('loadUserData:', err);
+    // Fallback to cached
+    try {
+      const cached = JSON.parse(localStorage.getItem('creatrix_user') || '{}');
+      if (cached.name) renderUserData(cached);
+    } catch(e) {}
   }
 }
 
