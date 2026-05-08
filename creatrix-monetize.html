@@ -145,6 +145,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);min-heigh
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
 @media(max-width:768px){.quick-stats{grid-template-columns:repeat(2,1fr);}.content-grid{grid-template-columns:repeat(2,1fr);}.page{padding:110px 1.5rem 4rem;}}
 </style>
+<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "wnqtcqu7ae");<\/script>
 </head>
 <body>
 
@@ -155,7 +156,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);min-heigh
     <div class="tb-div"></div>
     <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
   </div>
-  <div class="credits-pill"><span class="cv" id="creditsCount">--</span><span class="cl">credits</span></div>
+  <div class="credits-pill"><span class="cv">38</span><span class="cl">credits</span></div>
 </div>
 
 <!-- TABS -->
@@ -188,10 +189,10 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);min-heigh
         </div>
       </div>
       <div class="quick-stats">
-        <div class="qs"><div class="qs-val" id="qs-visits">—</div><div class="qs-lbl">Total Visits</div></div>
-        <div class="qs"><div class="qs-val" id="qs-unlocks">—</div><div class="qs-lbl">Unlocks</div></div>
-        <div class="qs"><div class="qs-val" id="qs-earned">₹0</div><div class="qs-lbl">Total Earned</div></div>
-        <div class="qs"><div class="qs-val" id="qs-conversion">—</div><div class="qs-lbl">Conversion</div></div>
+        <div class="qs"><div class="qs-val">247</div><div class="qs-lbl">Total Visits</div></div>
+        <div class="qs"><div class="qs-val">31</div><div class="qs-lbl">Unlocks</div></div>
+        <div class="qs"><div class="qs-val">₹9,300</div><div class="qs-lbl">Total Earned</div></div>
+        <div class="qs"><div class="qs-val">12.5%</div><div class="qs-lbl">Conversion</div></div>
       </div>
       <div class="share-guide">
         <div class="sg-title">🔥 How to get paid — 3 easy steps</div>
@@ -247,11 +248,13 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);min-heigh
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;">
       <div style="background:linear-gradient(135deg,rgba(0,245,212,0.12),rgba(120,76,254,0.08));border:1.5px solid rgba(0,245,212,0.25);border-radius:20px;padding:1.5rem;text-align:center;">
         <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent3);margin-bottom:0.5rem;">Today</div>
-        <div style="font-family:var(--font-h);font-size:2rem;font-weight:800;" id="earn-today">₹0</div>
+        <div style="font-family:var(--font-h);font-size:2rem;font-weight:800;">₹1,240</div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">↑ +₹340 vs yesterday</div>
       </div>
       <div style="background:linear-gradient(135deg,rgba(120,76,254,0.12),rgba(255,60,172,0.08));border:1.5px solid rgba(120,76,254,0.25);border-radius:20px;padding:1.5rem;text-align:center;">
         <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.5rem;">This Week</div>
-        <div style="font-family:var(--font-h);font-size:2rem;font-weight:800;" id="earn-week">₹0</div>
+        <div style="font-family:var(--font-h);font-size:2rem;font-weight:800;">₹8,900</div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">↑ +22% vs last week</div>
       </div>
       <div style="background:linear-gradient(135deg,rgba(255,209,102,0.1),rgba(255,60,172,0.06));border:1.5px solid rgba(255,209,102,0.25);border-radius:20px;padding:1.5rem;text-align:center;">
         <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Total Earned</div>
@@ -348,152 +351,44 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);min-heigh
 </div>
 
 <script>
-// ═══════════════════════════════════════════
-//  CREATRIX — Monetize (Backend Connected)
-// ═══════════════════════════════════════════
+// Content data
+const contentItems = [
+  {id:1,name:'Aria — Fashion Walk',type:'video',status:'premium',price:299,img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top'},
+  {id:2,name:'Luna — Talking Head',type:'video',status:'free',price:0,img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top'},
+  {id:3,name:'Zara — Glam Shoot',type:'image',status:'premium',price:199,img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top'},
+  {id:4,name:'Maya — Fitness Reel',type:'video',status:'free',price:0,img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&q=80&fit=crop&crop=top'},
+  {id:5,name:'Aria — Luxury Look',type:'image',status:'premium',price:499,img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top'},
+  {id:6,name:'Kai — Street Style',type:'video',status:'free',price:0,img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=top'},
+  {id:7,name:'Zara — Evening Gown',type:'image',status:'free',price:0,img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top'},
+  {id:8,name:'Luna — Dancing Reel',type:'video',status:'premium',price:299,img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top'},
+];
 
-const API_BASE = 'https://creatrix-backend-production.up.railway.app';
+const transactions = [
+  {name:'Priya S.', content:'Aria — Fashion Walk',amount:299,your_cut:149,time:'2h ago'},
+  {name:'Anonymous', content:'Zara — Glam Shoot',amount:199,your_cut:99,time:'4h ago'},
+  {name:'Ravi M.', content:'Aria — Luxury Look',amount:499,your_cut:249,time:'6h ago'},
+  {name:'Anonymous', content:'Luna — Dancing Reel',amount:299,your_cut:149,time:'1d ago'},
+  {name:'Sneha K.', content:'Aria — Fashion Walk',amount:299,your_cut:149,time:'1d ago'},
+];
 
-let allContent = [];
-let currentFilter = 'all';
 let selectedPrice = 99;
 let targetContentId = null;
+let currentFilter = 'all';
 
-// ── TOKEN ──
-function getToken() {
-  return localStorage.getItem('creatrix_access_token') ||
-         localStorage.getItem('creatrix_token') ||
-         localStorage.getItem('token') || null;
-}
-
-// ── AUTH GUARD ──
-if (!getToken()) window.location.href = 'creatrix-auth.html';
-
-// ── LOAD CREDITS ──
-async function loadCredits() {
-  try {
-    const res = await fetch(`${API_BASE}/api/credits/balance`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    const data = await res.json();
-    document.getElementById('creditsCount').textContent = data.total ?? data.credits ?? '--';
-  } catch(e) {}
-}
-
-// ── LOAD USER & BIO LINK ──
-async function loadUser() {
-  try {
-    const res = await fetch(`${API_BASE}/api/auth/me`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    const data = await res.json();
-    const user = data.user || data;
-    const username = user.username || user.email?.split('@')[0] || 'creator';
-    document.getElementById('bioLinkUrl').textContent = `creatrixai.com/${username}`;
-  } catch(e) {}
-}
-
-// ── LOAD EARNINGS ──
-async function loadEarnings() {
-  try {
-    const res = await fetch(`${API_BASE}/api/monetize/earnings`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    const data = await res.json();
-
-    const total = data.total_earnings || data.total || 0;
-    const unlocks = data.total_unlocks || data.unlocks || 0;
-    const visits = data.total_visits || data.visits || 0;
-    const conversion = visits > 0 ? ((unlocks / visits) * 100).toFixed(1) + '%' : '0%';
-
-    document.getElementById('qs-visits').textContent = visits || '0';
-    document.getElementById('qs-unlocks').textContent = unlocks || '0';
-    document.getElementById('qs-earned').textContent = '₹' + (total || 0);
-    document.getElementById('qs-conversion').textContent = conversion;
-
-    // Earnings tab
-    const todayEl = document.getElementById('earn-today');
-    const weekEl = document.getElementById('earn-week');
-    const monthEl = document.getElementById('earn-month');
-    const pendingEl = document.getElementById('earn-pending');
-    if (todayEl) todayEl.textContent = '₹' + (data.today || 0);
-    if (weekEl) weekEl.textContent = '₹' + (data.this_week || 0);
-    if (monthEl) monthEl.textContent = '₹' + (data.this_month || 0);
-    if (pendingEl) pendingEl.textContent = '₹' + (data.pending_payout || 0);
-
-    // Transactions
-    if (data.transactions?.length > 0) buildTransactions(data.transactions);
-
-  } catch(e) { console.warn('Earnings load failed:', e.message); }
-}
-
-// ── LOAD CONTENT ──
-async function loadContent() {
-  const grid = document.getElementById('contentGrid');
-  grid.innerHTML = '<div style="color:var(--muted);font-size:0.82rem;padding:1rem;">Loading...</div>';
-
-  try {
-    const res = await fetch(`${API_BASE}/api/creations/list`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    const data = await res.json();
-    const list = Array.isArray(data) ? data : (data?.creations || []);
-
-    // Only show done creations
-    allContent = list
-      .filter(c => c.status === 'done' && c.url)
-      .map(c => ({
-        id: c.id,
-        name: (c.type || 'Creation') + ' · ' + (c.created_at ? new Date(c.created_at).toLocaleDateString('en-IN', {day:'numeric',month:'short'}) : ''),
-        type: c.type || 'video',
-        status: c.is_premium ? 'premium' : 'free',
-        price: c.price || 0,
-        img: c.url || c.thumbnail_url || '',
-        url: c.url || ''
-      }));
-
-    buildContentGrid(currentFilter);
-
-    if (allContent.length === 0) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem 2rem;color:var(--muted);">
-        <div style="font-size:2.5rem;margin-bottom:1rem;">🎬</div>
-        <div style="font-family:var(--font-h);font-size:1rem;margin-bottom:0.5rem;color:var(--white);">No creations yet</div>
-        <div style="font-size:0.82rem;margin-bottom:1.5rem;">Create some content first, then monetize it here!</div>
-        <a href="creatrix-lipsync.html" style="padding:0.6rem 1.5rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:100px;font-size:0.85rem;font-family:var(--font-h);font-weight:700;text-decoration:none;">✨ Create Content</a>
-      </div>`;
-    }
-  } catch(e) {
-    grid.innerHTML = `<div style="color:var(--muted);font-size:0.82rem;padding:1rem;">Failed to load. <span style="color:var(--accent2);cursor:pointer;" onclick="loadContent()">Retry</span></div>`;
-  }
-}
-
-// ── BUILD CONTENT GRID ──
+// Build content grid
 function buildContentGrid(filter = 'all') {
   const grid = document.getElementById('contentGrid');
-  const items = filter === 'all' ? allContent :
-    filter === 'free' ? allContent.filter(c => c.status === 'free') :
-    allContent.filter(c => c.status === 'premium');
+  grid.innerHTML = '';
+  const items = filter === 'all' ? contentItems :
+    filter === 'free' ? contentItems.filter(c => c.status === 'free') :
+    contentItems.filter(c => c.status === 'premium');
 
-  if (items.length === 0 && allContent.length > 0) {
-    grid.innerHTML = `<div style="color:var(--muted);font-size:0.82rem;padding:1rem;grid-column:1/-1;">No ${filter} content yet.</div>`;
-    return;
-  }
-  if (allContent.length === 0) return;
-
-  grid.innerHTML = items.map(item => {
+  items.forEach(item => {
     const isPremium = item.status === 'premium';
-    const isVideo = item.url && (item.url.includes('.mp4') || item.url.includes('replicate'));
-    const thumbContent = isVideo
-      ? `<video src="${item.url}" style="width:100%;height:100%;object-fit:cover;${isPremium ? 'filter:blur(6px);' : ''}" muted preload="metadata"></video>`
-      : item.img
-        ? `<img src="${item.img}" alt="${item.name}" loading="lazy" style="${isPremium ? 'filter:blur(6px);' : ''}">`
-        : `<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--card2),var(--bg2));display:flex;align-items:center;justify-content:center;font-size:2rem;">🎬</div>`;
-
-    const idStr = JSON.stringify(item.id);
-    return `
+    grid.insertAdjacentHTML('beforeend', `
       <div class="cc" id="cc-${item.id}">
         <div class="cc-thumb">
-          ${thumbContent}
+          <img src="${item.img}" alt="${item.name}" loading="lazy" style="${isPremium ? 'filter:blur(6px);' : ''}">
           ${isPremium ? `<div class="cc-blur"><div class="cc-lock-icon">🔒</div><div class="cc-lock-price">₹${item.price}</div></div>` : ''}
           <div class="cc-badge ${isPremium ? 'badge-locked' : 'badge-free'}">${isPremium ? `🔒 ₹${item.price}` : '🆓 Free'}</div>
         </div>
@@ -501,17 +396,17 @@ function buildContentGrid(filter = 'all') {
           <div class="cc-name">${item.name}</div>
           <div class="cc-actions">
             ${isPremium
-              ? `<button class="cca set-price" onclick="openPriceModal(${idStr})">✏️ Edit Price</button>
-                 <button class="cca make-free" onclick="makeContentFree(${idStr})">🔓 Make Free</button>`
-              : `<button class="cca make-premium" onclick="openPriceModal(${idStr})">🔒 Make Premium <span style="font-size:0.58rem;background:rgba(0,245,212,0.2);color:var(--accent3);padding:1px 5px;border-radius:100px;margin-left:3px;">FREE</span></button>`
+              ? `<button class="cca set-price" onclick="openPriceModal(${item.id})">✏️ Edit Price</button>
+                 <button class="cca make-free" onclick="makeContentFree(${item.id})">🔓 Make Free</button>`
+              : `<button class="cca make-premium" onclick="openPriceModal(${item.id})">🔒 Make Premium <span style="font-size:0.58rem;background:rgba(0,245,212,0.2);color:var(--accent3);padding:1px 5px;border-radius:100px;margin-left:3px;">FREE</span></button>`
             }
           </div>
         </div>
-      </div>`;
-  }).join('');
+      </div>`);
+  });
 }
 
-// ── FILTER ──
+// Filter content
 function filterContent(el, filter) {
   document.querySelectorAll('.clf').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
@@ -519,15 +414,16 @@ function filterContent(el, filter) {
   buildContentGrid(filter);
 }
 
-// ── PRICE MODAL ──
+// Price modal
 function openPriceModal(id) {
   targetContentId = id;
-  const item = allContent.find(c => String(c.id) === String(id));
-  if (item?.price) {
-    selectedPrice = item.price;
-    updateEarningsPreview(item.price);
+  const item = contentItems.find(c => c.id === id);
+  if (item && item.price) {
+    // Pre-select existing price
+    document.querySelectorAll('.po').forEach(p => p.classList.remove('sel'));
   }
   document.getElementById('priceModal').classList.add('show');
+  updateEarningsPreview(selectedPrice);
 }
 
 function closePriceModal() {
@@ -554,60 +450,32 @@ function updateEarningsPreview(price) {
   document.getElementById('earningsPreview').textContent = `₹${(price * 0.5).toFixed(0)} per unlock (50% of ₹${price})`;
 }
 
-async function confirmPremium() {
+function confirmPremium() {
   const customInput = document.getElementById('customPriceInput');
   if (document.getElementById('customPriceWrap').style.display !== 'none') {
     selectedPrice = parseInt(customInput.value) || 199;
   }
-
-  const btn = document.querySelector('.modal-confirm');
-  btn.textContent = 'Setting...';
-  btn.disabled = true;
-
-  try {
-    const res = await fetch(`${API_BASE}/api/monetize/make-premium`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
-      body: JSON.stringify({ creation_id: targetContentId, price: selectedPrice })
-    });
-    const data = await res.json();
-
-    if (!res.ok) throw new Error(data.error || 'Failed');
-
-    // Update local state
-    const item = allContent.find(c => String(c.id) === String(targetContentId));
-    if (item) { item.status = 'premium'; item.price = selectedPrice; }
-
+  const item = contentItems.find(c => c.id === targetContentId);
+  if (item) {
+    item.status = 'premium';
+    item.price = selectedPrice;
     buildContentGrid(currentFilter);
     closePriceModal();
     showToast('🔒', 'Content Locked!', `Set to ₹${selectedPrice} — now live on your bio link`);
-  } catch(err) {
-    showToast('❌', 'Failed', err.message);
-  } finally {
-    btn.textContent = '🔒 Lock & Publish — Free!';
-    btn.disabled = false;
   }
 }
 
-async function makeContentFree(id) {
-  try {
-    const res = await fetch(`${API_BASE}/api/monetize/make-free`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
-      body: JSON.stringify({ creation_id: id })
-    });
-    if (!res.ok) throw new Error('Failed');
-
-    const item = allContent.find(c => String(c.id) === String(id));
-    if (item) { item.status = 'free'; item.price = 0; }
+function makeContentFree(id) {
+  const item = contentItems.find(c => c.id === id);
+  if (item) {
+    item.status = 'free';
+    item.price = 0;
     buildContentGrid(currentFilter);
     showToast('🔓', 'Made Free!', 'Content is now publicly visible');
-  } catch(err) {
-    showToast('❌', 'Failed', err.message);
   }
 }
 
-// ── TAB SWITCHING ──
+// Tab switching
 function switchTab(tab, el) {
   document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
@@ -617,11 +485,13 @@ function switchTab(tab, el) {
   document.getElementById('tab-' + tab).style.display = 'block';
 }
 
-// ── BIO LINK ──
+// Bio link
 function copyLink() {
   const url = document.getElementById('bioLinkUrl').textContent;
   navigator.clipboard.writeText('https://' + url).then(() => {
     showToast('📋', 'Link Copied!', 'Paste it in your Instagram bio now 🚀');
+  }).catch(() => {
+    showToast('📋', 'Link Copied!', 'https://' + url);
   });
 }
 
@@ -629,48 +499,33 @@ function previewLink() {
   window.open('creatrix-biolink.html', '_blank');
 }
 
-// ── WITHDRAW ──
-async function requestWithdraw() {
-  try {
-    const upi = document.getElementById('upiInput')?.value?.trim();
-    const res = await fetch(`${API_BASE}/api/monetize/withdraw`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
-      body: JSON.stringify({ amount: 0, upi_id: upi })
-    });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    showToast('💸', 'Withdrawal Requested!', 'Will be credited in 7 days');
-  } catch(err) {
-    showToast('❌', 'Failed', err.message || 'Try again');
-  }
+function requestWithdraw() {
+  showToast('💸', 'Withdrawal Requested!', '₹4,650 will be credited in 7 days');
 }
 
-// ── TRANSACTIONS ──
-function buildTransactions(list) {
-  const el = document.getElementById('transactionsList');
-  if (!el) return;
-  if (!list?.length) {
-    el.innerHTML = `<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.82rem;">No transactions yet. Share your bio link to start earning!</div>`;
-    return;
-  }
-  el.innerHTML = list.map(t => `
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 0;border-bottom:1px solid var(--border);">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;">💳</div>
-        <div>
-          <div style="font-size:0.82rem;font-weight:700;">${t.buyer_email || 'Anonymous'} unlocked content</div>
-          <div style="font-size:0.68rem;color:var(--muted);">${t.created_at ? new Date(t.created_at).toLocaleDateString('en-IN') : ''}</div>
+// Build transactions
+function buildTransactions() {
+  const list = document.getElementById('transactionsList');
+  if (!list) return;
+  transactions.forEach(t => {
+    list.insertAdjacentHTML('beforeend', `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;">💳</div>
+          <div>
+            <div style="font-size:0.82rem;font-weight:700;">${t.name} unlocked "${t.content}"</div>
+            <div style="font-size:0.68rem;color:var(--muted);">${t.time}</div>
+          </div>
         </div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-family:var(--font-h);font-size:0.88rem;font-weight:700;color:var(--accent3);">+₹${t.creator_amount || Math.floor((t.amount||0)*0.5)}</div>
-        <div style="font-size:0.65rem;color:var(--muted2);">of ₹${t.amount || 0} total</div>
-      </div>
-    </div>`).join('');
+        <div style="text-align:right;">
+          <div style="font-family:var(--font-h);font-size:0.88rem;font-weight:700;color:var(--accent3);">+₹${t.your_cut}</div>
+          <div style="font-size:0.65rem;color:var(--muted2);">of ₹${t.amount} total</div>
+        </div>
+      </div>`);
+  });
 }
 
-// ── TOAST ──
+// Toast
 function showToast(icon, title, sub) {
   document.getElementById('toastIcon').textContent = icon;
   document.getElementById('toastT').textContent = title;
@@ -680,6 +535,7 @@ function showToast(icon, title, sub) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
+// Close modal on overlay click
 document.getElementById('priceModal').addEventListener('click', function(e) {
   if (e.target === this) closePriceModal();
 });
@@ -687,11 +543,9 @@ document.getElementById('customPriceInput')?.addEventListener('input', function(
   updateEarningsPreview(parseInt(this.value) || 0);
 });
 
-// ── INIT ──
-loadCredits();
-loadUser();
-loadEarnings();
-loadContent();
+// Init
+buildContentGrid();
+buildTransactions();
 </script>
 </body>
 </html>

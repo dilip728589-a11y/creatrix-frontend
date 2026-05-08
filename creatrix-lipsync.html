@@ -211,6 +211,7 @@ input[type=file]{display:none;}
 .inf-upload-card.has-img .iuc-label{color:var(--accent3);}
 
 </style>
+<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "wnqtcqu7ae");<\/script>
 </head>
 <body>
 
@@ -221,7 +222,7 @@ input[type=file]{display:none;}
     <div class="tb-div"></div>
     <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
   </div>
-  <div class="credits-pill"><span class="cv" id="creditsCount">--</span><span class="cl">credits</span></div>
+  <div class="credits-pill"><span class="cv">38</span><span class="cl">credits</span></div>
 </div>
 
 <!-- TAB BAR -->
@@ -399,25 +400,50 @@ input[type=file]{display:none;}
       <div class="recent-grid" id="recentGrid"></div>
     </div>
 
+  </div>
+
+  <!-- ══ RIGHT PANEL ══ -->
+  <div class="right-panel">
+
+    <!-- Preview -->
+    <div class="preview-box">
+      <div class="preview-head">
+        <div class="ph-title">Preview</div>
+        <div class="ph-live"><div class="live-dot"></div>Live</div>
+      </div>
+      <div class="video-area" id="videoArea">
+        <div class="va-empty">
+          <div class="va-empty-icon">👄</div>
+          <div class="va-empty-text">Select influencer to preview</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-box">
+      <div class="sb-title">Lip Sync Settings</div>
+      <div class="sb-grid">
+        <div class="sb-item"><div class="sb-key">Influencer</div><div class="sb-val" id="sv-inf">—</div></div>
+        <div class="sb-item"><div class="sb-key">Audio Source</div><div class="sb-val" id="sv-source">Upload</div></div>
+        <div class="sb-item"><div class="sb-key">Language</div><div class="sb-val" id="sv-lang">Hindi</div></div>
+        <div class="sb-item"><div class="sb-key">Quality</div><div class="sb-val" id="sv-quality">Standard</div></div>
+      </div>
+    </div>
+
     <!-- Cost -->
-    <div class="cost-box" style="margin-top:1.75rem;">
+    <div class="cost-box">
       <div class="cb-left">Cost: <strong id="costLabel">4 credits</strong></div>
-      <div class="cb-right"><span id="creditsRemaining">--</span> remaining</div>
+      <div class="cb-right">38 remaining</div>
     </div>
 
     <!-- Generate -->
-    <button class="gen-btn" onclick="generate()" style="margin-top:0.75rem;">👄 Generate Lip Sync · 4 credits</button>
+    <button class="gen-btn" onclick="generate()">👄 Generate Lip Sync · 4 credits</button>
 
-  <!-- Hidden elements needed by JS (summary + preview) -->
-<div style="display:none;">
-  <div id="videoArea"></div>
-  <div id="sv-inf"></div>
-  <div id="sv-source"></div>
-  <div id="sv-lang"></div>
-  <div id="sv-quality"></div>
+  </div>
+
 </div>
 
-</div><!-- close page-wrap -->
+<!-- LOADING -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-ring"></div>
   <div class="loading-title">Syncing Lips...</div>
@@ -426,366 +452,85 @@ input[type=file]{display:none;}
 </div>
 
 <script>
-// ═══════════════════════════════════════════
-//  CREATRIX — Lip Sync (Backend Connected)
-// ═══════════════════════════════════════════
-
-const API_BASE = 'https://creatrix-backend-production.up.railway.app';
+const influencers = [
+  {id:1,name:'Aria Nova',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top'},
+  {id:2,name:'Luna Ray',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top'},
+  {id:3,name:'Zara Khan',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top'},
+  {id:4,name:'Maya Singh',img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&q=80&fit=crop&crop=top'},
+  {id:5,name:'Kai Storm',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=top'},
+  {id:6,name:'Rohan Dev',img:'https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=200&q=80&fit=crop&crop=top'},
+];
+const recentItems = [
+  {name:'Aria — Hindi Script',lang:'Hindi',dur:'0:22',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top',date:'1h ago'},
+  {name:'Zara — English Audio',lang:'English',dur:'0:15',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top',date:'3h ago'},
+  {name:'Luna — Spanish',lang:'Spanish',dur:'0:30',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top',date:'1d ago'},
+  {name:'Kai — English Script',lang:'English',dur:'0:18',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=top',date:'2d ago'},
+];
 
 let selectedInf = null;
 let currentSource = 'upload';
 let hasFile = false;
-let audioFile = null;
-let cfg = { lang: 'Hindi', quality: 'Standard 720p' };
+let cfg = {lang:'Hindi', quality:'Standard 720p'};
 
-// ── TOKEN ──
-function getToken() {
-  return localStorage.getItem('creatrix_access_token') ||
-         localStorage.getItem('creatrix_token') ||
-         localStorage.getItem('token') || null;
-}
-
-// ── AUTH GUARD ──
-if (!getToken()) window.location.href = 'creatrix-auth.html';
-
-// ── LOAD CREDITS ──
-async function loadCredits() {
-  try {
-    const res = await fetch(`${API_BASE}/api/credits/balance`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    const data = await res.json();
-    const val = data.total ?? data.credits ?? '--';
-    document.getElementById('creditsCount').textContent = val;
-    const rem = document.getElementById('creditsRemaining');
-    if (rem) rem.textContent = val;
-  } catch(e) { console.warn('Credits fetch failed:', e.message); }
-}
-
-// ── LOAD REAL INFLUENCERS ──
-async function loadInfluencers() {
+// Build influencer grid
+function buildInfGrid(){
   const grid = document.getElementById('infGrid');
-
   // Upload own image card — always first
-  grid.insertAdjacentHTML('beforeend', `
+  grid.insertAdjacentHTML('beforeend',`
     <div class="inf-upload-card" id="ownImageCard" onclick="document.getElementById('ownImageFile').click()">
       <div class="iuc-icon">📸</div>
       <div class="iuc-label">Upload Your Own</div>
     </div>`);
-
-  try {
-    const res = await fetch(`${API_BASE}/api/influencer/list`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    const data = await res.json();
-    const list = Array.isArray(data) ? data : (data?.influencers || []);
-
-    if (list.length === 0) {
-      grid.insertAdjacentHTML('beforeend', `
-        <div style="grid-column:1/-1;font-size:0.78rem;color:var(--muted);padding:0.5rem;">
-          No influencers yet. <a href="creatrix-create-influencer.html" style="color:var(--accent2);">Create one →</a>
-        </div>`);
-      return;
-    }
-
-    list.forEach(inf => {
-      const settings = typeof inf.settings === 'string' ? JSON.parse(inf.settings) : (inf.settings || {});
-      const img = inf.avatar_url || inf.image_url ||
-        `https://ui-avatars.com/api/?name=${encodeURIComponent(inf.name)}&background=784CFE&color=fff&size=200`;
-      const idStr = JSON.stringify(inf.id);
-      const nameStr = JSON.stringify(inf.name);
-      const imgStr = JSON.stringify(img);
-      const avatarStr = JSON.stringify(inf.avatar_url && inf.avatar_url.startsWith('http') ? inf.avatar_url : img);
-
-      grid.insertAdjacentHTML('beforeend', `
-        <div class="inf-card" 
-             data-id="${inf.id}" 
-             data-name="${inf.name.replace(/"/g,'&quot;')}" 
-             data-img="${img}" 
-             data-avatar="${avatarStr.replace(/"/g,'&quot;')}"
-             onclick="selectInfCard(this)">
-          <img src="${img}" alt="${inf.name}" loading="lazy"
-               onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200'">
-          <div class="inf-card-name">${inf.name}</div>
-          <div class="inf-ck">✓</div>
-        </div>`);
-    });
-  } catch(e) {
-    console.error('Failed to load influencers:', e);
-    grid.insertAdjacentHTML('beforeend', `
-      <div style="grid-column:1/-1;font-size:0.78rem;color:var(--muted);">
-        Failed to load influencers. <span style="color:var(--accent2);cursor:pointer;" onclick="location.reload()">Retry</span>
+  influencers.forEach(inf=>{
+    grid.insertAdjacentHTML('beforeend',`
+      <div class="inf-card" onclick="selectInf(this,${inf.id},'${inf.name}','${inf.img}')">
+        <img src="${inf.img}" alt="${inf.name}" loading="lazy">
+        <div class="inf-card-name">${inf.name}</div>
+        <div class="inf-ck">✓</div>
       </div>`);
-  }
+  });
 }
 
-// ── LOAD RECENT LIPSYNC CREATIONS ──
-async function loadRecent() {
-  try {
-    const res = await fetch(`${API_BASE}/api/creations/list?type=lipsync`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    const data = await res.json();
-    const list = Array.isArray(data) ? data : (data?.creations || []);
-    const grid = document.getElementById('recentGrid');
-    grid.innerHTML = '';
-
-    if (list.length === 0) {
-      grid.innerHTML = `<div style="color:var(--muted);font-size:0.82rem;padding:1rem 0;">No lip sync videos yet.</div>`;
-      return;
-    }
-
-    list.slice(0, 8).forEach(r => {
-      const videoUrl = r.url || r.result_url || '';
-      const name = r.influencer_name || r.name || 'Lip Sync';
-      const date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '';
-
-      grid.insertAdjacentHTML('beforeend', `
-        <div class="rc" onclick="window.open('${videoUrl}','_blank')" style="cursor:pointer;">
-          <div class="rc-thumb" style="background:linear-gradient(135deg,#1C1C32,#0F0F1E);display:flex;align-items:center;justify-content:center;">
-            ${videoUrl ? `<video src="${videoUrl}" style="width:100%;height:100%;object-fit:cover;" preload="metadata"></video>` : '<div style="font-size:2rem;opacity:0.3;">👄</div>'}
-            <div class="rc-badge">👄 Lip Sync</div>
-          </div>
-          <div class="rc-info">
-            <div class="rc-name">${name}</div>
-            <div class="rc-meta">${cfg.lang} · ${date}</div>
-            <div class="rc-actions">
-              <div class="rc-btn" onclick="event.stopPropagation();window.open('${videoUrl}','_blank')">⬇ Download</div>
-              <div class="rc-btn" onclick="event.stopPropagation();navigator.clipboard.writeText('${videoUrl}').then(()=>alert('Copied!'))">📤 Copy</div>
-            </div>
-          </div>
-        </div>`);
-    });
-  } catch(e) { console.warn('Recent load failed:', e.message); }
-}
-
-// ── SELECT INFLUENCER (via data attributes) ──
-function selectInfCard(el) {
-  const id = el.dataset.id;
-  const name = el.dataset.name;
-  const img = el.dataset.img;
-  const avatar = el.dataset.avatar || img;
-  selectInf(el, id, name, img, avatar);
-}
-
-// ── SELECT INFLUENCER ──
-function selectInf(el, id, name, img, avatarUrl) {
-  document.querySelectorAll('.inf-card').forEach(c => c.classList.remove('sel'));
+function selectInf(el, id, name, img){
+  document.querySelectorAll('.inf-card').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
-  selectedInf = { id, name, img, avatarUrl: avatarUrl || img };
+  selectedInf = {id,name,img};
+  // Update preview
   const area = document.getElementById('videoArea');
-  area.innerHTML = `
-    <img class="va-img" src="${img}" alt="${name}"
-         onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=784CFE&color=fff&size=400'">
-    <div class="va-overlay"></div>
-    <div class="lips-anim" id="lipsAnim">
-      <div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div>
-      <div class="la-bar"></div><div class="la-bar"></div>
-    </div>
-    <div class="va-inf-name show" id="vaName">${name}</div>`;
+  area.innerHTML = `<img class="va-img" src="${img}" alt="${name}"><div class="va-overlay"></div><div class="lips-anim" id="lipsAnim"><div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div></div><div class="va-inf-name show" id="vaName">${name}</div>`;
   document.getElementById('sv-inf').textContent = name;
 }
 
-// ── UPLOAD AUDIO TO GET PUBLIC URL ──
-async function uploadAudioFile(file) {
-  // Convert to base64
-  const base64 = await fileToBase64(file);
-
-  const res = await fetch(`${API_BASE}/api/upload`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getToken()}`
-    },
-    body: JSON.stringify({
-      base64: base64,
-      filename: file.name.replace(/\.[^/.]+$/, ''),
-      mimetype: file.type || 'audio/mpeg'
-    })
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || 'Audio upload failed');
-  }
-  const data = await res.json();
-  return data.url;
-}
-
-// ── GENERATE ──
-async function generate() {
-  if (!selectedInf) { alert('Please select an influencer first!'); return; }
-
-  if (currentSource === 'upload' && !hasFile) {
-    alert('Please upload an audio file!'); return;
-  }
-  if (currentSource === 'script' && !document.getElementById('scriptText').value.trim()) {
-    document.getElementById('scriptText').focus();
-    document.getElementById('scriptText').style.borderColor = 'var(--accent)';
-    setTimeout(() => document.getElementById('scriptText').style.borderColor = 'var(--border2)', 2000);
-    alert('Please type your script!'); return;
-  }
-  if (currentSource === 'url' && !document.querySelector('#src-url input').value.trim()) {
-    alert('Please paste an audio URL!'); return;
-  }
-
-  if (!getToken()) { window.location.href = 'creatrix-auth.html'; return; }
-
-  const overlay = document.getElementById('loadingOverlay');
-  const bar = document.getElementById('loadBar');
-  const loadTitle = document.querySelector('.loading-title');
-  const loadSub = document.querySelector('.loading-sub');
-
-  overlay.classList.add('show');
-  bar.style.width = '0%';
-
-  try {
-    let audioUrl = '';
-
-    // ── Get audio URL ──
-    if (currentSource === 'upload' && audioFile) {
-      loadTitle.textContent = 'Uploading Audio...';
-      loadSub.textContent = 'Uploading audio file to server...';
-      bar.style.width = '20%';
-      audioUrl = await uploadAudioFile(audioFile);
-    } else if (currentSource === 'url') {
-      audioUrl = document.querySelector('#src-url input').value.trim();
-    } else if (currentSource === 'script') {
-      overlay.classList.remove('show');
-      alert('Script/TTS feature coming soon! Please use "Audio URL" tab and paste a direct MP3 link.\n\nExample: https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
-      return;
-    }
-
-    loadTitle.textContent = 'Starting Lip Sync...';
-    loadSub.textContent = 'Sending to AI model...';
-    bar.style.width = '35%';
-
-    const hd = cfg.quality?.includes('1080') || false;
-
-    // Use influencer's real avatar_url if available, not base64
-    const imageUrl = (selectedInf.avatarUrl && selectedInf.avatarUrl.startsWith('http'))
-      ? selectedInf.avatarUrl
-      : selectedInf.img;
-
-    const res = await fetch(`${API_BASE}/api/generate/lipsync`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`
-      },
-      body: JSON.stringify({
-        image_url: imageUrl,
-        audio_url: audioUrl,
-        hd,
-        influencer_id: selectedInf.id !== 'custom' ? selectedInf.id : null
-      })
-    });
-
-    const job = await res.json();
-
-    if (job.error) {
-      overlay.classList.remove('show');
-      alert('Error: ' + job.error);
-      return;
-    }
-
-    // ── Poll for result ──
-    loadTitle.textContent = 'Syncing Lips...';
-    loadSub.textContent = 'AI is analysing audio and syncing lips. ~30–60s';
-    bar.style.width = '50%';
-
-    const jobId = job.job_id || job.id;
-    let attempts = 0;
-    const maxAttempts = 2160; // 3 hours (2160 x 5sec)
-
-    const poll = async () => {
-      attempts++;
-      if (attempts > maxAttempts) {
-        overlay.classList.remove('show');
-        alert('Generation timed out. Check My Creations later — it may still complete.');
-        return;
-      }
-
-      const statusRes = await fetch(`${API_BASE}/api/generate/status/${jobId}`, {
-        headers: { Authorization: `Bearer ${getToken()}` }
-      });
-      const status = await statusRes.json();
-
-      const pct = Math.min(50 + (attempts / maxAttempts) * 45, 95);
-      bar.style.width = pct + '%';
-
-      if (status.status === 'done' || status.result_url || status.creation?.url) {
-        bar.style.width = '100%';
-        overlay.classList.remove('show');
-
-        const resultUrl = status.result_url || status.output_url || status.creation?.url;
-        if (resultUrl) {
-          // Show video in modal
-          const modal = document.createElement('div');
-          modal.style.cssText = 'position:fixed;inset:0;background:rgba(4,4,10,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;';
-          modal.innerHTML = `
-            <div style="font-family:var(--font-h);font-size:1.2rem;font-weight:700;color:var(--accent3);">🎉 Lip Sync Ready!</div>
-            <video src="${resultUrl}" controls autoplay style="max-height:70vh;max-width:100%;border-radius:16px;box-shadow:0 0 40px rgba(255,60,172,0.3);"></video>
-            <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
-              <a href="${resultUrl}" download target="_blank" style="padding:0.75rem 1.5rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:12px;font-family:var(--font-h);font-weight:700;text-decoration:none;font-size:0.9rem;">⬇ Download Video</a>
-              <button onclick="this.closest('div[style]').remove()" style="padding:0.75rem 1.5rem;background:var(--card2);border:1px solid var(--border2);color:var(--muted);border-radius:12px;font-family:var(--font-h);font-weight:700;cursor:pointer;font-size:0.9rem;">✕ Close</button>
-            </div>`;
-          modal.addEventListener('click', e => { if(e.target === modal) modal.remove(); });
-          document.body.appendChild(modal);
-        }
-
-        // Refresh credits & recent
-        loadCredits();
-        loadRecent();
-
-      } else if (status.status === 'failed') {
-        overlay.classList.remove('show');
-        alert('Generation failed: ' + (status.error || 'Unknown error. Please try again.'));
-      } else {
-        setTimeout(poll, 8000);
-      }
-    };
-
-    setTimeout(poll, 15000); // Wait 15s before first check
-
-  } catch(err) {
-    overlay.classList.remove('show');
-    console.error('Lipsync error:', err);
-    alert('Failed: ' + (err.message || 'Please try again.'));
-  }
-}
-
-// ── SOURCE SWITCHING ──
-function switchSource(type, el) {
-  document.querySelectorAll('.source-tab').forEach(t => t.classList.remove('active'));
+// Source switching
+function switchSource(type, el){
+  document.querySelectorAll('.source-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   currentSource = type;
-  document.getElementById('src-upload').style.display = type === 'upload' ? 'block' : 'none';
-  document.getElementById('src-script').style.display = type === 'script' ? 'block' : 'none';
-  document.getElementById('src-url').style.display    = type === 'url'    ? 'block' : 'none';
-  const sourceMap = { upload: 'Upload', script: 'Script', url: 'URL' };
+  document.getElementById('src-upload').style.display = type==='upload' ? 'block' : 'none';
+  document.getElementById('src-script').style.display = type==='script' ? 'block' : 'none';
+  document.getElementById('src-url').style.display = type==='url' ? 'block' : 'none';
+  const sourceMap = {upload:'Upload',script:'Script',url:'URL'};
   document.getElementById('sv-source').textContent = sourceMap[type];
+  // Show lips animation if script
   const anim = document.getElementById('lipsAnim');
-  if (anim) anim.className = 'lips-anim' + (type === 'script' ? ' show' : '');
+  if(anim) anim.className = 'lips-anim' + (type==='script' ? ' show' : '');
 }
 
-// ── FILE HANDLING ──
-function handleFileSelect(input) {
+// File handling
+function handleFileSelect(input){
   const file = input.files[0];
-  if (!file) return;
-  audioFile = file;
-  setFile(file.name, (file.size / 1024 / 1024).toFixed(1) + ' MB');
+  if(!file) return;
+  setFile(file.name, (file.size/1024/1024).toFixed(1)+' MB');
 }
-function handleDrop(e) {
+function handleDrop(e){
   e.preventDefault();
   document.getElementById('uploadZone').classList.remove('drag');
   const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('audio')) {
-    audioFile = file;
-    setFile(file.name, (file.size / 1024 / 1024).toFixed(1) + ' MB');
+  if(file && file.type.startsWith('audio')){
+    setFile(file.name, (file.size/1024/1024).toFixed(1)+' MB');
   }
 }
-function setFile(name, size) {
+function setFile(name, size){
   hasFile = true;
   document.getElementById('uploadDefault').style.display = 'none';
   const fi = document.getElementById('fileInfo');
@@ -794,34 +539,34 @@ function setFile(name, size) {
   document.getElementById('fileSize').textContent = size;
   document.getElementById('uploadZone').classList.add('has-file');
   document.getElementById('waveform').style.display = 'flex';
+  // Show lips animation on preview
   const anim = document.getElementById('lipsAnim');
-  if (anim) anim.classList.add('show');
+  if(anim) anim.classList.add('show');
 }
-function removeFile() {
+function removeFile(){
   hasFile = false;
-  audioFile = null;
   document.getElementById('uploadDefault').style.display = 'block';
   document.getElementById('fileInfo').classList.remove('show');
   document.getElementById('uploadZone').classList.remove('has-file');
   document.getElementById('waveform').style.display = 'none';
   document.getElementById('audioFile').value = '';
   const anim = document.getElementById('lipsAnim');
-  if (anim) anim.classList.remove('show');
+  if(anim) anim.classList.remove('show');
 }
 
-// ── VOICE ──
-function pickVoice(el, name) {
-  document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('sel'));
+// Voice
+function pickVoice(el, name){
+  document.querySelectorAll('.voice-card').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
 }
 
-// ── CHIPS ──
-function pickChip(el, group, val) {
-  el.closest('.chip-grid').querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+// Chips
+function pickChip(el, group, val){
+  el.closest('.chip-grid').querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
   cfg[group] = val;
-  if (group === 'lang') document.getElementById('sv-lang').textContent = val;
-  if (group === 'quality') {
+  if(group==='lang') document.getElementById('sv-lang').textContent = val;
+  if(group==='quality'){
     document.getElementById('sv-quality').textContent = val.split(' ')[0];
     const cost = val.includes('1080') ? 5 : 4;
     document.getElementById('costLabel').textContent = cost + ' credits';
@@ -829,23 +574,97 @@ function pickChip(el, group, val) {
   }
 }
 
-// ── CHAR COUNT ──
-function updateCharCount(el) {
+// Char count
+function updateCharCount(el){
   document.getElementById('charCount').textContent = el.value.length;
 }
 
-function updateSummary() {}
+function updateSummary(){}
 
-// ── OWN IMAGE UPLOAD ──
-function handleOwnImage(input) {
+// Generate
+function generate(){
+  if(!selectedInf){ alert('Please select an influencer first!'); return; }
+  if(currentSource==='upload' && !hasFile){ alert('Please upload an audio file!'); return; }
+  if(currentSource==='script' && !document.getElementById('scriptText').value.trim()){ 
+    document.getElementById('scriptText').focus();
+    document.getElementById('scriptText').style.borderColor='var(--accent)';
+    setTimeout(()=>document.getElementById('scriptText').style.borderColor='var(--border2)',2000);
+    alert('Please type your script!'); return; 
+  }
+  if(currentSource==='url' && !document.querySelector('#src-url input').value.trim()){ alert('Please paste an audio URL!'); return; }
+
+  if(!CreatrixAPI.Auth.isLoggedIn()){ window.location.href='creatrix-auth.html'; return; }
+
+  const overlay = document.getElementById('loadingOverlay');
+  const bar = document.getElementById('loadBar');
+  bar.style.animation='none'; bar.offsetHeight; bar.style.animation='loadProgress 30s ease forwards';
+  overlay.classList.add('show');
+
+  const audioUrl = currentSource==='url' ? document.querySelector('#src-url input').value.trim() : '';
+  const script = currentSource==='script' ? document.getElementById('scriptText').value.trim() : '';
+
+  CreatrixAPI.Generate.lipsync(
+    selectedInf.img,
+    audioUrl || 'tts',
+    { influencerId: selectedInf.id }
+  ).then(job => {
+    if(job.error){ overlay.classList.remove('show'); alert(job.error); return; }
+    if(job.job_id){
+      return CreatrixAPI.Generate.waitForResult(job.job_id, (status)=>{
+        const pct = status.progress || 50;
+        bar.style.animation='none'; bar.style.width=pct+'%';
+      });
+    }
+    return job;
+  }).then(result => {
+    overlay.classList.remove('show');
+    if(result && result.output_url){
+      document.getElementById('videoArea').innerHTML = `<video class="va-img" src="${result.output_url}" controls autoplay style="opacity:1;border-radius:16px;"></video><div class="va-inf-name show">${selectedInf.name} ✅</div>`;
+    } else if(selectedInf){
+      document.getElementById('videoArea').innerHTML = `<img class="va-img" src="${selectedInf.img}" alt="Result" style="opacity:1;"><div class="va-overlay"></div><div class="lips-anim show"><div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div></div><div class="va-inf-name show">${selectedInf.name} ✅</div>`;
+    }
+  }).catch(err=>{
+    overlay.classList.remove('show');
+    alert('Generation failed: ' + (err.message || 'Try again'));
+  });
+}
+
+// Build recent
+function buildRecent(){
+  const grid = document.getElementById('recentGrid');
+  recentItems.forEach(r=>{
+    grid.insertAdjacentHTML('beforeend',`
+      <div class="rc">
+        <div class="rc-thumb">
+          <img src="${r.img}" alt="${r.name}" loading="lazy">
+          <div class="rc-badge">👄 Lip Sync</div>
+          <div class="rc-duration">${r.dur}</div>
+        </div>
+        <div class="rc-info">
+          <div class="rc-name">${r.name}</div>
+          <div class="rc-meta">${r.lang} · ${r.date}</div>
+          <div class="rc-actions">
+            <div class="rc-btn">⬇ Download</div>
+            <div class="rc-btn">📤 Share</div>
+          </div>
+        </div>
+      </div>`);
+  });
+}
+
+
+function handleOwnImage(input){
   const file = input.files[0];
-  if (!file) return;
+  if(!file) return;
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function(e){
     const src = e.target.result;
     const card = document.getElementById('ownImageCard');
     card.classList.add('has-img');
-    card.style.cssText = 'position:relative;padding:0;overflow:hidden;border:2px solid var(--accent2);border-radius:14px;';
+    card.style.position = 'relative';
+    card.style.padding = '0';
+    card.style.overflow = 'hidden';
+    card.style.border = '2px solid var(--accent2)';
     const img = document.createElement('img');
     img.src = src;
     img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:top;border-radius:11px;display:block;';
@@ -855,26 +674,37 @@ function handleOwnImage(input) {
     card.innerHTML = '';
     card.appendChild(img);
     card.appendChild(lbl);
-    document.querySelectorAll('.inf-card').forEach(c => c.classList.remove('sel'));
-    selectedInf = { id: 'custom', name: 'Your Image', img: src };
+    // Deselect all influencer cards
+    document.querySelectorAll('.inf-card').forEach(c=>c.classList.remove('sel'));
+    selectedInf = {id:'custom', name:'Your Image', img:src};
+    // Update preview
     const area = document.getElementById('videoArea');
-    area.innerHTML = `
-      <img class="va-img" src="${src}" alt="Your Image">
-      <div class="va-overlay"></div>
-      <div class="lips-anim" id="lipsAnim">
-        <div class="la-bar"></div><div class="la-bar"></div><div class="la-bar"></div>
-        <div class="la-bar"></div><div class="la-bar"></div>
-      </div>
-      <div class="va-inf-name show" id="vaName">Your Image</div>`;
+    area.innerHTML = '';
+    const pvImg = document.createElement('img');
+    pvImg.className = 'va-img';
+    pvImg.src = src;
+    pvImg.alt = 'Your Image';
+    const overlay = document.createElement('div');
+    overlay.className = 'va-overlay';
+    const anim = document.createElement('div');
+    anim.className = 'lips-anim';
+    anim.id = 'lipsAnim';
+    for(let i=0;i<5;i++){const b=document.createElement('div');b.className='la-bar';anim.appendChild(b);}
+    const name = document.createElement('div');
+    name.className = 'va-inf-name show';
+    name.id = 'vaName';
+    name.textContent = 'Your Image';
+    area.appendChild(pvImg);
+    area.appendChild(overlay);
+    area.appendChild(anim);
+    area.appendChild(name);
     document.getElementById('sv-inf').textContent = 'Your Image';
   };
   reader.readAsDataURL(file);
 }
 
-// ── INIT ──
-loadCredits();
-loadInfluencers();
-loadRecent();
+buildInfGrid();
+buildRecent();
 </script>
 
 <input type="file" id="ownImageFile" accept="image/*" style="display:none" onchange="handleOwnImage(this)">

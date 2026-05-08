@@ -402,6 +402,7 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--muted2); border-radius: 2px; }
 </style>
+<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "wnqtcqu7ae");<\/script>
 </head>
 <body>
 
@@ -489,8 +490,8 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
     <div class="page active" id="page-overview">
       <div class="welcome-banner">
         <div>
-          <div class="wb-title" id="wbTitle">Welcome back! 👋</div>
-          <div class="wb-sub" id="wbSub">Loading your dashboard...</div>
+          <div class="wb-title">Good afternoon, Rahul! 👋</div>
+          <div class="wb-sub">You have 38 credits left. Create a new AI influencer or generate a video today.</div>
         </div>
         <div class="wb-emoji">🚀</div>
       </div>
@@ -498,23 +499,23 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-label"><span>🧑‍🎤</span> AI Influencers</div>
-          <div class="stat-num" id="stat-influencers">—</div>
-          <div class="stat-change stat-up" id="stat-influencers-sub">Loading...</div>
+          <div class="stat-num">3</div>
+          <div class="stat-change stat-up">↑ +1 this week</div>
         </div>
         <div class="stat-card">
           <div class="stat-label"><span>🎬</span> Videos Created</div>
-          <div class="stat-num" id="stat-creations">—</div>
-          <div class="stat-change stat-up" id="stat-creations-sub">Loading...</div>
+          <div class="stat-num">24</div>
+          <div class="stat-change stat-up">↑ +8 this month</div>
         </div>
         <div class="stat-card">
           <div class="stat-label"><span>💎</span> Credits Used</div>
-          <div class="stat-num" id="stat-credits-used">—</div>
-          <div class="stat-change stat-down" id="stat-credits-remaining">Loading...</div>
+          <div class="stat-num">62</div>
+          <div class="stat-change stat-down">↓ 38 remaining</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label"><span>💰</span> Credits Balance</div>
-          <div class="stat-num" id="stat-credits-balance">—</div>
-          <div class="stat-change stat-up">Available now</div>
+          <div class="stat-label"><span>👁️</span> Total Views</div>
+          <div class="stat-num">1.2M</div>
+          <div class="stat-change stat-up">↑ +340K this week</div>
         </div>
       </div>
 
@@ -524,7 +525,48 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
             <div class="sc-title">Recent Creations</div>
             <a class="sc-action" onclick="showPage('creations', document.querySelectorAll('.nav-item')[3])">View all →</a>
           </div>
-          <div class="creation-list" id="recentCreationsList"></div>
+          <div class="creation-list">
+            <div class="creation-item">
+              <div class="creation-thumb" style="background:linear-gradient(135deg,rgba(255,60,172,0.2),rgba(120,76,254,0.2))">🧑‍🎤</div>
+              <div class="creation-info">
+                <div class="creation-name">Aria Fashion Reel #12</div>
+                <div class="creation-meta">AI Video · Kling v3 · 2h ago</div>
+              </div>
+              <div class="creation-status status-done">Done</div>
+            </div>
+            <div class="creation-item">
+              <div class="creation-thumb" style="background:linear-gradient(135deg,rgba(0,245,212,0.15),rgba(120,76,254,0.1))">👄</div>
+              <div class="creation-info">
+                <div class="creation-name">TechGuru Lip Sync v3</div>
+                <div class="creation-meta">Lip Sync · 5h ago</div>
+              </div>
+              <div class="creation-status status-done">Done</div>
+            </div>
+            <div class="creation-item">
+              <div class="creation-thumb" style="background:linear-gradient(135deg,rgba(120,76,254,0.2),rgba(0,245,212,0.1))">😶</div>
+              <div class="creation-info">
+                <div class="creation-name">FitBot Face Swap #5</div>
+                <div class="creation-meta">Face Swap · Processing...</div>
+              </div>
+              <div class="creation-status status-proc">Processing</div>
+            </div>
+            <div class="creation-item">
+              <div class="creation-thumb" style="background:linear-gradient(135deg,rgba(255,209,102,0.15),rgba(255,60,172,0.1))">📸</div>
+              <div class="creation-info">
+                <div class="creation-name">Luna AI Headshots Pack</div>
+                <div class="creation-meta">Headshots · Yesterday</div>
+              </div>
+              <div class="creation-status status-done">Done</div>
+            </div>
+            <div class="creation-item">
+              <div class="creation-thumb" style="background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(120,76,254,0.1))">🎥</div>
+              <div class="creation-info">
+                <div class="creation-name">Untitled UGC Draft</div>
+                <div class="creation-meta">UGC Creator · 2 days ago</div>
+              </div>
+              <div class="creation-status status-draft">Draft</div>
+            </div>
+          </div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:1.25rem;">
@@ -921,10 +963,8 @@ function renderUserData(user) {
   document.querySelector('.credits-bar-fill').style.width = fillPct + '%';
 
   // Welcome banner
-  const wbTitle = document.getElementById('wbTitle');
-  const wbSub = document.getElementById('wbSub');
-  if (wbTitle) wbTitle.textContent = `${greeting}, ${firstName}! 👋`;
-  if (wbSub) wbSub.textContent = totalCredits > 0
+  document.querySelector('.wb-title').textContent = `${greeting}, ${firstName}! 👋`;
+  document.querySelector('.wb-sub').textContent = totalCredits > 0
     ? `You have ${totalCredits} credits. Create something amazing today!`
     : `You're out of credits. Buy more to keep creating! 🚀`;
 
@@ -1068,92 +1108,11 @@ function wireBuyButtons() {
   }
 }
 
-// ── LOAD REAL STATS ──
-async function loadDashboardStats() {
-  try {
-    // Credits
-    const credData = await CreatrixAPI.Credits.getBalance();
-    const total = credData.total ?? credData.credits ?? 0;
-    const paid = credData.paid_credits ?? 0;
-    const free = credData.free_credits ?? 0;
-    document.getElementById('stat-credits-balance').textContent = total;
-    document.getElementById('stat-credits-remaining').textContent = `${total} available`;
-
-    // Influencers count
-    const infData = await CreatrixAPI.apiRequest('/api/influencer/list');
-    const infList = Array.isArray(infData) ? infData : (infData?.influencers || []);
-    document.getElementById('stat-influencers').textContent = infList.length;
-    document.getElementById('stat-influencers-sub').textContent = `${infList.length} created`;
-
-    // Creations count
-    const crData = await CreatrixAPI.Creations.list();
-    const crList = Array.isArray(crData) ? crData : (crData?.creations || []);
-    const doneCount = crList.filter(c => c.status === 'done').length;
-    document.getElementById('stat-creations').textContent = crList.length;
-    document.getElementById('stat-creations-sub').textContent = `${doneCount} completed`;
-
-    // Credits used (from logs)
-    const logsData = await CreatrixAPI.Credits.getLogs();
-    const logs = Array.isArray(logsData) ? logsData : (logsData?.logs || []);
-    const used = logs.filter(l => l.amount < 0).reduce((sum, l) => sum + Math.abs(l.amount || 0), 0);
-    document.getElementById('stat-credits-used').textContent = used || '—';
-
-    // Load recent creations
-    loadRecentCreations(crList.slice(0, 5));
-
-    // Update creations badge in sidebar
-    const badge = document.querySelector('.nav-badge.green');
-    if (badge) badge.textContent = crList.length;
-
-  } catch(err) {
-    console.warn('Stats load error:', err.message);
-  }
-}
-
-// ── LOAD RECENT CREATIONS ──
-function loadRecentCreations(list) {
-  const container = document.getElementById('recentCreationsList');
-  if (!container) return;
-
-  const typeIcons = { video:'🎬', lipsync:'👄', motion:'🕹️', ugc:'🎥', image:'🖼️' };
-  const typeColors = {
-    video: 'rgba(255,60,172,0.2),rgba(120,76,254,0.2)',
-    lipsync: 'rgba(0,245,212,0.15),rgba(120,76,254,0.1)',
-    motion: 'rgba(120,76,254,0.2),rgba(0,245,212,0.1)',
-    ugc: 'rgba(255,209,102,0.15),rgba(255,60,172,0.1)',
-    image: 'rgba(59,130,246,0.2),rgba(120,76,254,0.1)'
-  };
-
-  if (list.length === 0) {
-    container.innerHTML = `<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.85rem;">No creations yet. <a href="creatrix-create-influencer.html" style="color:var(--accent2);">Create your first!</a></div>`;
-    return;
-  }
-
-  container.innerHTML = list.map(c => {
-    const icon = typeIcons[c.type] || '🎬';
-    const color = typeColors[c.type] || typeColors.video;
-    const date = c.created_at ? new Date(c.created_at).toLocaleDateString('en-IN', {day:'numeric',month:'short'}) : '';
-    const statusClass = c.status === 'done' ? 'status-done' : c.status === 'processing' ? 'status-proc' : 'status-draft';
-    const statusLabel = c.status === 'done' ? 'Done' : c.status === 'processing' ? 'Processing' : c.status || 'Draft';
-    const name = c.type ? `${c.type.charAt(0).toUpperCase() + c.type.slice(1)} · ${date}` : date;
-
-    return `<div class="creation-item" onclick="${c.url ? `window.open('${c.url}','_blank')` : ''}">
-      <div class="creation-thumb" style="background:linear-gradient(135deg,${color})">${icon}</div>
-      <div class="creation-info">
-        <div class="creation-name">${name}</div>
-        <div class="creation-meta">${c.type || 'Creation'} · ${date}</div>
-      </div>
-      <div class="creation-status ${statusClass}">${statusLabel}</div>
-    </div>`;
-  }).join('');
-}
-
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
   buildBarChart();
   wireBuyButtons();
   loadUserData();
-  loadDashboardStats();
 });
 </script>
 </body>
