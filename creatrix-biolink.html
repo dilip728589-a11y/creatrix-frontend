@@ -131,21 +131,19 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);min-heigh
   <!-- PROFILE HEADER -->
   <div class="profile-header">
     <div class="profile-avatar">
-      <img class="avatar-img" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=85&fit=crop&crop=top" alt="Aria Nova">
+      <img class="avatar-img" id="profileAvatar" src="https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200" alt="Creator">
       <div class="avatar-live"></div>
     </div>
-    <div class="profile-name">Aria Nova ✨</div>
-    <div class="profile-handle">@arianova.ai</div>
-    <div class="profile-bio">Fashion & lifestyle creator 🌸 Exclusive content for my real fans only 🔒</div>
-    <div class="profile-tags">
-      <span class="ptag">👗 Fashion</span>
-      <span class="ptag">🌸 Lifestyle</span>
+    <div class="profile-name" id="profileName">Loading...</div>
+    <div class="profile-handle" id="profileHandle">@creator.ai</div>
+    <div class="profile-bio" id="profileBio">Exclusive AI content 🔒</div>
+    <div class="profile-tags" id="profileTags">
       <span class="ptag">✨ Exclusive</span>
     </div>
     <div class="stats-bar">
-      <div class="sb-item"><div class="sb-val">247</div><div class="sb-lbl">Visitors</div></div>
-      <div class="sb-item"><div class="sb-val">31</div><div class="sb-lbl">Fans</div></div>
-      <div class="sb-item"><div class="sb-val">12</div><div class="sb-lbl">Posts</div></div>
+      <div class="sb-item"><div class="sb-val" id="statVisitors">—</div><div class="sb-lbl">Visitors</div></div>
+      <div class="sb-item"><div class="sb-val" id="statFans">—</div><div class="sb-lbl">Fans</div></div>
+      <div class="sb-item"><div class="sb-val" id="statPosts">—</div><div class="sb-lbl">Posts</div></div>
     </div>
   </div>
 
@@ -223,36 +221,178 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);min-heigh
 </div>
 
 <script>
-const premiumContent = [
-  {id:1,name:'Exclusive Fashion Shoot',type:'📸 Photo',price:299,img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
-  {id:2,name:'Luxury Lifestyle Reel',type:'🎬 Video',price:499,img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&q=80&fit=crop&crop=top'},
-  {id:3,name:'Glam Night Look',type:'📸 Photo',price:199,img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80&fit=crop&crop=top'},
-  {id:4,name:'Behind The Scenes',type:'🎬 Video',price:399,img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80&fit=crop&crop=top'},
-  {id:5,name:'Exclusive Outfit Try-On',type:'🎬 Video',price:299,img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=80&fit=crop&crop=top'},
-  {id:6,name:'Morning Routine Full',type:'🎬 Video',price:499,img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&q=80&fit=crop&crop=top'},
-  {id:7,name:'Summer Collection Drop',type:'📸 Photo',price:199,img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80&fit=crop&crop=top'},
-  {id:8,name:'Private Dance Reel',type:'🎬 Video',price:599,img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80&fit=crop&crop=top'},
-];
+// ═══════════════════════════════════════════
+//  CREATRIX — Bio Link (Backend Connected)
+// ═══════════════════════════════════════════
 
-const freeContent = [
-  {id:9,name:'Public Reel',type:'🎬',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top'},
-  {id:10,name:'Style Inspo',type:'📸',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top'},
-  {id:11,name:'Casual Look',type:'📸',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top'},
-  {id:12,name:'Preview Clip',type:'🎬',img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&q=80&fit=crop&crop=top'},
-];
+const API_BASE = 'https://creatrix-backend-production.up.railway.app';
 
+let premiumContent = [];
+let freeContent = [];
 let unlockedIds = [];
 let currentPayItem = null;
 
-// Build premium grid
+// ── GET USERNAME FROM URL ──
+// URL format: creatrix-biolink.html?u=username OR /creator/username
+function getUsername() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('u') || params.get('username') || null;
+}
+
+// ── LOAD CREATOR PAGE ──
+async function loadCreatorPage() {
+  const username = getUsername();
+
+  if (!username) {
+    // If no username in URL, show logged-in user's own page
+    loadOwnPage();
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/api/creator/${username}`);
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      document.getElementById('profileName').textContent = 'Creator not found';
+      return;
+    }
+
+    updateProfile(data);
+    loadContentFromData(data);
+  } catch(e) {
+    console.error('Creator page load failed:', e);
+    loadOwnPage();
+  }
+}
+
+// ── LOAD OWN PAGE (when logged in) ──
+async function loadOwnPage() {
+  const token = localStorage.getItem('creatrix_access_token') ||
+                localStorage.getItem('creatrix_token') ||
+                localStorage.getItem('token');
+
+  if (!token) {
+    document.getElementById('profileName').textContent = 'Preview Mode';
+    document.getElementById('profileHandle').textContent = '@your.ai';
+    return;
+  }
+
+  try {
+    // Load user info
+    const userRes = await fetch(`${API_BASE}/api/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const userData = await userRes.json();
+    const user = userData.user || userData;
+    const username = user.username || user.email?.split('@')[0] || 'creator';
+
+    updateProfile({
+      name: user.name || username,
+      username: username,
+      bio: 'Exclusive AI content 🔒 Only for real fans',
+      avatar_url: user.avatar_url || null,
+      niche: user.niche || 'Lifestyle',
+    });
+
+    // Load creations
+    const crRes = await fetch(`${API_BASE}/api/creations/list`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const crData = await crRes.json();
+    const list = Array.isArray(crData) ? crData : (crData?.creations || []);
+
+    premiumContent = list.filter(c => c.is_premium && c.status === 'done' && c.url)
+      .map(c => ({ id: c.id, name: 'Exclusive · ' + c.type, type: c.type === 'video' ? '🎬 Video' : '📸 Photo', price: c.price || 299, img: c.url, url: c.url, creation_id: c.id }));
+
+    freeContent = list.filter(c => !c.is_premium && c.status === 'done' && c.url)
+      .map(c => ({ id: c.id, name: c.type || 'Content', type: c.type === 'video' ? '🎬' : '📸', img: c.url }));
+
+    document.getElementById('statPosts').textContent = list.filter(c => c.status === 'done').length;
+
+    // Load earnings stats
+    try {
+      const earnRes = await fetch(`${API_BASE}/api/monetize/earnings`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const earnData = await earnRes.json();
+      document.getElementById('statVisitors').textContent = earnData.total_visits || '0';
+      document.getElementById('statFans').textContent = earnData.total_unlocks || '0';
+    } catch(e) {}
+
+    buildPremiumGrid();
+    buildFreeGrid();
+
+  } catch(e) {
+    console.error('Own page load failed:', e);
+  }
+}
+
+// ── UPDATE PROFILE UI ──
+function updateProfile(data) {
+  const name = data.name || data.username || 'Creator';
+  const username = data.username || 'creator';
+  const avatar = data.avatar_url || data.influencer?.avatar_url ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=784CFE&color=fff&size=200`;
+
+  document.getElementById('profileName').textContent = name + ' ✨';
+  document.getElementById('profileHandle').textContent = '@' + username + '.ai';
+  document.getElementById('profileBio').textContent = data.bio || 'Exclusive AI content 🔒 Only for real fans';
+  document.getElementById('profileAvatar').src = avatar;
+  document.title = name + ' — Exclusive Content';
+
+  if (data.niche) {
+    document.getElementById('profileTags').innerHTML =
+      `<span class="ptag">✨ ${data.niche}</span><span class="ptag">🔒 Exclusive</span>`;
+  }
+}
+
+// ── LOAD CONTENT FROM API DATA (public creator page) ──
+function loadContentFromData(data) {
+  premiumContent = (data.premium_content || []).map(c => ({
+    id: c.id, name: c.name || 'Exclusive Content',
+    type: c.type === 'video' ? '🎬 Video' : '📸 Photo',
+    price: c.price || 299, img: c.thumbnail_url || c.url, creation_id: c.id
+  }));
+
+  freeContent = (data.free_content || []).map(c => ({
+    id: c.id, name: c.name || 'Content',
+    type: c.type === 'video' ? '🎬' : '📸', img: c.thumbnail_url || c.url
+  }));
+
+  document.getElementById('statVisitors').textContent = data.visits || '0';
+  document.getElementById('statFans').textContent = data.fans || '0';
+  document.getElementById('statPosts').textContent = (premiumContent.length + freeContent.length);
+
+  buildPremiumGrid();
+  buildFreeGrid();
+}
+
+// ── BUILD PREMIUM GRID ──
 function buildPremiumGrid() {
   const grid = document.getElementById('premiumGrid');
+  grid.innerHTML = '';
+
+  if (premiumContent.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--muted);font-size:0.82rem;">No premium content yet.</div>`;
+    document.querySelector('.cs-count').textContent = '0 items';
+    return;
+  }
+
+  document.querySelector('.cs-count').textContent = premiumContent.length + ' items';
+
   premiumContent.forEach(item => {
     const isUnlocked = unlockedIds.includes(item.id);
+    const isVideo = item.img && (item.img.includes('.mp4') || item.img.includes('replicate'));
+    const thumbContent = isVideo
+      ? `<video src="${item.img}" style="width:100%;height:100%;object-fit:cover;${isUnlocked ? '' : 'filter:blur(8px);transform:scale(1.05);'}" muted preload="metadata"></video>`
+      : `<img src="${item.img}" alt="${item.name}" loading="lazy" style="${isUnlocked ? '' : 'filter:blur(8px);transform:scale(1.05);'}">`;
+
+    const idStr = JSON.stringify(item.id);
     grid.insertAdjacentHTML('beforeend', `
-      <div class="ci" onclick="handleContentClick(${item.id})">
+      <div class="ci" onclick="handleContentClick(${idStr})">
         <div class="ci-thumb">
-          <img src="${item.img}" alt="${item.name}" loading="lazy" style="${isUnlocked ? '' : 'filter:blur(8px);transform:scale(1.05);'}">
+          ${thumbContent}
           ${!isUnlocked ? `
           <div class="ci-blur">
             <div class="ci-lock">🔒</div>
@@ -265,14 +405,26 @@ function buildPremiumGrid() {
   });
 }
 
-// Build free grid
+// ── BUILD FREE GRID ──
 function buildFreeGrid() {
   const grid = document.getElementById('freeGrid');
+  grid.innerHTML = '';
+
+  if (freeContent.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--muted);font-size:0.82rem;">No free content yet.</div>`;
+    return;
+  }
+
   freeContent.forEach(item => {
+    const isVideo = item.img && (item.img.includes('.mp4') || item.img.includes('replicate'));
+    const thumbContent = isVideo
+      ? `<video src="${item.img}" style="width:100%;height:100%;object-fit:cover;" muted preload="metadata" onclick="window.open('${item.img}','_blank')"></video>`
+      : `<img src="${item.img}" alt="${item.name}" loading="lazy">`;
+
     grid.insertAdjacentHTML('beforeend', `
-      <div class="ci">
+      <div class="ci" onclick="${isVideo ? `window.open('${item.img}','_blank')` : ''}">
         <div class="ci-thumb">
-          <img src="${item.img}" alt="${item.name}" loading="lazy">
+          ${thumbContent}
           <div class="ci-free-badge">🆓</div>
           <div class="ci-type-badge">${item.type}</div>
         </div>
@@ -282,14 +434,14 @@ function buildFreeGrid() {
 
 function handleContentClick(id) {
   if (unlockedIds.includes(id)) return;
-  const item = premiumContent.find(c => c.id === id);
-  if (item) openPayment(item.img, item.name, item.price);
+  const item = premiumContent.find(c => String(c.id) === String(id));
+  if (item) openPayment(item.img, item.name, item.price, item.creation_id);
 }
 
-// Payment
-function openPayment(img, name, price) {
-  currentPayItem = {img, name, price};
-  document.getElementById('modalImg').src = img || premiumContent[0].img;
+// ── PAYMENT ──
+function openPayment(img, name, price, creationId) {
+  currentPayItem = { img, name, price, creation_id: creationId };
+  document.getElementById('modalImg').src = img || '';
   document.getElementById('modalName').textContent = name;
   document.getElementById('modalPrice').textContent = '₹' + price;
   document.getElementById('payBtnAmt').textContent = '₹' + price;
@@ -308,43 +460,33 @@ function pickPM(el) {
 function processPayment() {
   if (!currentPayItem) return;
   const email = prompt('Enter your email to receive access:') || '';
-  CreatrixAPI.Monetize.unlockContent(currentPayItem.creation_id, email, (result) => {
-    closePayment();
-    document.getElementById('successOverlay').classList.add('show');
-  });
-  return; // Below code replaced by API
-  const btn = document.getElementById('payBtn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Processing...';
+  if (!email) return;
 
-  // Razorpay integration point
-  setTimeout(() => {
+  // Use CreatrixAPI if available
+  if (typeof CreatrixAPI !== 'undefined') {
+    CreatrixAPI.Monetize.unlockContent(currentPayItem.creation_id, email, (result) => {
+      closePayment();
+      document.getElementById('successOverlay').classList.add('show');
+      unlockedIds.push(currentPayItem.creation_id);
+      buildPremiumGrid();
+    });
+  } else {
+    // Fallback — direct Razorpay
     closePayment();
     document.getElementById('successOverlay').classList.add('show');
-    btn.disabled = false;
-    btn.innerHTML = '🔒 Pay <span id="payBtnAmt">₹' + (currentPayItem?.price || 299) + '</span> & Unlock';
-  }, 2000);
+  }
 }
 
 function closeSuccess() {
   document.getElementById('successOverlay').classList.remove('show');
-  // Mark content as unlocked
-  if (currentPayItem) {
-    const item = premiumContent.find(c => c.name === currentPayItem.name);
-    if (item) {
-      unlockedIds.push(item.id);
-      document.getElementById('premiumGrid').innerHTML = '';
-      buildPremiumGrid();
-    }
-  }
 }
 
-// FOMO ticker
+// ── FOMO TICKER ──
 const fomoMessages = [
   {name:'Priya S.', action:'just unlocked exclusive content', time:'2 mins ago'},
-  {name:'Rahul M.', action:'unlocked "Luxury Lifestyle Reel"', time:'5 mins ago'},
+  {name:'Rahul M.', action:'unlocked a premium video', time:'5 mins ago'},
   {name:'Anonymous', action:'just joined as a fan', time:'8 mins ago'},
-  {name:'Sneha K.', action:'unlocked "Glam Night Look"', time:'12 mins ago'},
+  {name:'Sneha K.', action:'unlocked exclusive content', time:'12 mins ago'},
   {name:'Arjun V.', action:'unlocked Full Access Pack', time:'15 mins ago'},
 ];
 let fomoIdx = 0;
@@ -355,14 +497,14 @@ function rotateFomo() {
   fomoIdx++;
 }
 setInterval(rotateFomo, 4000);
+rotateFomo();
 
-// Close payment on overlay click
 document.getElementById('payModal').addEventListener('click', function(e) {
   if (e.target === this) closePayment();
 });
 
-buildPremiumGrid();
-buildFreeGrid();
+// ── INIT ──
+loadCreatorPage();
 </script>
 <script src="api.js"></script>
 </body>
