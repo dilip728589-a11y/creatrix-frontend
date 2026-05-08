@@ -171,6 +171,13 @@ t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 })(window, document, "clarity", "script", "wnqtcqu7ae");
 </script>
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "wnqtcqu7ae");
+</script>
 </head>
 <body>
 
@@ -182,7 +189,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
   </div>
   <div class="tb-right">
-    <div class="credits-pill"><span class="cv">38</span><span class="cl">credits</span></div>
+    <div class="credits-pill"><span class="cv" id="creditsCount">--</span><span class="cl">credits</span></div>
     <a href="creatrix-create-influencer.html" class="btn-create">✨ Create New</a>
   </div>
 </div>
@@ -290,123 +297,6 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 
 <script>
 // ── SAMPLE INFLUENCER DATA ──
-const influencers = [
-  {
-    id: 1,
-    name: 'Aria Nova',
-    gender: 'female',
-    ethnicity: 'South Asian',
-    age: '24',
-    hairColor: 'Black',
-    hairStyle: 'Long Straight',
-    eyeColor: 'Brown',
-    bodyShape: 'Athletic',
-    personality: 'Seductive',
-    voice: 'Mysterious',
-    outfit: 'Fashion & Glam',
-    niche: 'fashion',
-    status: 'popular',
-    creations: 24,
-    createdAt: '2025-04-28',
-    img: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&q=85&fit=crop&crop=top'
-  },
-  {
-    id: 2,
-    name: 'Luna Ray',
-    gender: 'female',
-    ethnicity: 'Caucasian',
-    age: '22',
-    hairColor: 'Blonde',
-    hairStyle: 'Long Wavy',
-    eyeColor: 'Blue',
-    bodyShape: 'Slim',
-    personality: 'Free Spirit',
-    voice: 'Bubbly',
-    outfit: 'Boho / Floral',
-    niche: 'lifestyle',
-    status: 'active',
-    creations: 12,
-    createdAt: '2025-04-25',
-    img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&q=85&fit=crop&crop=top'
-  },
-  {
-    id: 3,
-    name: 'Zara Khan',
-    gender: 'female',
-    ethnicity: 'Middle Eastern',
-    age: '26',
-    hairColor: 'Brown',
-    hairStyle: 'Curly',
-    eyeColor: 'Green',
-    bodyShape: 'Curvy',
-    personality: 'Majestic',
-    voice: 'Deep',
-    outfit: 'Evening Gown',
-    niche: 'beauty',
-    status: 'new',
-    creations: 3,
-    createdAt: '2025-04-29',
-    img: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&q=85&fit=crop&crop=top'
-  },
-  {
-    id: 4,
-    name: 'Maya Singh',
-    gender: 'female',
-    ethnicity: 'Indian',
-    age: '25',
-    hairColor: 'Black',
-    hairStyle: 'Ponytail',
-    eyeColor: 'Brown',
-    bodyShape: 'Athletic',
-    personality: 'Devotee',
-    voice: 'Energetic',
-    outfit: 'Athleisure',
-    niche: 'fitness',
-    status: 'active',
-    creations: 18,
-    createdAt: '2025-04-20',
-    img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=85&fit=crop&crop=top'
-  },
-  {
-    id: 5,
-    name: 'Kai Storm',
-    gender: 'male',
-    ethnicity: 'Caucasian',
-    age: '27',
-    hairColor: 'Brunette',
-    hairStyle: 'Short',
-    eyeColor: 'Blue',
-    bodyShape: 'Muscular',
-    personality: 'Alpha',
-    voice: 'Deep Bass',
-    outfit: 'Streetwear',
-    niche: 'fitness',
-    status: 'popular',
-    creations: 31,
-    createdAt: '2025-04-18',
-    img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=85&fit=crop&crop=top'
-  },
-  {
-    id: 6,
-    name: 'Rohan Dev',
-    gender: 'male',
-    ethnicity: 'Indian',
-    age: '28',
-    hairColor: 'Black',
-    hairStyle: 'Curly',
-    eyeColor: 'Brown',
-    bodyShape: 'Fit',
-    personality: 'Charmer',
-    voice: 'Smooth Baritone',
-    outfit: 'Smart Casual',
-    niche: 'lifestyle',
-    status: 'new',
-    creations: 5,
-    createdAt: '2025-04-29',
-    img: 'https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=400&q=85&fit=crop&crop=top'
-  }
-];
-
 let filtered = [...influencers];
 let deleteTargetId = null;
 let currentDetailId = null;
@@ -576,16 +466,286 @@ function showToast(icon, title, sub) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// Close modals on overlay click
-document.getElementById('deleteModal').addEventListener('click', function(e) {
-  if (e.target === this) closeDeleteModal();
-});
-document.getElementById('detailModal').addEventListener('click', function(e) {
-  if (e.target === this) closeDetail();
-});
+// ── BACKEND CONNECTED ──
+const API_BASE = 'https://creatrix-backend-production.up.railway.app';
 
-// Init
-render(influencers);
+function getToken() {
+  return localStorage.getItem('creatrix_access_token') ||
+         localStorage.getItem('creatrix_token') ||
+         localStorage.getItem('token') || null;
+}
+
+if (!getToken()) window.location.href = 'creatrix-auth.html';
+
+let influencers = [];
+let filtered = [];
+let deleteTargetId = null;
+let currentDetailId = null;
+let currentFilter = 'all';
+
+// ── LOAD CREDITS ──
+async function loadCredits() {
+  try {
+    const res = await fetch(`${API_BASE}/api/credits/balance`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const val = data.total ?? data.credits ?? '--';
+    document.getElementById('creditsCount').textContent = val;
+  } catch(e) {}
+}
+
+// ── LOAD INFLUENCERS ──
+async function loadInfluencers() {
+  showSkeleton();
+  try {
+    const res = await fetch(`${API_BASE}/api/influencer/list`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    if (res.status === 401) { window.location.href = 'creatrix-auth.html'; return; }
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data?.influencers || []);
+    influencers = list.map(normalizeInfluencer);
+    filtered = [...influencers];
+    render(filtered);
+  } catch(err) {
+    console.error('loadInfluencers:', err);
+    showLoadError(err.message);
+  }
+}
+
+function normalizeInfluencer(raw) {
+  const settings = raw.settings
+    ? (typeof raw.settings === 'string' ? JSON.parse(raw.settings) : raw.settings)
+    : {};
+  let status = raw.status || 'active';
+  const creations = raw.creations_count ?? raw.creations ?? 0;
+  if (creations >= 20) status = 'popular';
+  else if (!raw.status && creations <= 3) status = 'new';
+  return {
+    id: raw.id,
+    name: raw.name || 'Unnamed',
+    gender: (settings.gender || raw.gender || 'female').toLowerCase(),
+    ethnicity: settings.ethnicity || raw.ethnicity || 'Unknown',
+    age: settings.age || raw.age || '—',
+    hairColor: settings.hairColor || settings.hair_color || '—',
+    hairStyle: settings.hairStyle || settings.hair_style || '—',
+    eyeColor: settings.eyeColor || settings.eye_color || '—',
+    bodyShape: settings.bodyShape || settings.body_shape || '—',
+    personality: settings.personality || raw.personality || raw.niche || '—',
+    voice: settings.voice || raw.voice || '—',
+    outfit: settings.outfit || raw.outfit || '—',
+    niche: (raw.niche || settings.personality || 'lifestyle').toLowerCase(),
+    status: status,
+    creations: creations,
+    createdAt: raw.created_at || '',
+    img: raw.avatar_url && raw.avatar_url.startsWith('http') ? raw.avatar_url :
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(raw.name||'AI')}&background=784CFE&color=fff&size=400`
+  };
+}
+
+function showSkeleton() {
+  const grid = document.getElementById('grid');
+  grid.querySelectorAll('.inf-card, .inf-skeleton').forEach(c => c.remove());
+  document.getElementById('emptyState').classList.remove('show');
+  for (let i = 0; i < 3; i++) {
+    grid.insertAdjacentHTML('beforeend', `
+      <div class="inf-skeleton inf-card" style="pointer-events:none;border-radius:22px;overflow:hidden;background:var(--card);border:1px solid var(--border);">
+        <div style="aspect-ratio:3/4;background:linear-gradient(90deg,var(--card2) 25%,#1C1C32 50%,var(--card2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;"></div>
+        <div style="padding:1rem;">
+          <div style="height:14px;width:60%;background:var(--card2);border-radius:6px;margin-bottom:8px;animation:shimmer 1.5s infinite;"></div>
+          <div style="height:11px;width:80%;background:var(--card2);border-radius:6px;animation:shimmer 1.5s infinite;"></div>
+        </div>
+      </div>`);
+  }
+  if (!document.getElementById('shimmerStyle')) {
+    const s = document.createElement('style');
+    s.id = 'shimmerStyle';
+    s.textContent = '@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}';
+    document.head.appendChild(s);
+  }
+}
+
+function showLoadError(msg) {
+  const grid = document.getElementById('grid');
+  grid.querySelectorAll('.inf-card, .inf-skeleton').forEach(c => c.remove());
+  grid.insertAdjacentHTML('beforeend', `
+    <div style="grid-column:1/-1;text-align:center;padding:4rem 2rem;color:var(--muted);">
+      <div style="font-size:2rem;margin-bottom:1rem;">⚠️</div>
+      <div style="font-family:var(--font-h);font-size:1rem;margin-bottom:0.5rem;color:var(--white);">Couldn't load influencers</div>
+      <div style="font-size:0.82rem;margin-bottom:1.5rem;">${msg}</div>
+      <button onclick="loadInfluencers()" style="padding:0.6rem 1.5rem;background:var(--card2);border:1px solid var(--border2);color:var(--white);border-radius:100px;cursor:pointer;">🔄 Retry</button>
+    </div>`);
+}
+
+// ── RENDER ──
+function render(list) {
+  const grid = document.getElementById('grid');
+  grid.querySelectorAll('.inf-card, .inf-skeleton').forEach(c => c.remove());
+  if (list.length === 0) {
+    document.getElementById('emptyState').classList.add('show');
+  } else {
+    document.getElementById('emptyState').classList.remove('show');
+    list.forEach(inf => grid.insertAdjacentHTML('beforeend', buildCard(inf)));
+  }
+  document.getElementById('pageCount').textContent = `${influencers.length} influencer${influencers.length !== 1 ? 's' : ''} created`;
+}
+
+// ── BUILD CARD ──
+function buildCard(inf) {
+  const statusBadge = `<div class="inf-status ${inf.status}">${inf.status === 'popular' ? '🔥 Popular' : inf.status === 'new' ? '✨ New' : '● Active'}</div>`;
+  const idStr = JSON.stringify(inf.id);
+  return `
+  <div class="inf-card" data-id="${inf.id}" data-gender="${inf.gender}" data-niche="${inf.niche}">
+    <div class="inf-card-img">
+      <img src="${inf.img}" alt="${inf.name}" loading="lazy"
+           onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=400'">
+      <div class="inf-card-overlay"></div>
+      ${statusBadge}
+      <div class="inf-card-actions">
+        <div class="iab" onclick="event.stopPropagation();openDetail(${idStr})" title="View">👁️</div>
+        <div class="iab" onclick="event.stopPropagation();editInf(${idStr})" title="Edit">✏️</div>
+        <div class="iab del" onclick="event.stopPropagation();openDeleteModal(${idStr})" title="Delete">🗑️</div>
+      </div>
+      <div class="inf-quick-gen">
+        <button class="iqg-btn" onclick="event.stopPropagation();quickGenerate(${idStr})">🎬 Generate Content</button>
+      </div>
+    </div>
+    <div class="inf-card-info" onclick="openDetail(${idStr})">
+      <div class="inf-name">${inf.name}</div>
+      <div class="inf-meta">
+        <span class="inf-tag gender ${inf.gender}">${inf.gender === 'female' ? '👩' : '👨'} ${inf.gender}</span>
+        <span class="inf-tag niche">${inf.niche}</span>
+        <span class="inf-tag">${inf.ethnicity}</span>
+      </div>
+      <div class="inf-stats">
+        <div class="inf-stat"><div class="inf-stat-val">${inf.creations}</div><div class="inf-stat-lbl">Creations</div></div>
+        <div class="inf-stat"><div class="inf-stat-val">${inf.age}</div><div class="inf-stat-lbl">Age</div></div>
+        <div class="inf-stat"><div class="inf-stat-val">${inf.bodyShape}</div><div class="inf-stat-lbl">Body</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── FILTER ──
+function filterBy(el, type) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = type;
+  applyFilters();
+}
+
+function applyFilters() {
+  let list = [...influencers];
+  if (currentFilter !== 'all') list = list.filter(i => i.gender === currentFilter || i.niche === currentFilter);
+  filtered = list;
+  render(filtered);
+}
+
+// ── SORT ──
+function sortBy(val) {
+  if (val === 'newest') filtered.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  else if (val === 'oldest') filtered.sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  else if (val === 'name') filtered.sort((a,b) => a.name.localeCompare(b.name));
+  render(filtered);
+}
+
+// ── SEARCH ──
+function searchInfluencers(q) {
+  const query = q.toLowerCase().trim();
+  if (!query) { filtered = [...influencers]; render(filtered); return; }
+  const list = influencers.filter(i =>
+    i.name.toLowerCase().includes(query) ||
+    i.ethnicity.toLowerCase().includes(query) ||
+    i.niche.toLowerCase().includes(query) ||
+    i.gender.toLowerCase().includes(query)
+  );
+  render(list);
+}
+
+// ── DELETE ──
+function openDeleteModal(id) {
+  deleteTargetId = id;
+  const inf = influencers.find(i => String(i.id) === String(id));
+  document.getElementById('deleteModalName').textContent = inf?.name || 'this influencer';
+  document.getElementById('deleteModal').classList.add('show');
+}
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.remove('show');
+  deleteTargetId = null;
+}
+async function confirmDelete() {
+  const btn = document.querySelector('.modal-delete');
+  btn.textContent = 'Deleting...'; btn.disabled = true;
+  try {
+    await fetch(`${API_BASE}/api/influencer/${deleteTargetId}`, {
+      method: 'DELETE', headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const name = influencers.find(i => String(i.id) === String(deleteTargetId))?.name || 'Influencer';
+    influencers = influencers.filter(i => String(i.id) !== String(deleteTargetId));
+    filtered = filtered.filter(i => String(i.id) !== String(deleteTargetId));
+    render(filtered);
+    closeDeleteModal();
+    showToast('🗑️', 'Deleted!', `${name} has been removed.`);
+  } catch(err) {
+    showToast('❌', 'Delete failed', err.message);
+    btn.textContent = 'Delete'; btn.disabled = false;
+  }
+}
+
+// ── DETAIL ──
+function openDetail(id) {
+  currentDetailId = id;
+  const inf = influencers.find(i => String(i.id) === String(id));
+  if (!inf) return;
+  document.getElementById('detailImg').src = inf.img;
+  document.getElementById('detailName').textContent = inf.name;
+  document.getElementById('detailTags').innerHTML = [
+    `<span class="dtag">${inf.gender === 'female' ? '👩' : '👨'} ${inf.gender}</span>`,
+    `<span class="dtag">🎯 ${inf.niche}</span>`,
+    `<span class="dtag">✨ ${inf.personality}</span>`,
+    `<span class="dtag">🔊 ${inf.voice}</span>`,
+  ].join('');
+  document.getElementById('detailAttrs').innerHTML = [
+    {k:'Ethnicity', v:inf.ethnicity},{k:'Age', v:inf.age+' yrs'},
+    {k:'Hair Color', v:inf.hairColor},{k:'Hair Style', v:inf.hairStyle},
+    {k:'Eye Color', v:inf.eyeColor},{k:'Body Shape', v:inf.bodyShape},
+  ].map(a=>`<div class="da"><div class="da-key">${a.k}</div><div class="da-val">${a.v}</div></div>`).join('');
+  const createdFormatted = inf.createdAt ? new Date(inf.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+  document.getElementById('detailSettings').innerHTML = [
+    {k:'Outfit', v:inf.outfit},{k:'Creations', v:inf.creations},
+    {k:'Created', v:createdFormatted},{k:'Status', v:inf.status},
+  ].map(a=>`<div class="da"><div class="da-key">${a.k}</div><div class="da-val">${a.v}</div></div>`).join('');
+  document.getElementById('detailModal').classList.add('show');
+}
+function closeDetail() {
+  document.getElementById('detailModal').classList.remove('show');
+  currentDetailId = null;
+}
+
+// ── ACTIONS ──
+function quickGenerate(id) { window.location.href = `creatrix-video-generator.html?influencer_id=${id}`; }
+function editInf(id) { window.location.href = `creatrix-create-influencer.html?edit=${id}`; }
+function editInfluencer() { closeDetail(); window.location.href = `creatrix-create-influencer.html?edit=${currentDetailId}`; }
+function generateContent() { closeDetail(); window.location.href = `creatrix-video-generator.html?influencer_id=${currentDetailId}`; }
+
+// ── TOAST ──
+function showToast(icon, title, sub) {
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastT').textContent = title;
+  document.getElementById('toastS').textContent = sub;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+document.getElementById('deleteModal').addEventListener('click', function(e) { if(e.target===this) closeDeleteModal(); });
+document.getElementById('detailModal').addEventListener('click', function(e) { if(e.target===this) closeDetail(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape'){closeDetail();closeDeleteModal();} });
+
+// ── INIT ──
+loadCredits();
+loadInfluencers();
 </script>
 </body>
 </html>
