@@ -591,7 +591,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     <div class="recent-section">
       <div class="rs-head">
         <div class="rs-title">Recent Videos</div>
-        <a href="creatrix-dashboard.html" class="rs-view">View all →</a>
+        <a href="creatrix-my-creations.html" class="rs-view">View all →</a>
       </div>
       <div class="videos-grid" id="recentVideos"></div>
     </div>
@@ -728,10 +728,10 @@ document.addEventListener('click', function(e){
 let selectedInf = null;
 let currentTab = 'video';
 
-// Build influencer selectors — now uses real data
 function buildInfSelectors(containerId) {
   const el = document.getElementById(containerId);
-  if (!el || el.children.length > 0) return;
+  if (!el) return;
+  el.innerHTML = ''; // always rebuild with latest data
   influencersList.forEach(inf => {
     const img = inf.avatar_url && inf.avatar_url.startsWith('http') ? inf.avatar_url :
       `https://ui-avatars.com/api/?name=${encodeURIComponent(inf.name)}&background=784CFE&color=fff&size=200`;
