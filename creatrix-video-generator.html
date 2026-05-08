@@ -112,7 +112,7 @@ input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 5px rgba(120,76,2
 .video-preview{position:relative;aspect-ratio:9/16;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;max-height:380px;}
 .video-preview.landscape{aspect-ratio:16/9;max-height:200px;}
 .video-preview.square{aspect-ratio:1;max-height:260px;}
-.vp-img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;opacity:0.7;}
+.vp-img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;opacity:1;}
 .vp-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,0.85),rgba(4,4,10,0.2) 60%,transparent 100%);}
 .vp-empty{text-align:center;padding:2rem;}
 .vp-empty-icon{font-size:3rem;opacity:0.2;margin-bottom:0.5rem;}
@@ -651,14 +651,40 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 </div>
 
 <script>
-const influencers = [
-  {id:1,name:'Aria Nova',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top'},
-  {id:2,name:'Luna Ray',img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&q=80&fit=crop&crop=top'},
-  {id:3,name:'Zara Khan',img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80&fit=crop&crop=top'},
-  {id:4,name:'Maya Singh',img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&q=80&fit=crop&crop=top'},
-  {id:5,name:'Kai Storm',img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&fit=crop&crop=top'},
-  {id:6,name:'Rohan Dev',img:'https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=200&q=80&fit=crop&crop=top'},
-];
+let influencersList = [];
+
+async function loadRealInfluencers() {
+  const token = localStorage.getItem('creatrix_access_token') ||
+                localStorage.getItem('creatrix_token') ||
+                localStorage.getItem('token');
+  try {
+    const res = await fetch('https://creatrix-backend-production.up.railway.app/api/influencer/list', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    influencersList = Array.isArray(data) ? data : (data?.influencers || []);
+    // Build all influencer grids
+    ['infGrid', 'infGrid2'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = '';
+      influencersList.forEach(inf => {
+        const img = inf.avatar_url && inf.avatar_url.startsWith('http') ? inf.avatar_url :
+          `https://ui-avatars.com/api/?name=${encodeURIComponent(inf.name)}&background=784CFE&color=fff&size=200`;
+        const idStr = JSON.stringify(inf.id);
+        const nameStr = JSON.stringify(inf.name);
+        const imgStr = JSON.stringify(img);
+        el.insertAdjacentHTML('beforeend', `
+          <div class="inf-sel-card" onclick="pickInfluencer(this,${idStr},${nameStr},${imgStr},'${id}')">
+            <img class="inf-sel-img" src="${img}" alt="${inf.name}" loading="lazy"
+                 onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200'">
+            <div class="inf-sel-name">${inf.name}</div>
+            <div class="inf-sel-check">✓</div>
+          </div>`);
+      });
+    });
+  } catch(e) { console.warn('Failed to load influencers:', e.message); }
+}
 
 const recentVideos = [
   {name:'Aria — Fashion Walk',style:'Fashion Walk',duration:'15s',img:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&q=80&fit=crop&crop=top',date:'2h ago'},
@@ -707,14 +733,20 @@ document.addEventListener('click', function(e){
 let selectedInf = null;
 let currentTab = 'video';
 
-// Build influencer selectors
+// Build influencer selectors — now uses real data
 function buildInfSelectors(containerId) {
   const el = document.getElementById(containerId);
   if (!el || el.children.length > 0) return;
-  influencers.forEach(inf => {
+  influencersList.forEach(inf => {
+    const img = inf.avatar_url && inf.avatar_url.startsWith('http') ? inf.avatar_url :
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(inf.name)}&background=784CFE&color=fff&size=200`;
+    const idStr = JSON.stringify(inf.id);
+    const nameStr = JSON.stringify(inf.name);
+    const imgStr = JSON.stringify(img);
     el.insertAdjacentHTML('beforeend', `
-      <div class="inf-sel-card" onclick="pickInfluencer(this,${inf.id},'${inf.name}','${inf.img}','${containerId}')">
-        <img class="inf-sel-img" src="${inf.img}" alt="${inf.name}" loading="lazy">
+      <div class="inf-sel-card" onclick="pickInfluencer(this,${idStr},${nameStr},${imgStr},'${containerId}')">
+        <img class="inf-sel-img" src="${img}" alt="${inf.name}" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200'">
         <div class="inf-sel-name">${inf.name}</div>
         <div class="inf-sel-check">✓</div>
       </div>`);
@@ -908,7 +940,9 @@ function buildRecentVideos() {
 }
 
 // Init
-buildInfSelectors('infSelectorGrid');
+loadRealInfluencers().then(() => {
+  buildInfSelectors('infSelectorGrid');
+});
 buildRecentVideos();
 // Init slider
 const sl = document.getElementById('durationSlider');
