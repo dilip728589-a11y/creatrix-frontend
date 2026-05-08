@@ -127,6 +127,59 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);min-heigh
 .success-view-btn{background:linear-gradient(135deg,var(--accent3),var(--accent2));color:#fff;font-family:var(--font-h);font-size:0.9rem;font-weight:700;padding:0.85rem 2rem;border-radius:14px;border:none;cursor:pointer;margin-top:0.5rem;}
 
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
+
+/* ── PREMIUM UX POLISH ── */
+html { scroll-behavior: smooth; }
+body { background: linear-gradient(160deg, #04040A 0%, #060610 100%); }
+
+/* Bg glow polish */
+.bg-glow::before { background: radial-gradient(circle, rgba(120,76,254,0.14), transparent 70%); width:700px; height:700px; }
+.bg-glow::after { background: radial-gradient(circle, rgba(255,60,172,0.1), transparent 70%); width:500px; height:500px; }
+
+/* Avatar */
+.avatar-img { box-shadow: 0 0 0 3px rgba(120,76,254,0.3), 0 8px 32px rgba(0,0,0,0.5); }
+.avatar-live { box-shadow: 0 0 0 3px rgba(4,4,10,1), 0 0 8px var(--accent3); }
+.profile-name { font-size:1.6rem; font-weight:800; letter-spacing:-0.02em; }
+.profile-bio { color:rgba(200,196,240,0.75); }
+.ptag { font-size:0.66rem; border-radius:100px; transition:all 0.2s; }
+.ptag:hover { border-color:rgba(255,255,255,0.2); color:var(--white); }
+
+/* Stats bar */
+.sb-val { font-size:1.2rem; font-weight:800; letter-spacing:-0.02em; background:linear-gradient(90deg,var(--white),rgba(200,196,240,0.8)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.sb-lbl { font-size:0.6rem; letter-spacing:0.1em; }
+
+/* Unlock banner */
+.unlock-banner { background:linear-gradient(135deg, rgba(255,60,172,0.12), rgba(120,76,254,0.12)); border:1px solid rgba(255,60,172,0.25); box-shadow:0 8px 32px rgba(255,60,172,0.12); border-radius:20px; }
+.unlock-banner:hover { transform:translateY(-3px); box-shadow:0 16px 48px rgba(255,60,172,0.22); }
+.ub-title { font-size:1.05rem; font-weight:800; letter-spacing:-0.01em; }
+.ub-btn { border-radius:100px; box-shadow:0 4px 16px rgba(255,60,172,0.3); letter-spacing:0.02em; }
+.ub-btn:hover { opacity:0.9; transform:scale(1.03); }
+
+/* Section title */
+.cs-title { font-size:0.9rem; font-weight:700; letter-spacing:-0.01em; }
+
+/* Content items */
+.ci { border-radius:18px; box-shadow:0 4px 20px rgba(0,0,0,0.4); }
+.ci:hover { transform:scale(1.03); box-shadow:0 12px 36px rgba(0,0,0,0.5); }
+.ci-blur { backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+.ci-price { font-size:0.9rem; text-shadow:0 2px 8px rgba(0,0,0,0.5); }
+.ci-unlock-btn { border-radius:100px; font-size:0.7rem; padding:5px 14px; }
+
+/* Fomo bar */
+.fomo-bar { background:rgba(255,60,172,0.06); border:1px solid rgba(255,60,172,0.18); border-radius:14px; }
+
+/* Footer */
+.bf-logo { font-weight:700; font-size:0.88rem; transition:color 0.2s; }
+.bf-logo:hover { color:var(--white); }
+
+/* Payment modal */
+.modal { background:linear-gradient(160deg, rgba(15,15,30,1), rgba(10,10,22,1)); border:1px solid rgba(255,255,255,0.1); box-shadow:0 -8px 64px rgba(0,0,0,0.6); }
+.modal-content-preview { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:18px; }
+.pm { border-radius:14px; transition:all 0.2s; }
+.pm.sel { box-shadow:0 0 0 2px rgba(120,76,254,0.3); }
+.pm:hover { transform:translateY(-2px); }
+.pay-btn { border-radius:14px; box-shadow:0 6px 24px rgba(255,60,172,0.3); letter-spacing:0.02em; }
+.pay-btn:hover { opacity:0.9; transform:translateY(-1px); box-shadow:0 10px 32px rgba(255,60,172,0.4); }
 </style>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="api.js"></script>

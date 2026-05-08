@@ -196,7 +196,59 @@ input.valid { border-color: var(--success); }
   .left-bottom { display: none; }
 }
 
-/* ── AGE GATE POPUP ── */
+/* ── PREMIUM UX POLISH ── */
+html { scroll-behavior: smooth; }
+
+/* Left panel deeper premium */
+.left-panel { background: linear-gradient(160deg, #070714 0%, #0a0a18 100%); }
+.left-logo { font-size:1.65rem; font-weight:800; letter-spacing:-0.03em; }
+.left-center h2 { font-weight:800; letter-spacing:-0.035em; line-height:1.05; }
+.left-center p { font-size:0.95rem; color:rgba(170,165,210,0.8); line-height:1.8; }
+
+/* Proof cards */
+.proof-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:1rem 1.25rem; backdrop-filter:blur(10px); transition:border-color 0.2s, transform 0.2s; }
+.proof-card:hover { border-color:rgba(120,76,254,0.3); transform:translateX(3px); }
+.proof-icon { border-radius:12px; }
+.proof-text { font-weight:600; font-size:0.9rem; }
+.proof-sub { color:rgba(140,135,180,0.8); }
+
+/* Right panel */
+.right-panel { background:linear-gradient(160deg, #04040A 0%, #060610 100%); }
+
+/* Auth box */
+.auth-box { animation: fadeUp 0.4s ease both; }
+.tab-wrap { border-radius:16px; padding:5px; background:rgba(15,15,30,0.8); border:1px solid rgba(255,255,255,0.07); box-shadow:0 4px 16px rgba(0,0,0,0.3); }
+.tab-btn { border-radius:12px; font-weight:700; letter-spacing:0.01em; }
+.tab-btn.active { box-shadow:0 4px 14px rgba(255,60,172,0.3); }
+.auth-title { font-size:1.7rem; font-weight:800; letter-spacing:-0.03em; }
+.auth-sub { color:rgba(160,155,200,0.8); }
+
+/* Social buttons */
+.social-btn { border-radius:14px; padding:0.8rem; font-size:0.88rem; transition:all 0.2s; }
+.social-btn:hover { border-color:rgba(255,255,255,0.25); background:rgba(255,255,255,0.05); transform:translateY(-1px); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
+
+/* Inputs */
+input[type="text"], input[type="email"], input[type="password"] { border-radius:14px; padding:0.85rem 1.1rem; font-size:0.95rem; background:rgba(15,15,30,0.8); border:1px solid rgba(255,255,255,0.1); }
+input:focus { border-color:var(--accent2); background:rgba(15,15,30,1); box-shadow:0 0 0 3px rgba(120,76,254,0.1); }
+input.valid { border-color:var(--success); box-shadow:0 0 0 3px rgba(0,245,212,0.08); }
+input.error { border-color:var(--danger); box-shadow:0 0 0 3px rgba(255,87,87,0.08); }
+label { letter-spacing:0.08em; font-size:0.72rem; color:rgba(140,135,180,0.9); }
+
+/* Submit button */
+.submit-btn { border-radius:14px; font-size:1rem; letter-spacing:0.02em; box-shadow:0 6px 24px rgba(255,60,172,0.3); }
+.submit-btn:hover { opacity:0.92; transform:translateY(-2px); box-shadow:0 12px 36px rgba(255,60,172,0.4); }
+.submit-btn:active { transform:scale(0.98); }
+
+/* Age gate premium */
+.age-gate-box { background:linear-gradient(160deg, rgba(15,15,30,1), rgba(10,10,22,1)); border:1px solid rgba(255,60,172,0.25); box-shadow:0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,60,172,0.1); }
+.age-check-row { border-radius:14px; padding:1rem 1.1rem; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.07); transition:border-color 0.2s, background 0.2s; }
+.age-check-row:hover { border-color:rgba(255,60,172,0.3); background:rgba(255,60,172,0.04); }
+.age-gate-btn { border-radius:14px; box-shadow:0 6px 24px rgba(255,60,172,0.3); letter-spacing:0.02em; }
+.age-gate-btn:not(:disabled):hover { transform:translateY(-2px); box-shadow:0 12px 36px rgba(255,60,172,0.4); }
+.age-gate-decline { border-radius:14px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} } */
 .age-gate {
   position: fixed; inset: 0; z-index: 9999;
   background: rgba(4,4,10,0.97);

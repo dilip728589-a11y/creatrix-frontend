@@ -137,6 +137,90 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-
 @media(max-width:1100px){}
 @media(max-width:700px){}
 
+/* ── PREMIUM UX POLISH ── */
+html { scroll-behavior: smooth; }
+
+/* Topbar */
+.topbar { background:rgba(6,6,18,0.92); backdrop-filter:blur(24px); box-shadow:0 1px 0 rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.4); }
+.tb-logo { font-weight:800; letter-spacing:-0.03em; }
+.cp { background:rgba(15,15,28,0.9); border:1px solid rgba(255,255,255,0.1); border-radius:100px; box-shadow:0 4px 16px rgba(0,0,0,0.3); transition:all 0.2s; }
+.cp:hover { border-color:rgba(0,245,212,0.3); box-shadow:0 4px 16px rgba(0,245,212,0.1); }
+.cp .cv { font-size:0.85rem; }
+
+/* Sidebar */
+.sidebar { background:linear-gradient(180deg, rgba(8,8,18,0.98) 0%, rgba(6,6,16,1) 100%); backdrop-filter:blur(16px); box-shadow:1px 0 0 var(--border), 4px 0 24px rgba(0,0,0,0.3); }
+.si { border-radius:12px; transition:all 0.2s cubic-bezier(0.34,1.2,0.64,1); }
+.si:hover { background:rgba(255,255,255,0.05); transform:translateX(2px); }
+.si.active { background:rgba(120,76,254,0.16); box-shadow:inset 0 0 0 1px rgba(120,76,254,0.2); }
+.si.active::before { background:linear-gradient(180deg,var(--accent2),var(--accent)); box-shadow:0 0 8px var(--accent2); }
+.sn { transition:all 0.25s; }
+.si.done .sn { box-shadow:0 0 12px rgba(0,245,212,0.4); }
+
+/* Content area */
+.content-area { padding:2.5rem 2.25rem; }
+
+/* Step pages */
+.eyebrow { color:var(--accent); letter-spacing:0.15em; }
+.ptitle { font-size:1.85rem; font-weight:800; letter-spacing:-0.03em; }
+.psub { color:rgba(160,155,200,0.75); line-height:1.7; }
+
+/* Gender cards */
+.gc { border-radius:24px; background:rgba(15,15,28,0.8); box-shadow:0 4px 20px rgba(0,0,0,0.3); }
+.gc:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(120,76,254,0.2); }
+.gc.sel { box-shadow:0 8px 32px rgba(120,76,254,0.2), 0 0 0 2px rgba(120,76,254,0.4); }
+.gi { filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+
+/* Image cards */
+.ic { border-radius:20px; background:rgba(15,15,28,0.8); box-shadow:0 4px 16px rgba(0,0,0,0.3); }
+.ic:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.5); }
+.ic.sel { box-shadow:0 8px 32px rgba(120,76,254,0.25), 0 0 0 1px rgba(120,76,254,0.1); }
+.ic-lbl { font-size:0.74rem; font-weight:700; letter-spacing:0.01em; }
+
+/* Personality cards */
+.pers-card { border-radius:20px; background:rgba(15,15,28,0.8); box-shadow:0 4px 16px rgba(0,0,0,0.3); }
+.pers-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,60,172,0.2); }
+.pers-card.sel { box-shadow:0 8px 32px rgba(255,60,172,0.2), 0 0 0 2px rgba(255,60,172,0.3); }
+.pers-emoji { filter:drop-shadow(0 4px 8px rgba(0,0,0,0.4)); }
+.pers-name { font-size:0.92rem; letter-spacing:-0.01em; }
+
+/* Voice cards */
+.voice-card { border-radius:20px; background:rgba(15,15,28,0.8); box-shadow:0 4px 16px rgba(0,0,0,0.3); }
+.voice-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(120,76,254,0.2); }
+.voice-card.sel { box-shadow:0 8px 32px rgba(120,76,254,0.2), 0 0 0 2px rgba(120,76,254,0.3); }
+
+/* Outfit cards */
+.outfit-card { border-radius:18px; background:rgba(15,15,28,0.8); box-shadow:0 4px 16px rgba(0,0,0,0.3); }
+.outfit-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,245,212,0.2); }
+.outfit-card.sel { box-shadow:0 8px 32px rgba(0,245,212,0.15), 0 0 0 2px rgba(0,245,212,0.3); }
+
+/* Nav buttons */
+.btn-back { border-radius:14px; transition:all 0.2s; }
+.btn-back:hover { background:rgba(255,255,255,0.05); color:var(--white); transform:translateX(-2px); }
+.btn-next { border-radius:14px; box-shadow:0 6px 24px rgba(255,60,172,0.3); letter-spacing:0.01em; }
+.btn-next:hover { opacity:0.9; transform:translateY(-2px); box-shadow:0 10px 32px rgba(255,60,172,0.4); }
+
+/* Review sections */
+.rs { border-radius:20px; background:rgba(15,15,28,0.8); box-shadow:0 4px 16px rgba(0,0,0,0.3); }
+.rse { color:var(--accent2); font-size:0.72rem; padding:3px 10px; border-radius:100px; background:rgba(120,76,254,0.08); border:1px solid rgba(120,76,254,0.15); }
+
+/* Generate button */
+.gen-btn { border-radius:18px; box-shadow:0 8px 32px rgba(255,60,172,0.3); letter-spacing:0.02em; font-size:1.08rem; }
+.gen-btn:hover { opacity:0.92; transform:translateY(-2px); box-shadow:0 14px 48px rgba(255,60,172,0.4); }
+
+/* Sub-page animation */
+.sub-page.active { animation: fadeSlideIn 0.3s cubic-bezier(0.34,1,0.64,1) both; }
+@keyframes fadeSlideIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* Toast */
+.toast { border-radius:18px; backdrop-filter:blur(16px); box-shadow:0 8px 32px rgba(0,0,0,0.5); }
+
+/* Responsive */
+@media(max-width:700px) {
+  .main { grid-template-columns: 1fr; }
+  .sidebar { display:none; }
+  .content-area { padding:1.5rem 1.25rem; }
+}
+
 /* PERSONALITY CARDS */
 .pers-card{background:var(--card);border:2.5px solid var(--border);border-radius:18px;padding:1.25rem 1rem;cursor:pointer;transition:all 0.22s;text-align:center;}
 .pers-card:hover{border-color:rgba(255,60,172,0.4);transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,0.35);}

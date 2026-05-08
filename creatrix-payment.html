@@ -176,6 +176,42 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .toast-s{color:var(--muted);font-size:0.75rem;}
 
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
+
+/* ── PREMIUM UX POLISH ── */
+html { scroll-behavior: smooth; }
+body { animation: bodyFadeIn 0.35s ease both; }
+@keyframes bodyFadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+/* Topbar */
+.topbar { background: rgba(6,6,18,0.92) !important; backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.06) !important; box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 24px rgba(0,0,0,0.4); }
+.tb-logo { font-weight: 800; letter-spacing: -0.03em; }
+.back-btn { padding: 4px 10px; border-radius: 8px; transition: all 0.2s; }
+.back-btn:hover { color: var(--white) !important; background: rgba(255,255,255,0.05); }
+.credits-pill, .cp { background: rgba(15,15,28,0.9) !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+
+/* Cards */
+.card, .inf-card, .creation-card, .pack-card, .plan-card, .cc { background: linear-gradient(160deg, rgba(15,15,30,1), rgba(10,10,22,1)) !important; border-radius: 20px !important; box-shadow: 0 2px 16px rgba(0,0,0,0.3); transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1); }
+.card:hover, .inf-card:hover, .creation-card:hover, .pack-card:hover, .cc:hover { transform: translateY(-3px) !important; box-shadow: 0 16px 40px rgba(0,0,0,0.5) !important; }
+
+/* Buttons */
+button { transition: all 0.2s; }
+.btn-primary, .buy-btn, .gen-btn, .cta-btn { border-radius: 14px !important; box-shadow: 0 6px 24px rgba(255,60,172,0.3) !important; }
+.btn-primary:hover, .buy-btn:hover, .gen-btn:hover, .cta-btn:hover { opacity: 0.92 !important; transform: translateY(-2px) !important; box-shadow: 0 12px 40px rgba(255,60,172,0.4) !important; }
+
+/* Inputs */
+input, textarea, select { border-radius: 14px !important; background: rgba(15,15,28,0.8) !important; border: 1px solid rgba(255,255,255,0.1) !important; transition: border-color 0.2s, box-shadow 0.2s !important; }
+input:focus, textarea:focus { border-color: var(--accent2) !important; box-shadow: 0 0 0 3px rgba(120,76,254,0.1) !important; outline: none !important; }
+
+/* Modals */
+.modal, .detail-modal { background: linear-gradient(160deg, rgba(15,15,30,1), rgba(10,10,22,1)) !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 28px !important; box-shadow: 0 24px 80px rgba(0,0,0,0.7) !important; }
+
+/* Toast */
+.toast { border-radius: 18px !important; backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important; }
+
+/* Shimmer */
+@keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+.skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 400px 100%; animation: shimmer 1.4s infinite; border-radius: 10px; }
+
 @media(max-width:900px){.plans-grid{grid-template-columns:repeat(2,1fr);}} @media(max-width:560px){.plans-grid{grid-template-columns:1fr;}.custom-summary{grid-template-columns:1fr 1fr 1fr;}.usage-grid{grid-template-columns:repeat(2,1fr);}.faq-grid{grid-template-columns:1fr;}}
 
 /* SUBSCRIPTION POPUP */

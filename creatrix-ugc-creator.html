@@ -170,6 +170,55 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-
 @keyframes loadProg{0%{width:0%}70%{width:80%}95%{width:95%}100%{width:100%}}
 
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
+
+/* ── PREMIUM UX POLISH ── */
+html { scroll-behavior: smooth; }
+body { animation: bodyFadeIn 0.35s ease both; background: linear-gradient(160deg, #04040A 0%, #060610 100%); }
+@keyframes bodyFadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+/* Topbar */
+.topbar { background: rgba(6,6,18,0.92) !important; backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.06) !important; box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.4); }
+.tb-logo { font-weight: 800; letter-spacing: -0.03em; }
+.back-btn { padding: 4px 10px; border-radius: 8px; transition: all 0.2s; }
+.back-btn:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+.credits-pill { background: rgba(15,15,28,0.9) !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+.credits-pill:hover { border-color: rgba(0,245,212,0.3) !important; }
+
+/* Tab bar */
+.tab-bar { background: rgba(6,6,18,0.92) !important; backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.06) !important; box-shadow: 0 1px 0 rgba(255,255,255,0.03); }
+.tab { font-size: 0.84rem; letter-spacing: 0.01em; transition: all 0.2s; }
+.tab.active { color: var(--white); }
+
+/* Upload zones */
+.upload-zone { border-radius: 20px; transition: all 0.25s; }
+.upload-zone:hover { border-color: rgba(120,76,254,0.5) !important; background: rgba(120,76,254,0.05) !important; transform: translateY(-1px); }
+
+/* Model/style cards */
+.model-card, .style-card { border-radius: 16px; transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1); }
+.model-card:hover, .style-card:hover { border-color: rgba(120,76,254,0.4) !important; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.model-card.active, .style-card.active { border-color: var(--accent2) !important; box-shadow: 0 0 0 2px rgba(120,76,254,0.2), 0 8px 24px rgba(0,0,0,0.4); }
+
+/* Generate buttons */
+.gen-btn, .generate-btn { border-radius: 16px !important; box-shadow: 0 6px 24px rgba(255,60,172,0.3) !important; letter-spacing: 0.02em; transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1) !important; }
+.gen-btn:hover, .generate-btn:hover { opacity: 0.92 !important; transform: translateY(-2px) !important; box-shadow: 0 12px 40px rgba(255,60,172,0.4) !important; }
+
+/* Right panel */
+.right-panel { background: rgba(8,8,18,0.5); border-left: 1px solid rgba(255,255,255,0.05) !important; }
+
+/* Section cards */
+.section-card, .card-block { background: linear-gradient(160deg, rgba(15,15,30,1), rgba(10,10,22,1)) !important; border: 1px solid rgba(255,255,255,0.07) !important; border-radius: 20px; box-shadow: 0 2px 16px rgba(0,0,0,0.3); }
+
+/* Inputs / textareas */
+textarea, input[type="text"], input[type="url"] { border-radius: 14px !important; background: rgba(15,15,28,0.8) !important; border: 1px solid rgba(255,255,255,0.1) !important; transition: border-color 0.2s, box-shadow 0.2s; }
+textarea:focus, input[type="text"]:focus, input[type="url"]:focus { border-color: var(--accent2) !important; box-shadow: 0 0 0 3px rgba(120,76,254,0.1) !important; outline: none; }
+
+/* Toast */
+.toast { border-radius: 18px; backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+
+/* Shimmer skeleton */
+@keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+.skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 400px 100%; animation: shimmer 1.4s infinite; border-radius: 10px; }
+
 @media(max-width:1000px){.page-wrap{grid-template-columns:1fr;}.right-panel{border-left:none;border-top:1px solid var(--border);position:static;height:auto;padding-left:0;padding-top:1.5rem;}}
 @media(max-width:600px){.tab-bar{padding:0 1rem;}.tab{padding:0.75rem 0.85rem;font-size:0.78rem;}.ugc-style-grid{grid-template-columns:repeat(2,1fr);}}
 </style>
