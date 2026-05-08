@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type="text/javascript">
-(function(c,l,a,r,i,t,y){
-c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window, document, "clarity", "script", "wnqtcqu7ae");
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI UGC Creator — Creatrix AI</title>
@@ -180,6 +173,597 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-
 @media(max-width:1000px){.page-wrap{grid-template-columns:1fr;}.right-panel{border-left:none;border-top:1px solid var(--border);position:static;height:auto;padding-left:0;padding-top:1.5rem;}}
 @media(max-width:600px){.tab-bar{padding:0 1rem;}.tab{padding:0.75rem 0.85rem;font-size:0.78rem;}.ugc-style-grid{grid-template-columns:repeat(2,1fr);}}
 </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-left">
+    <a href="creatrix-dashboard.html" class="back-btn">← Dashboard</a>
+    <div class="tb-div"></div>
+    <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
+  </div>
+  <div class="credits-pill"><span class="cv" id="creditsCount">--</span><span class="cl">credits</span></div>
+</div>
+
+<div class="tab-bar">
+  <a href="creatrix-video-generator.html" class="tab">🎬 AI Video</a>
+  <a href="creatrix-lipsync.html" class="tab">👄 Lip Sync</a>
+  <a href="creatrix-motion-control.html" class="tab">🕹️ Motion Control</a>
+  <div class="tab active">🎥 UGC Creator</div>
+</div>
+
+<div class="page-wrap">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="section-title">🎥 AI UGC Creator</div>
+    <div class="section-sub">Create authentic brand promotion videos with your AI influencer. Brands pay ₹5,000–₹50,000 per UGC video — generate them in seconds.</div>
+
+    <!-- STEP 1: SELECT INFLUENCER -->
+    <div class="form-group">
+      <div class="form-label">Step 1 · Select Influencer <span class="req">*required</span></div>
+      <div class="inf-grid" id="infGrid"></div>
+      <input type="file" id="ownImgFile" accept="image/*" style="display:none" onchange="handleOwnImg(this)">
+    </div>
+
+    <!-- STEP 2: UGC STYLE -->
+    <div class="form-group">
+      <div class="form-label">Step 2 · UGC Style <span class="req">*required</span></div>
+      <div class="ugc-style-grid">
+        <div class="ugc-card sel" onclick="pickStyle(this,'Unboxing')">
+          <div class="ugc-card-icon">📦</div>
+          <div class="ugc-card-name">Unboxing</div>
+          <div class="ugc-card-desc">Open & react to a product excitedly</div>
+          <div class="ugc-card-check">✓</div>
+        </div>
+        <div class="ugc-card" onclick="pickStyle(this,'Review')">
+          <div class="ugc-card-icon">⭐</div>
+          <div class="ugc-card-name">Review</div>
+          <div class="ugc-card-desc">Honest product review & recommendation</div>
+          <div class="ugc-card-check">✓</div>
+        </div>
+        <div class="ugc-card" onclick="pickStyle(this,'Testimonial')">
+          <div class="ugc-card-icon">📢</div>
+          <div class="ugc-card-name">Testimonial</div>
+          <div class="ugc-card-desc">Personal transformation story</div>
+          <div class="ugc-card-check">✓</div>
+        </div>
+        <div class="ugc-card" onclick="pickStyle(this,'Tutorial')">
+          <div class="ugc-card-icon">🎯</div>
+          <div class="ugc-card-name">Tutorial</div>
+          <div class="ugc-card-desc">Step-by-step how to use the product</div>
+          <div class="ugc-card-check">✓</div>
+        </div>
+        <div class="ugc-card" onclick="pickStyle(this,'Before & After')">
+          <div class="ugc-card-icon">🔥</div>
+          <div class="ugc-card-name">Before & After</div>
+          <div class="ugc-card-desc">Show results & transformation</div>
+          <div class="ugc-card-check">✓</div>
+        </div>
+        <div class="ugc-card" onclick="pickStyle(this,'Get Ready With Me')">
+          <div class="ugc-card-icon">💄</div>
+          <div class="ugc-card-name">Get Ready</div>
+          <div class="ugc-card-desc">GRWM featuring the brand naturally</div>
+          <div class="ugc-card-check">✓</div>
+        </div>
+        <div class="ugc-card" onclick="pickStyle(this,'Day in My Life')">
+          <div class="ugc-card-icon">☀️</div>
+          <div class="ugc-card-name">Day in Life</div>
+          <div class="ugc-card-desc">Lifestyle vlog featuring the product</div>
+          <div class="ugc-card-check">✓</div>
+        </div>
+        <div class="ugc-card" onclick="pickStyle(this,'Hook & Sell')">
+          <div class="ugc-card-icon">🪝</div>
+          <div class="ugc-card-name">Hook & Sell</div>
+          <div class="ugc-card-desc">Strong hook, quick pitch, CTA</div>
+          <div class="ugc-card-check">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: PRODUCT INFO -->
+    <div class="form-group">
+      <div class="form-label">Step 3 · Product / Brand Info <span class="req">*required</span></div>
+      <input class="text-input" id="brandName" type="text" placeholder="Brand name... e.g. Luxe Skin Co." style="margin-bottom:0.75rem;" oninput="updateSummary()">
+      <textarea class="ta" id="productDesc" rows="4" placeholder="Describe the product...&#10;&#10;e.g. Anti-aging serum, reduces wrinkles in 7 days, premium packaging, costs ₹1,499, target audience is women 25–45" oninput="updateSummary()"></textarea>
+      <div class="hint-tags">
+        <span class="htag" onclick="addHint('skincare')">💆 Skincare</span>
+        <span class="htag" onclick="addHint('fashion')">👗 Fashion</span>
+        <span class="htag" onclick="addHint('fitness')">💪 Fitness</span>
+        <span class="htag" onclick="addHint('food')">🍽️ Food & Beverage</span>
+        <span class="htag" onclick="addHint('tech')">💻 Tech</span>
+        <span class="htag" onclick="addHint('jewelry')">💍 Jewelry</span>
+        <span class="htag" onclick="addHint('hair care')">💇 Hair Care</span>
+        <span class="htag" onclick="addHint('supplement')">💊 Supplement</span>
+      </div>
+    </div>
+
+    <!-- STEP 4: PRODUCT IMAGE -->
+    <div class="form-group">
+      <div class="form-label">Step 4 · Product Image <span class="opt">(optional)</span></div>
+      <div class="product-upload" id="productUpload" onclick="document.getElementById('productImgFile').click()">
+        <div id="puDefault">
+          <div class="pu-icon">📸</div>
+          <div class="pu-title">Upload Product Image</div>
+          <div class="pu-sub">AI will show influencer holding / using the product · JPG, PNG · Max 10MB</div>
+          <div class="pu-btn">📂 Browse Files</div>
+        </div>
+        <div class="pu-preview" id="puPreview">
+          <img id="puPrevImg" class="pu-prev-img" src="" alt="">
+          <div>
+            <div class="pu-prev-name" id="puPrevName">product.jpg</div>
+            <div class="pu-prev-size" id="puPrevSize">1.2 MB</div>
+          </div>
+          <div class="pu-remove" onclick="event.stopPropagation();removeProduct()" title="Remove">✕</div>
+        </div>
+      </div>
+      <input type="file" id="productImgFile" accept="image/*" onchange="handleProductImg(this)" style="display:none">
+    </div>
+
+    <!-- STEP 5: SCRIPT / HOOK -->
+    <div class="form-group">
+      <div class="form-label">Step 5 · Script / Hook <span class="opt">(optional)</span></div>
+      <textarea class="ta" id="scriptBox" rows="4" placeholder="Write a custom hook or script...&#10;&#10;e.g. 'I tried this serum for 30 days and I cannot believe the results...' or leave blank and AI will write it for you"></textarea>
+      <div class="hint-tags">
+        <span class="htag" onclick="addScript('I tried this for 30 days and cannot believe the results...')">30-day results</span>
+        <span class="htag" onclick="addScript('This is the product I wish I found sooner...')">Wish I found sooner</span>
+        <span class="htag" onclick="addScript('POV: You finally found the product that actually works...')">POV hook</span>
+        <span class="htag" onclick="addScript('Honest review after 2 weeks of using this every day...')">Honest review</span>
+        <span class="htag" onclick="addScript('Stop scrolling. You need to hear this...')">Stop scrolling</span>
+      </div>
+    </div>
+
+    <!-- STEP 6: TONE & LANGUAGE -->
+    <div class="form-group">
+      <div class="form-label">Step 6 · Tone</div>
+      <div class="chip-grid">
+        <div class="chip sel" onclick="pickChip(this,'tone','Friendly & Relatable')">😊 Friendly</div>
+        <div class="chip" onclick="pickChip(this,'tone','Excited & Energetic')">🔥 Excited</div>
+        <div class="chip" onclick="pickChip(this,'tone','Premium & Luxury')">💎 Premium</div>
+        <div class="chip" onclick="pickChip(this,'tone','Trustworthy & Calm')">🤝 Trustworthy</div>
+        <div class="chip" onclick="pickChip(this,'tone','Humorous & Fun')">😂 Humorous</div>
+        <div class="chip" onclick="pickChip(this,'tone','Seductive & Bold')">💋 Seductive</div>
+      </div>
+    </div>
+
+    <!-- STEP 7: LANGUAGE -->
+    <div class="form-group">
+      <div class="form-label">Step 7 · Language</div>
+      <div class="chip-grid">
+        <div class="chip sel" onclick="pickChip(this,'lang','Hindi')">🇮🇳 Hindi</div>
+        <div class="chip" onclick="pickChip(this,'lang','English')">🇬🇧 English</div>
+        <div class="chip" onclick="pickChip(this,'lang','Hinglish')">🔀 Hinglish</div>
+        <div class="chip" onclick="pickChip(this,'lang','Tamil')">🇮🇳 Tamil</div>
+        <div class="chip" onclick="pickChip(this,'lang','Telugu')">🇮🇳 Telugu</div>
+        <div class="chip" onclick="pickChip(this,'lang','Arabic')">🇦🇪 Arabic</div>
+      </div>
+    </div>
+
+    <!-- STEP 8: DURATION & OPTIONS -->
+    <div class="form-group">
+      <div class="form-label">Step 8 · Duration</div>
+      <div class="chip-grid">
+        <div class="chip" onclick="pickChip(this,'dur','15 sec')">⚡ 15 sec</div>
+        <div class="chip sel" onclick="pickChip(this,'dur','30 sec')">30 sec</div>
+        <div class="chip" onclick="pickChip(this,'dur','45 sec')">45 sec</div>
+        <div class="chip" onclick="pickChip(this,'dur','60 sec')">60 sec</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">Options</div>
+      <div class="toggle-row">
+        <div><div class="ti-name">Auto Captions</div><div class="ti-sub">Animated subtitles on video</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="ti-name">Add CTA Overlay</div><div class="ti-sub">Show "Shop Now" or custom button</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="ti-name">HD Quality (1080p)</div><div class="ti-sub">+1 extra credit</div></div>
+        <label class="toggle"><input type="checkbox" id="hdToggle" onchange="updateCost()"><span class="tslider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="ti-name">Remove Watermark</div><div class="ti-sub">Clean output without logo</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+      </div>
+    </div>
+
+    <!-- RECENT -->
+    <div class="recent-section">
+      <div class="rs-head">
+        <div class="rs-title">Recent UGC Videos</div>
+        <a href="creatrix-dashboard.html" style="font-size:0.78rem;color:var(--accent2);text-decoration:none;">View all →</a>
+      </div>
+      <div class="recent-grid" id="recentGrid"></div>
+    </div>
+
+    <!-- Cost -->
+    <div class="cost-box" style="margin-top:1.75rem;">
+      <div class="cb-left">Cost: <strong id="costLabel">4 credits</strong></div>
+      <div class="cb-right"><span id="creditsRemaining">--</span> remaining</div>
+    </div>
+
+    <!-- Generate -->
+    <button class="gen-btn" id="genBtn" onclick="generate()" style="margin-top:0.75rem;">🎥 Generate UGC Video · 4 credits</button>
+
+  </div>
+
+</div>
+
+<!-- Hidden elements needed by JS -->
+<div style="display:none;">
+  <div id="previewArea"></div>
+  <div id="sv-inf">—</div>
+  <div id="sv-style">Unboxing</div>
+  <div id="sv-brand">—</div>
+  <div id="sv-tone">Friendly</div>
+  <div id="sv-lang">Hindi</div>
+  <div id="sv-dur">30 sec</div>
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-ring"></div>
+  <div class="loading-title">Creating UGC Video...</div>
+  <div class="loading-sub">AI is generating your brand video. ~30–60 seconds</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loadBar"></div></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  CREATRIX — UGC Creator (Backend Connected)
+// ═══════════════════════════════════════════
+
+const API_BASE = 'https://creatrix-backend-production.up.railway.app';
+
+let selectedInf = null;
+let cfg = { style: 'Unboxing', tone: 'Friendly & Relatable', lang: 'Hindi', dur: '30 sec' };
+
+// ── TOKEN ──
+function getToken() {
+  return localStorage.getItem('creatrix_access_token') ||
+         localStorage.getItem('creatrix_token') ||
+         localStorage.getItem('token') || null;
+}
+
+// ── AUTH GUARD ──
+if (!getToken()) window.location.href = 'creatrix-auth.html';
+
+// ── LOAD CREDITS ──
+async function loadCredits() {
+  try {
+    const res = await fetch(`${API_BASE}/api/credits/balance`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const val = data.total ?? data.credits ?? '--';
+    document.getElementById('creditsCount').textContent = val;
+    const rem = document.getElementById('creditsRemaining');
+    if (rem) rem.textContent = val;
+  } catch(e) { console.warn('Credits fetch failed:', e.message); }
+}
+
+// ── LOAD REAL INFLUENCERS ──
+async function loadInfluencers() {
+  const grid = document.getElementById('infGrid');
+
+  grid.insertAdjacentHTML('beforeend', `
+    <div class="inf-upload-card" id="ownCard" onclick="document.getElementById('ownImgFile').click()">
+      <div class="iuc-icon">📸</div>
+      <div class="iuc-lbl">Upload Your Own</div>
+    </div>`);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/influencer/list`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data?.influencers || []);
+
+    if (list.length === 0) {
+      grid.insertAdjacentHTML('beforeend', `
+        <div style="grid-column:1/-1;font-size:0.78rem;color:var(--muted);padding:0.5rem;">
+          No influencers yet. <a href="creatrix-create-influencer.html" style="color:var(--accent2);">Create one →</a>
+        </div>`);
+      return;
+    }
+
+    list.forEach(inf => {
+      const img = inf.avatar_url && inf.avatar_url.startsWith('http') ? inf.avatar_url :
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(inf.name)}&background=784CFE&color=fff&size=200`;
+      const idStr = JSON.stringify(inf.id);
+      const nameStr = JSON.stringify(inf.name);
+      const imgStr = JSON.stringify(img);
+      const avatarStr = JSON.stringify(img);
+
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="inf-card"
+             data-id="${inf.id}"
+             data-name="${inf.name.replace(/"/g,'&quot;')}"
+             data-img="${img}"
+             data-avatar="${img}"
+             onclick="selectInfCard(this)">
+          <img src="${img}" alt="${inf.name}" loading="lazy"
+               onerror="this.src='https://ui-avatars.com/api/?name=AI&background=784CFE&color=fff&size=200'">
+          <div class="inf-card-name">${inf.name}</div>
+          <div class="inf-ck">✓</div>
+        </div>`);
+    });
+  } catch(e) {
+    console.error('Failed to load influencers:', e);
+  }
+}
+
+// ── SELECT INFLUENCER via data attrs ──
+function selectInfCard(el) {
+  document.querySelectorAll('.inf-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedInf = {
+    id: el.dataset.id,
+    name: el.dataset.name,
+    img: el.dataset.img,
+    avatarUrl: el.dataset.avatar || el.dataset.img
+  };
+  const svInf = document.getElementById('sv-inf');
+  if (svInf) svInf.textContent = selectedInf.name;
+}
+
+// ── OWN IMAGE ──
+function handleOwnImg(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const src = e.target.result;
+    const card = document.getElementById('ownCard');
+    card.classList.add('has-img');
+    card.style.cssText = 'position:relative;padding:0;overflow:hidden;border-radius:14px;border:2px solid var(--accent2);';
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:top;display:block;min-height:140px;border-radius:12px;';
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:0.6rem;font-weight:700;color:var(--accent3);';
+    lbl.textContent = '✓ Your Image';
+    card.innerHTML = ''; card.appendChild(img); card.appendChild(lbl);
+    document.querySelectorAll('.inf-card').forEach(c => c.classList.remove('sel'));
+    selectedInf = { id: 'custom', name: 'Your Image', img: src, avatarUrl: src };
+    const svInf = document.getElementById('sv-inf');
+    if (svInf) svInf.textContent = 'Your Image';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── PRODUCT IMAGE ──
+function handleProductImg(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('puDefault').style.display = 'none';
+    const prev = document.getElementById('puPreview');
+    prev.classList.add('show');
+    document.getElementById('puPrevImg').src = e.target.result;
+    document.getElementById('puPrevName').textContent = file.name;
+    document.getElementById('puPrevSize').textContent = (file.size/1024/1024).toFixed(1) + ' MB';
+    document.getElementById('productUpload').classList.add('has-img');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeProduct() {
+  document.getElementById('puDefault').style.display = 'block';
+  document.getElementById('puPreview').classList.remove('show');
+  document.getElementById('productUpload').classList.remove('has-img');
+  document.getElementById('productImgFile').value = '';
+}
+
+// ── PICKERS ──
+function pickStyle(el, style) {
+  document.querySelectorAll('.ugc-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  cfg.style = style;
+  const sv = document.getElementById('sv-style');
+  if (sv) sv.textContent = style;
+}
+
+function pickChip(el, key, val) {
+  el.closest('.chip-grid').querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  cfg[key] = val;
+  const map = { tone: 'sv-tone', lang: 'sv-lang', dur: 'sv-dur' };
+  if (map[key]) {
+    const el2 = document.getElementById(map[key]);
+    if (el2) el2.textContent = val.length > 12 ? val.substring(0, 12) + '…' : val;
+  }
+}
+
+function updateSummary() {
+  const brand = document.getElementById('brandName').value;
+  const sv = document.getElementById('sv-brand');
+  if (sv) sv.textContent = brand || '—';
+}
+
+function updateCost() {
+  const hd = document.getElementById('hdToggle').checked;
+  const cost = 4 + (hd ? 1 : 0);
+  document.getElementById('costLabel').textContent = cost + ' credits';
+  document.getElementById('genBtn').textContent = '🎥 Generate UGC Video · ' + cost + ' credits';
+}
+
+function addHint(text) {
+  const box = document.getElementById('productDesc');
+  box.value = box.value ? box.value + ', ' + text : text;
+}
+
+function addScript(text) {
+  document.getElementById('scriptBox').value = text;
+}
+
+// ── LOAD RECENT ──
+async function loadRecent() {
+  try {
+    const res = await fetch(`${API_BASE}/api/creations/list?type=ugc`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data?.creations || []);
+    const grid = document.getElementById('recentGrid');
+    grid.innerHTML = '';
+
+    if (list.length === 0) {
+      grid.innerHTML = `<div style="color:var(--muted);font-size:0.82rem;padding:1rem 0;">No UGC videos yet.</div>`;
+      return;
+    }
+
+    list.slice(0, 8).forEach(r => {
+      const videoUrl = r.url || r.result_url || '';
+      const name = r.influencer_name || r.name || 'UGC Video';
+      const date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '';
+
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="rc" onclick="window.open('${videoUrl}','_blank')">
+          <div class="rc-thumb" style="background:linear-gradient(135deg,#1C1C32,#0F0F1E);display:flex;align-items:center;justify-content:center;">
+            ${videoUrl ? `<video src="${videoUrl}" style="width:100%;height:100%;object-fit:cover;" preload="metadata"></video>` : '<div style="font-size:2rem;opacity:0.3;">🎥</div>'}
+            <div class="rc-badge">🎥 UGC</div>
+          </div>
+          <div class="rc-info">
+            <div class="rc-name">${name}</div>
+            <div class="rc-meta">${date}</div>
+            <div class="rc-actions">
+              <div class="rc-btn" onclick="event.stopPropagation();window.open('${videoUrl}','_blank')">⬇ Download</div>
+              <div class="rc-btn" onclick="event.stopPropagation();navigator.clipboard.writeText('${videoUrl}').then(()=>alert('Copied!'))">📤 Copy</div>
+            </div>
+          </div>
+        </div>`);
+    });
+  } catch(e) { console.warn('Recent load failed:', e.message); }
+}
+
+// ── GENERATE ──
+async function generate() {
+  if (!selectedInf) { alert('Please select an influencer!'); return; }
+  const brand = document.getElementById('brandName').value.trim();
+  const product = document.getElementById('productDesc').value.trim();
+  if (!brand) {
+    document.getElementById('brandName').focus();
+    document.getElementById('brandName').style.borderColor = 'var(--accent)';
+    setTimeout(() => document.getElementById('brandName').style.borderColor = 'var(--border2)', 2000);
+    alert('Please enter the brand name!'); return;
+  }
+  if (!product) {
+    document.getElementById('productDesc').focus();
+    document.getElementById('productDesc').style.borderColor = 'var(--accent)';
+    setTimeout(() => document.getElementById('productDesc').style.borderColor = 'var(--border2)', 2000);
+    alert('Please describe the product!'); return;
+  }
+  if (!getToken()) { window.location.href = 'creatrix-auth.html'; return; }
+
+  const overlay = document.getElementById('loadingOverlay');
+  const bar = document.getElementById('loadBar');
+  const loadTitle = document.querySelector('.loading-title');
+  const loadSub = document.querySelector('.loading-sub');
+
+  overlay.classList.add('show');
+  bar.style.width = '0%';
+
+  try {
+    loadTitle.textContent = 'Creating UGC Video...';
+    loadSub.textContent = 'AI is generating your brand video. ~1–3 minutes';
+    bar.style.width = '20%';
+
+    const hd = document.getElementById('hdToggle')?.checked || false;
+    const imageUrl = selectedInf.avatarUrl && selectedInf.avatarUrl.startsWith('http')
+      ? selectedInf.avatarUrl : selectedInf.img;
+
+    const res = await fetch(`${API_BASE}/api/generate/ugc`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({
+        image_url: imageUrl,
+        brand_name: brand,
+        product_desc: product,
+        ugc_style: cfg.style,
+        tone: cfg.tone,
+        language: cfg.lang,
+        hd,
+        influencer_id: selectedInf.id !== 'custom' ? selectedInf.id : null
+      })
+    });
+
+    const job = await res.json();
+    if (job.error) { overlay.classList.remove('show'); alert('Error: ' + job.error); return; }
+
+    loadTitle.textContent = 'Generating UGC...';
+    bar.style.width = '40%';
+
+    const jobId = job.job_id || job.id;
+    let attempts = 0;
+    const maxAttempts = 2160; // 3 hours
+
+    const poll = async () => {
+      attempts++;
+      try {
+        const statusRes = await fetch(`${API_BASE}/api/generate/status/${jobId}`, {
+          headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        const status = await statusRes.json();
+
+        const pct = Math.min(40 + (attempts / 60) * 55, 95);
+        bar.style.width = pct + '%';
+
+        if (status.status === 'done' || status.result_url || status.creation?.url) {
+          bar.style.width = '100%';
+          overlay.classList.remove('show');
+
+          const resultUrl = status.result_url || status.output_url || status.creation?.url;
+          if (resultUrl) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(4,4,10,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;';
+            modal.innerHTML = `
+              <div style="font-family:var(--font-h);font-size:1.2rem;font-weight:700;color:var(--gold);">🎉 UGC Video Ready!</div>
+              <video src="${resultUrl}" controls autoplay style="max-height:70vh;max-width:100%;border-radius:16px;box-shadow:0 0 40px rgba(255,209,102,0.3);"></video>
+              <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+                <a href="${resultUrl}" download target="_blank" style="padding:0.75rem 1.5rem;background:linear-gradient(135deg,var(--gold),#f0a500);color:#1a1000;border-radius:12px;font-family:var(--font-h);font-weight:700;text-decoration:none;font-size:0.9rem;">⬇ Download</a>
+                <button onclick="this.closest('div[style]').remove()" style="padding:0.75rem 1.5rem;background:var(--card2);border:1px solid var(--border2);color:var(--muted);border-radius:12px;font-family:var(--font-h);font-weight:700;cursor:pointer;font-size:0.9rem;">✕ Close</button>
+              </div>`;
+            modal.addEventListener('click', e => { if(e.target === modal) modal.remove(); });
+            document.body.appendChild(modal);
+          }
+
+          loadCredits();
+          loadRecent();
+
+        } else if (status.status === 'failed') {
+          overlay.classList.remove('show');
+          alert('Generation failed: ' + (status.error || 'Please try again.'));
+        } else {
+          setTimeout(poll, 8000);
+        }
+      } catch(pollErr) {
+        console.warn('Poll error:', pollErr);
+        setTimeout(poll, 8000);
+      }
+    };
+
+    setTimeout(poll, 15000);
+
+  } catch(err) {
+    overlay.classList.remove('show');
+    console.error('UGC error:', err);
+    alert('Failed: ' + (err.message || 'Please try again.'));
+  }
+}
+
+// ── INIT ──
+loadCredits();
+loadInfluencers();
+loadRecent();
+</script>
 <script src="api.js"></script>
 </body>
 </html>
