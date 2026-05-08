@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type="text/javascript">
-(function(c,l,a,r,i,t,y){
-c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window, document, "clarity", "script", "wnqtcqu7ae");
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Creations — Creatrix AI</title>
@@ -147,6 +140,397 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
 @media(max-width:768px){.page-header,.filter-bar,.grid-wrap{padding-left:1.5rem;padding-right:1.5rem;}.stats-row{padding:0 1.5rem 1.5rem;}.creations-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}}
 </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <a href="creatrix-dashboard.html" class="back-btn">← Dashboard</a>
+    <div class="tb-div"></div>
+    <a href="creatrix-ai-v3.html" class="tb-logo">Creatrix <span>AI</span></a>
+  </div>
+  <div class="tb-right">
+    <div class="credits-pill"><span class="cv" id="creditsCount">--</span><span class="cl">credits</span></div>
+    <a href="creatrix-video-generator.html" class="btn-create">✨ Create New</a>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="page-eyebrow">Your Library</div>
+      <h1 class="page-title">My Creations</h1>
+      <div class="page-count" id="pageCount">18 creations</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-icon">🎬</div><div><div class="stat-val" id="statVideos">8</div><div class="stat-lbl">AI Videos</div></div></div>
+    <div class="stat-card"><div class="stat-icon">👄</div><div><div class="stat-val" id="statLipsync">4</div><div class="stat-lbl">Lip Syncs</div></div></div>
+    <div class="stat-card"><div class="stat-icon">🕹️</div><div><div class="stat-val" id="statMotion">3</div><div class="stat-lbl">Motion Videos</div></div></div>
+    <div class="stat-card"><div class="stat-icon">🎥</div><div><div class="stat-val" id="statUGC">3</div><div class="stat-lbl">UGC Videos</div></div></div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-chip active" onclick="filterBy(this,'all')">All</div>
+    <div class="filter-chip" onclick="filterBy(this,'video')">🎬 AI Video</div>
+    <div class="filter-chip" onclick="filterBy(this,'lipsync')">👄 Lip Sync</div>
+    <div class="filter-chip" onclick="filterBy(this,'motion')">🕹️ Motion</div>
+    <div class="filter-chip" onclick="filterBy(this,'ugc')">🎥 UGC</div>
+    <div class="filter-sep"></div>
+    <select class="sort-select" onchange="sortBy(this.value)">
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+      <option value="name">Name A–Z</option>
+    </select>
+    <div class="view-toggle">
+      <div class="vt-btn active" id="gridViewBtn" onclick="setView('grid')">⊞ Grid</div>
+      <div class="vt-btn" id="listViewBtn" onclick="setView('list')">☰ List</div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" placeholder="Search creations..." oninput="searchCreations(this.value)">
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid-wrap">
+    <div class="creations-grid" id="grid"></div>
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🎬</div>
+      <div class="empty-title">No creations found</div>
+      <div class="empty-sub">No results match your filter.<br>Try a different category or create something new.</div>
+      <a href="creatrix-video-generator.html" class="empty-btn">✨ Create Your First Video</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-icon">🗑️</div>
+    <div class="modal-title">Delete Creation?</div>
+    <div class="modal-sub">This will permanently delete <strong id="deleteName"></strong>. This action cannot be undone.</div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeDelete()">Cancel</button>
+      <button class="modal-delete" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toastIcon">✅</div>
+  <div><span class="toast-t" id="toastT">Done!</span><span class="toast-s" id="toastS"></span></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  CREATRIX — My Creations (Backend Connected)
+// ═══════════════════════════════════════════
+
+const API_BASE = 'https://creatrix-backend-production.up.railway.app';
+
+// ── TOKEN ──
+function getToken() {
+  return localStorage.getItem('creatrix_access_token') ||
+         localStorage.getItem('creatrix_token') ||
+         localStorage.getItem('token') || null;
+}
+
+// ── AUTH GUARD ──
+if (!getToken()) window.location.href = 'creatrix-auth.html';
+
+let allCreations = [];
+let filtered = [];
+let currentFilter = 'all';
+let currentView = 'grid';
+let deleteTargetId = null;
+
+const typeBadge = {
+  video:   '<span class="cc-type-badge badge-video">🎬 AI Video</span>',
+  lipsync: '<span class="cc-type-badge badge-lipsync">👄 Lip Sync</span>',
+  motion:  '<span class="cc-type-badge badge-motion">🕹️ Motion</span>',
+  ugc:     '<span class="cc-type-badge badge-ugc">🎥 UGC</span>',
+  image:   '<span class="cc-type-badge badge-image">🖼️ Image</span>',
+};
+
+// ── LOAD CREDITS ──
+async function loadCredits() {
+  try {
+    const res = await fetch(`${API_BASE}/api/credits/balance`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    const data = await res.json();
+    const val = data.total ?? data.credits ?? '--';
+    document.getElementById('creditsCount').textContent = val;
+  } catch(e) { console.warn('Credits failed:', e.message); }
+}
+
+// ── LOAD CREATIONS ──
+async function loadCreations() {
+  showSkeleton();
+  try {
+    const res = await fetch(`${API_BASE}/api/creations/list`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+
+    if (res.status === 401) { window.location.href = 'creatrix-auth.html'; return; }
+
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data?.creations || []);
+
+    allCreations = list.map(normalizeCreation);
+    filtered = [...allCreations];
+
+    render(filtered);
+    updateStats();
+    document.getElementById('pageCount').textContent = `${allCreations.length} creation${allCreations.length !== 1 ? 's' : ''}`;
+
+  } catch(err) {
+    console.error('loadCreations:', err);
+    showError(err.message);
+  }
+}
+
+// ── NORMALIZE ──
+function normalizeCreation(c) {
+  const typeIcons = { video:'🎬', lipsync:'👄', motion:'🕹️', ugc:'🎥', image:'🖼️' };
+  const icon = typeIcons[c.type] || '🎬';
+  const date = c.created_at || c.createdAt || '';
+  const dateFormatted = date ? formatDate(date) : '';
+
+  return {
+    id:         c.id,
+    title:      c.type ? `${c.type.charAt(0).toUpperCase() + c.type.slice(1)} · ${dateFormatted}` : 'Creation',
+    type:       c.type || 'video',
+    influencer: c.influencer_name || 'My Influencer',
+    style:      c.type || 'video',
+    dur:        '—',
+    format:     'portrait',
+    date:       date,
+    img:        c.thumbnail_url || c.url || '',
+    url:        c.url || c.result_url || '',
+    status:     c.status || 'done'
+  };
+}
+
+// ── SKELETON ──
+function showSkeleton() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  document.getElementById('emptyState').classList.remove('show');
+  for (let i = 0; i < 6; i++) {
+    grid.insertAdjacentHTML('beforeend', `
+      <div style="background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--border);">
+        <div style="aspect-ratio:9/16;background:linear-gradient(90deg,var(--card2) 25%,var(--card3,#1C1C32) 50%,var(--card2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;"></div>
+        <div style="padding:0.9rem;">
+          <div style="height:14px;width:70%;background:var(--card2);border-radius:6px;margin-bottom:8px;animation:shimmer 1.5s infinite;"></div>
+          <div style="height:11px;width:50%;background:var(--card2);border-radius:6px;animation:shimmer 1.5s infinite;"></div>
+        </div>
+      </div>`);
+  }
+  const s = document.createElement('style');
+  s.textContent = '@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}';
+  document.head.appendChild(s);
+}
+
+// ── SHOW ERROR ──
+function showError(msg) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = `
+    <div style="grid-column:1/-1;text-align:center;padding:4rem 2rem;color:var(--muted);">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">⚠️</div>
+      <div style="font-family:var(--font-h);font-size:1.1rem;margin-bottom:0.5rem;color:var(--white);">Couldn't load creations</div>
+      <div style="font-size:0.85rem;margin-bottom:1.5rem;">${msg}</div>
+      <button onclick="loadCreations()" style="padding:0.6rem 1.5rem;background:var(--card2);border:1px solid var(--border2);color:var(--white);border-radius:100px;cursor:pointer;font-size:0.85rem;">🔄 Retry</button>
+    </div>`;
+}
+
+// ── BUILD CARD ──
+function buildCard(c) {
+  const fmtClass = c.format === 'landscape' ? 'landscape' : '';
+  const hasVideo = c.url && (c.url.includes('.mp4') || c.url.includes('replicate'));
+  const thumbContent = c.img
+    ? `<img class="cc-thumb-img" src="${c.img}" alt="${c.title}" loading="lazy"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : '';
+  const placeholderStyle = c.img ? 'display:none' : 'display:flex';
+  const typeEmoji = {video:'🎬',lipsync:'👄',motion:'🕹️',ugc:'🎥',image:'🖼️'}[c.type] || '🎬';
+
+  return `
+  <div class="creation-card" data-id="${c.id}" data-type="${c.type}"
+       onclick="${c.url ? `window.open('${c.url}','_blank')` : ''}">
+    <div class="cc-thumb ${fmtClass}">
+      ${thumbContent}
+      <div style="${placeholderStyle};aspect-ratio:9/16;background:linear-gradient(135deg,var(--card2),var(--card3,#1C1C32));align-items:center;justify-content:center;font-size:3rem;opacity:0.4;">${typeEmoji}</div>
+      ${typeBadge[c.type] || ''}
+      ${c.status === 'processing' ? '<div class="cc-dur" style="background:rgba(120,76,254,0.8);">Processing...</div>' : c.dur !== '—' ? `<div class="cc-dur">${c.dur}</div>` : ''}
+      ${c.url ? '<div class="cc-play">▶</div>' : ''}
+      <div class="cc-overlay">
+        ${c.url ? `<a class="cc-action-btn" href="${c.url}" download target="_blank" onclick="event.stopPropagation()" title="Download">⬇</a>` : ''}
+        <div class="cc-action-btn" onclick="event.stopPropagation();copyLink('${c.url}')" title="Copy Link">📤</div>
+        <div class="cc-action-btn del" onclick="event.stopPropagation();openDelete('${c.id}')" title="Delete">🗑️</div>
+      </div>
+    </div>
+    <div class="cc-info">
+      <div class="cc-title">${c.title}</div>
+      <div class="cc-meta">
+        <span class="cc-tag">${c.influencer}</span>
+        <span class="cc-tag">${c.type}</span>
+        ${c.status === 'processing' ? '<span class="cc-tag" style="color:var(--accent2);">⏳ Processing</span>' : ''}
+      </div>
+      <div class="cc-footer">
+        <span class="cc-date">${formatDate(c.date)}</span>
+        <div class="cc-btns">
+          ${c.url ? `<a class="ccb download" href="${c.url}" download target="_blank" onclick="event.stopPropagation()">⬇ Download</a>` : '<div class="ccb" style="opacity:0.4;">⏳ Processing</div>'}
+          <div class="ccb" onclick="event.stopPropagation();copyLink('${c.url}')">📤 Share</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function copyLink(url) {
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => showToast('📤', 'Copied!', 'Link copied to clipboard'));
+}
+
+function formatDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ── RENDER ──
+function render(list) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  if (list.length === 0) {
+    document.getElementById('emptyState').classList.add('show');
+  } else {
+    document.getElementById('emptyState').classList.remove('show');
+    list.forEach(c => grid.insertAdjacentHTML('beforeend', buildCard(c)));
+  }
+  document.getElementById('pageCount').textContent = `${allCreations.length} creation${allCreations.length !== 1 ? 's' : ''}`;
+}
+
+// ── STATS ──
+function updateStats() {
+  document.getElementById('statVideos').textContent   = allCreations.filter(c => c.type === 'video').length;
+  document.getElementById('statLipsync').textContent  = allCreations.filter(c => c.type === 'lipsync').length;
+  document.getElementById('statMotion').textContent   = allCreations.filter(c => c.type === 'motion').length;
+  document.getElementById('statUGC').textContent      = allCreations.filter(c => c.type === 'ugc').length;
+}
+
+// ── FILTER ──
+function filterBy(el, type) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = type;
+  applyFilters();
+}
+
+function applyFilters() {
+  filtered = currentFilter === 'all' ? [...allCreations] : allCreations.filter(c => c.type === currentFilter);
+  render(filtered);
+}
+
+// ── SORT ──
+function sortBy(val) {
+  if (val === 'newest') filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+  else if (val === 'oldest') filtered.sort((a,b) => new Date(a.date) - new Date(b.date));
+  else if (val === 'name') filtered.sort((a,b) => a.title.localeCompare(b.title));
+  render(filtered);
+}
+
+// ── SEARCH ──
+function searchCreations(q) {
+  const query = q.toLowerCase();
+  const list = allCreations.filter(c =>
+    c.title.toLowerCase().includes(query) ||
+    c.type.toLowerCase().includes(query) ||
+    c.influencer.toLowerCase().includes(query)
+  );
+  render(list);
+}
+
+// ── VIEW ──
+function setView(view) {
+  currentView = view;
+  const grid = document.getElementById('grid');
+  document.getElementById('gridViewBtn').classList.toggle('active', view === 'grid');
+  document.getElementById('listViewBtn').classList.toggle('active', view === 'list');
+  grid.classList.toggle('list-view', view === 'list');
+}
+
+// ── DELETE ──
+function openDelete(id) {
+  deleteTargetId = id;
+  const c = allCreations.find(i => String(i.id) === String(id));
+  document.getElementById('deleteName').textContent = c?.title || 'this creation';
+  document.getElementById('deleteModal').classList.add('show');
+}
+
+function closeDelete() {
+  document.getElementById('deleteModal').classList.remove('show');
+  deleteTargetId = null;
+}
+
+async function confirmDelete() {
+  const btn = document.querySelector('.modal-delete');
+  btn.textContent = 'Deleting...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/creations/${deleteTargetId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+
+    if (!res.ok) throw new Error('Delete failed');
+
+    const name = allCreations.find(i => String(i.id) === String(deleteTargetId))?.title || 'Creation';
+    allCreations = allCreations.filter(i => String(i.id) !== String(deleteTargetId));
+    filtered     = filtered.filter(i => String(i.id) !== String(deleteTargetId));
+    render(filtered);
+    updateStats();
+    closeDelete();
+    showToast('🗑️', 'Deleted!', name + ' removed');
+  } catch(err) {
+    showToast('❌', 'Failed', err.message);
+    btn.textContent = 'Delete';
+    btn.disabled = false;
+  }
+}
+
+// ── TOAST ──
+function showToast(icon, title, sub) {
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastT').textContent = title;
+  document.getElementById('toastS').textContent = sub;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDelete();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDelete();
+});
+
+// ── INIT ──
+loadCredits();
+loadCreations();
+</script>
 <script src="api.js"></script>
 </body>
 </html>
