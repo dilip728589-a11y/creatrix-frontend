@@ -505,6 +505,76 @@ nav { background:rgba(4,4,10,0.88); backdrop-filter:blur(24px); border-bottom:1p
 @keyframes progress { 0%{width:10%} 100%{width:90%} }
 @media (max-width:900px) { #tools > div:last-child { grid-template-columns: 1fr!important; } #tools > div:last-child .tl-card[style*="span 2"], #tools > div:last-child .tl-card[style*="span 3"] { grid-column: span 1!important; } #tools > div:last-child .tl-card:last-child > div:first-child { grid-template-columns: 1fr!important; } }
 
+
+/* ── PREMIUM UX POLISH ── */
+html { scroll-behavior: smooth; }
+body { background: linear-gradient(160deg, #04040A 0%, #060610 100%); }
+body { animation: bodyFadeIn 0.4s ease both; }
+@keyframes bodyFadeIn { from{opacity:0} to{opacity:1} }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--muted2); border-radius: 2px; }
+
+nav { background:rgba(4,4,10,0.88) !important; backdrop-filter:blur(24px); border-bottom:1px solid rgba(255,255,255,0.06) !important; box-shadow:0 1px 0 rgba(255,255,255,0.03), 0 4px 24px rgba(0,0,0,0.3); }
+.logo { font-size:1.55rem !important; font-weight:800 !important; letter-spacing:-0.03em !important; }
+.btn-signup { border-radius:100px; box-shadow:0 4px 16px rgba(255,60,172,0.3); transition:all 0.2s; }
+.btn-signup:hover { box-shadow:0 8px 28px rgba(255,60,172,0.45) !important; transform:translateY(-1px); }
+.btn-login { border-radius:100px; transition:all 0.2s; }
+.btn-login:hover { background:rgba(255,255,255,0.05); }
+
+.hero-text h1 { font-weight:800; letter-spacing:-0.04em; }
+.hero-sub { color:rgba(200,195,235,0.7); line-height:1.8; }
+.btn-primary { border-radius:100px; box-shadow:0 8px 32px rgba(255,60,172,0.35) !important; transition:all 0.2s; }
+.btn-primary:hover { box-shadow:0 14px 48px rgba(255,60,172,0.5) !important; transform:translateY(-3px) !important; }
+.btn-ghost { border-radius:100px; transition:all 0.2s; }
+.hero-stat-num { font-size:1.85rem; font-weight:800; letter-spacing:-0.04em; }
+
+.section-eyebrow { letter-spacing:0.16em; font-weight:800; }
+.section-title { font-weight:800; letter-spacing:-0.035em; line-height:1.1; }
+.section-sub { color:rgba(200,195,235,0.65) !important; line-height:1.8; }
+
+.gallery-card { border-radius:24px; box-shadow:0 8px 32px rgba(0,0,0,0.5); transition:all 0.3s; }
+.gallery-card:hover { transform:translateY(-8px) scale(1.02) !important; box-shadow:0 24px 64px rgba(0,0,0,0.7) !important; }
+
+.tl-card { background:linear-gradient(160deg,rgba(15,15,30,1),rgba(10,10,20,1)) !important; border:1px solid rgba(255,255,255,0.07) !important; border-radius:24px !important; box-shadow:0 4px 24px rgba(0,0,0,0.3); }
+.tl-card:hover { border-color:rgba(120,76,254,0.35) !important; transform:translateY(-5px) !important; box-shadow:0 24px 60px rgba(0,0,0,0.5) !important; }
+.tl-title { font-size:1.08rem !important; font-weight:800 !important; letter-spacing:-0.02em !important; }
+.tl-desc { color:rgba(200,195,235,0.6) !important; line-height:1.7 !important; }
+
+.earn-card { background:linear-gradient(160deg,rgba(15,15,30,1),rgba(10,10,20,1)); border:1px solid rgba(255,255,255,0.08); border-radius:22px; padding:1.75rem; box-shadow:0 4px 20px rgba(0,0,0,0.3); transition:all 0.25s cubic-bezier(0.34,1.2,0.64,1); }
+.earn-card:hover { transform:translateY(-4px); border-color:rgba(120,76,254,0.25); box-shadow:0 16px 48px rgba(0,0,0,0.5); }
+.earn-card-title { font-family:var(--font-h); font-size:1.05rem; font-weight:800; letter-spacing:-0.02em; margin-bottom:0.5rem; }
+.earn-card-desc { font-size:0.84rem; color:rgba(200,195,235,0.6); line-height:1.65; margin-bottom:0.85rem; }
+.earn-amount { font-family:var(--font-h); color:var(--accent3); font-size:1rem; font-weight:800; }
+.earn-icon { width:48px; height:48px; border-radius:14px; font-size:1.4rem; box-shadow:0 4px 16px rgba(0,0,0,0.3); }
+
+.testi-card { background:linear-gradient(160deg,rgba(15,15,30,1),rgba(10,10,20,1)) !important; border:1px solid rgba(255,255,255,0.07) !important; border-radius:22px !important; box-shadow:0 4px 20px rgba(0,0,0,0.3); transition:all 0.2s; }
+.testi-card:hover { transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,0.5) !important; }
+.testi-quote { color:rgba(200,195,235,0.75) !important; line-height:1.8; }
+.testi-name { font-weight:800; letter-spacing:-0.01em; }
+.testi-stars { color:var(--gold); letter-spacing:2px; }
+
+.plan { background:linear-gradient(160deg,rgba(15,15,30,1),rgba(10,10,20,1)) !important; border:1px solid rgba(255,255,255,0.07) !important; border-radius:26px !important; box-shadow:0 4px 24px rgba(0,0,0,0.3); transition:all 0.25s; }
+.plan:hover { transform:translateY(-4px); box-shadow:0 20px 56px rgba(0,0,0,0.5) !important; }
+.plan.featured { border-color:rgba(120,76,254,0.35) !important; box-shadow:0 8px 40px rgba(120,76,254,0.15) !important; }
+.plan-price { font-size:3.2rem !important; font-weight:800 !important; letter-spacing:-0.05em !important; }
+.plan-features li { color:rgba(200,195,235,0.65) !important; }
+.plan-btn.grad { border-radius:14px !important; box-shadow:0 6px 24px rgba(255,60,172,0.3) !important; }
+.plan-btn.grad:hover { box-shadow:0 10px 36px rgba(255,60,172,0.45) !important; transform:translateY(-1px); }
+.plan-btn.outline { border-radius:14px !important; }
+
+.cta-box { border-radius:40px !important; background:linear-gradient(160deg,rgba(15,15,30,1),rgba(10,10,22,1)) !important; box-shadow:0 40px 100px rgba(0,0,0,0.6) !important; }
+.cta-box h2 { font-weight:800 !important; letter-spacing:-0.04em !important; }
+.cta-input { border-radius:100px !important; transition:all 0.2s; }
+.cta-input:focus { border-color:rgba(120,76,254,0.5) !important; box-shadow:0 0 0 3px rgba(120,76,254,0.1) !important; outline:none; }
+
+footer { background:linear-gradient(180deg,rgba(8,8,18,1),rgba(6,6,14,1)) !important; }
+.footer-col a { color:rgba(160,155,200,0.5) !important; transition:color 0.2s; }
+.footer-col a:hover { color:var(--white) !important; }
+
+.marquee-wrap { background:rgba(8,8,18,0.9) !important; }
+
 </style>
 <script type="text/javascript">
 (function(c,l,a,r,i,t,y){
@@ -961,19 +1031,82 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 </section>
 
 <!-- EARN -->
-<section id="earn">
-  <div class="earn-wrap">
-    <div>
-      <div class="section-eyebrow">Monetize</div>
-      <h2 class="section-title">Build once.<br>Earn forever.</h2>
-      <p class="section-sub" style="margin:0.75rem 0 2.5rem;">Your AI influencer works 24/7 without breaks. Here's how our creators are making real money.</p>
-      <a href="creatrix-auth.html" class="btn-primary" style="display:inline-flex;">Start Earning Today →</a>
+<section id="earn" style="padding:7rem 5%;background:var(--bg2);position:relative;overflow:hidden;">
+  <!-- bg glow -->
+  <div style="position:absolute;top:-100px;right:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,245,212,0.07),transparent 70%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:-80px;left:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,60,172,0.07),transparent 70%);pointer-events:none;"></div>
+
+  <!-- LIVE EARNINGS TICKER -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:3.5rem;">
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(0,245,212,0.08);border:1px solid rgba(0,245,212,0.2);border-radius:100px;padding:8px 20px;">
+      <span style="width:8px;height:8px;background:#00F5D4;border-radius:50%;animation:blink 1.2s infinite;box-shadow:0 0 8px #00F5D4;display:inline-block;"></span>
+      <span style="font-family:var(--font-h);font-size:0.8rem;font-weight:700;color:#00F5D4;letter-spacing:0.06em;">LIVE · Creators earning right now</span>
     </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:6px 14px;font-size:0.72rem;color:rgba(255,255,255,0.7);">Priya K. earned <strong style="color:#00F5D4;">₹18,500</strong> this week</span>
+      <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:6px 14px;font-size:0.72rem;color:rgba(255,255,255,0.7);">Rohit S. closed <strong style="color:#FFD166;">₹40K</strong> brand deal</span>
+      <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:6px 14px;font-size:0.72rem;color:rgba(255,255,255,0.7);">Ayesha M. hit <strong style="color:#FF3CAC;">1M views</strong> today</span>
+    </div>
+  </div>
+
+  <div class="earn-wrap" style="position:relative;z-index:1;">
+    <div>
+      <div class="section-eyebrow">Real Money. Real Creators.</div>
+      <h2 class="section-title" style="font-size:clamp(2.2rem,4vw,3.2rem);font-weight:800;letter-spacing:-0.04em;line-height:1.05;">Build once.<br>Earn <span style="background:linear-gradient(90deg,#00F5D4,#784CFE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">forever.</span></h2>
+      <p class="section-sub" style="margin:1rem 0 0.75rem;font-size:1rem;line-height:1.8;color:rgba(200,195,235,0.7);">Your AI influencer works 24/7 — posting, engaging, earning. No camera. No editing. No burnout.</p>
+
+      <!-- Monthly income showcase -->
+      <div style="background:linear-gradient(135deg,rgba(0,245,212,0.08),rgba(120,76,254,0.08));border:1px solid rgba(0,245,212,0.2);border-radius:20px;padding:1.5rem;margin-bottom:2rem;">
+        <div style="font-size:0.65rem;color:rgba(200,195,235,0.5);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.5rem;">Average monthly income — Top creators</div>
+        <div style="font-family:var(--font-h);font-size:3rem;font-weight:800;letter-spacing:-0.04em;background:linear-gradient(90deg,#00F5D4,#FFD166);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">₹20K – ₹1L+</div>
+        <div style="font-size:0.8rem;color:rgba(200,195,235,0.55);margin-top:6px;">per month from brand deals, affiliate & content sales</div>
+      </div>
+
+      <a href="creatrix-auth.html" class="btn-primary" style="display:inline-flex;font-size:1rem;padding:1rem 2.5rem;border-radius:100px;box-shadow:0 8px 32px rgba(0,245,212,0.3);">🚀 Start Earning Today →</a>
+      <div style="margin-top:1rem;font-size:0.78rem;color:rgba(200,195,235,0.4);">20 free credits · No credit card · Start in 2 minutes</div>
+    </div>
+
     <div class="earn-cards reveal">
-      <div class="earn-card"><div class="earn-icon ti-pink">📱</div><div><div class="earn-card-title">Brand Sponsorships</div><p class="earn-card-desc">Brands pay AI influencers for sponsored posts. Hit 10K followers and your inbox fills up.</p><div class="earn-amount">₹5,000 – ₹50,000 per post</div></div></div>
-      <div class="earn-card"><div class="earn-icon ti-teal">🎯</div><div><div class="earn-card-title">Affiliate Marketing</div><p class="earn-card-desc">Promote products through your AI persona and earn commissions on every sale.</p><div class="earn-amount">10–30% commission per sale</div></div></div>
-      <div class="earn-card"><div class="earn-icon ti-gold">💎</div><div><div class="earn-card-title">Sell AI Content Packs</div><p class="earn-card-desc">Sell AI-generated image packs, video templates, and UGC content to brands.</p><div class="earn-amount">₹500 – ₹10,000 per pack</div></div></div>
-      <div class="earn-card"><div class="earn-icon ti-purple">🤝</div><div><div class="earn-card-title">Affiliate Program</div><p class="earn-card-desc">Refer creators to Creatrix AI and earn 30% of every credit they purchase.</p><div class="earn-amount">30% recurring commission</div></div></div>
+      <!-- Brand Sponsorships -->
+      <div class="earn-card" style="position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;right:0;width:80px;height:80px;border-radius:0 0 0 80px;background:rgba(255,60,172,0.08);pointer-events:none;"></div>
+        <div class="earn-icon ti-pink">📱</div>
+        <div>
+          <div class="earn-card-title">Brand Sponsorships</div>
+          <p class="earn-card-desc">Brands pay AI influencers for sponsored posts. Hit 10K followers and your inbox fills up fast.</p>
+          <div class="earn-amount" style="font-size:1rem;font-weight:800;letter-spacing:-0.02em;">₹5,000 – ₹50,000 <span style="font-size:0.72rem;font-weight:500;color:rgba(200,195,235,0.5);">per post</span></div>
+        </div>
+      </div>
+      <!-- Affiliate -->
+      <div class="earn-card" style="position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;right:0;width:80px;height:80px;border-radius:0 0 0 80px;background:rgba(0,245,212,0.06);pointer-events:none;"></div>
+        <div class="earn-icon ti-teal">🎯</div>
+        <div>
+          <div class="earn-card-title">Affiliate Marketing</div>
+          <p class="earn-card-desc">Promote products through your AI persona and earn commissions on every sale, every day.</p>
+          <div class="earn-amount" style="font-size:1rem;font-weight:800;letter-spacing:-0.02em;">10–30% <span style="font-size:0.72rem;font-weight:500;color:rgba(200,195,235,0.5);">commission per sale</span></div>
+        </div>
+      </div>
+      <!-- Content Packs -->
+      <div class="earn-card" style="position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;right:0;width:80px;height:80px;border-radius:0 0 0 80px;background:rgba(255,209,102,0.06);pointer-events:none;"></div>
+        <div class="earn-icon ti-gold">💎</div>
+        <div>
+          <div class="earn-card-title">Sell AI Content</div>
+          <p class="earn-card-desc">Sell AI-generated image packs, video templates, and UGC content to brands and agencies.</p>
+          <div class="earn-amount" style="font-size:1rem;font-weight:800;letter-spacing:-0.02em;">₹500 – ₹10,000 <span style="font-size:0.72rem;font-weight:500;color:rgba(200,195,235,0.5);">per pack</span></div>
+        </div>
+      </div>
+      <!-- Refer -->
+      <div class="earn-card" style="position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;right:0;width:80px;height:80px;border-radius:0 0 0 80px;background:rgba(120,76,254,0.08);pointer-events:none;"></div>
+        <div class="earn-icon ti-purple">🤝</div>
+        <div>
+          <div class="earn-card-title">Affiliate Program</div>
+          <p class="earn-card-desc">Refer creators to Creatrix AI and earn 30% of every credit they purchase — forever.</p>
+          <div class="earn-amount" style="font-size:1rem;font-weight:800;letter-spacing:-0.02em;">30% <span style="font-size:0.72rem;font-weight:500;color:rgba(200,195,235,0.5);">recurring commission</span></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1047,14 +1180,39 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 
 <!-- CTA -->
 <section id="cta">
-  <div class="cta-box">
+  <div class="cta-box" style="padding:5rem 3rem;">
     <div class="cta-orb1"></div>
     <div class="cta-orb2"></div>
-    <h2>Start creating with<br><span>Creatrix AI</span> today</h2>
-    <p>20 free credits on signup. No credit card required.</p>
-    <div class="cta-form">
+    <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(0,245,212,0.08);border:1px solid rgba(0,245,212,0.2);border-radius:100px;padding:6px 18px;margin-bottom:1.5rem;font-size:0.72rem;font-weight:700;color:#00F5D4;letter-spacing:0.08em;position:relative;z-index:1;">
+      <span style="width:6px;height:6px;background:#00F5D4;border-radius:50%;animation:blink 1.5s infinite;"></span>
+      2,400+ influencers created today
+    </div>
+    <h2 style="position:relative;z-index:1;">Your AI influencer is<br><span>waiting to go viral.</span></h2>
+    <p style="position:relative;z-index:1;font-size:1.05rem;line-height:1.8;color:rgba(200,195,235,0.65);">20 free credits. No camera. No followers needed.<br>Start earning in under 10 minutes.</p>
+    <div class="cta-form" style="position:relative;z-index:1;">
       <input type="email" class="cta-input" placeholder="Enter your email address">
-      <a href="creatrix-auth.html" class="btn-primary">Create Free Account</a>
+      <a href="creatrix-auth.html" class="btn-primary" style="white-space:nowrap;">✨ Start Free — Earn Today</a>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:2rem;margin-top:2.5rem;flex-wrap:wrap;position:relative;z-index:1;">
+      <div style="text-align:center;">
+        <div style="font-family:var(--font-h);font-size:1.5rem;font-weight:800;color:#00F5D4;">20</div>
+        <div style="font-size:0.7rem;color:rgba(200,195,235,0.45);letter-spacing:0.06em;text-transform:uppercase;">Free Credits</div>
+      </div>
+      <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--font-h);font-size:1.5rem;font-weight:800;color:#FF3CAC;">No CC</div>
+        <div style="font-size:0.7rem;color:rgba(200,195,235,0.45);letter-spacing:0.06em;text-transform:uppercase;">Required</div>
+      </div>
+      <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--font-h);font-size:1.5rem;font-weight:800;color:#FFD166;">2 Min</div>
+        <div style="font-size:0.7rem;color:rgba(200,195,235,0.45);letter-spacing:0.06em;text-transform:uppercase;">To Start</div>
+      </div>
+      <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--font-h);font-size:1.5rem;font-weight:800;color:#784CFE;">50K+</div>
+        <div style="font-size:0.7rem;color:rgba(200,195,235,0.45);letter-spacing:0.06em;text-transform:uppercase;">Creators</div>
+      </div>
     </div>
   </div>
 </section>

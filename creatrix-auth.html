@@ -316,6 +316,111 @@ label { letter-spacing:0.08em; font-size:0.72rem; color:rgba(140,135,180,0.9); }
 .blocked-sub { color: var(--muted); font-size: 0.9rem; max-width: 380px; }
 @keyframes fadeIn { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} }
 
+
+/* ── PREMIUM UX POLISH v2 ── */
+html { scroll-behavior: smooth; }
+body { animation: bodyFadeIn 0.35s ease both; background: linear-gradient(160deg, #04040A 0%, #060610 100%); }
+@keyframes bodyFadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+
+/* Topbar */
+.topbar { background: rgba(6,6,18,0.92) !important; backdrop-filter: blur(24px) !important; border-bottom: 1px solid rgba(255,255,255,0.06) !important; box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 24px rgba(0,0,0,0.4) !important; }
+.tb-logo { font-weight: 800 !important; letter-spacing: -0.03em !important; }
+.back-btn { padding: 4px 10px; border-radius: 8px; transition: all 0.2s; }
+.back-btn:hover { color: var(--white) !important; background: rgba(255,255,255,0.05); }
+.credits-pill, .cp { background: rgba(15,15,28,0.9) !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+
+/* Typography hierarchy */
+h1, h2, .section-title, .page-title { font-weight: 800; letter-spacing: -0.03em; }
+h3, .card-title, .tool-name, .inf-name { font-weight: 800; letter-spacing: -0.02em; }
+p, .desc, .sub, .meta { color: rgba(200,195,235,0.65); line-height: 1.75; }
+label, .label, .caption { color: rgba(160,155,200,0.5); letter-spacing: 0.08em; font-size: 0.72rem; font-weight: 700; }
+
+/* Spacing rhythm */
+section, .page-section { padding: 4rem 0; }
+
+/* Tab bar */
+.tab-bar { background: rgba(6,6,18,0.92) !important; backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.06) !important; }
+.tab { font-size: 0.84rem; letter-spacing: 0.01em; transition: all 0.2s; }
+.tab.active { color: var(--white); }
+
+/* Cards - premium depth */
+.section-card, .card-block, .info-card, .instructions, .bio-link-card {
+  background: linear-gradient(160deg, rgba(15,15,30,1), rgba(10,10,20,1)) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+}
+
+/* Upload zones */
+.upload-zone { border-radius: 20px; transition: all 0.25s; }
+.upload-zone:hover { border-color: rgba(120,76,254,0.5) !important; background: rgba(120,76,254,0.05) !important; transform: translateY(-1px); }
+
+/* Model/style cards */
+.model-card, .style-card, .ugc-style-card {
+  border-radius: 16px !important;
+  transition: all 0.22s cubic-bezier(0.34,1.2,0.64,1) !important;
+  background: linear-gradient(160deg, rgba(15,15,30,1), rgba(10,10,20,1)) !important;
+}
+.model-card:hover, .style-card:hover, .ugc-style-card:hover { border-color: rgba(120,76,254,0.4) !important; transform: translateY(-3px) !important; box-shadow: 0 12px 28px rgba(0,0,0,0.4) !important; }
+.model-card.active, .style-card.active, .ugc-style-card.active { border-color: var(--accent2) !important; box-shadow: 0 0 0 2px rgba(120,76,254,0.2), 0 8px 24px rgba(0,0,0,0.4) !important; }
+
+/* Generate buttons */
+.gen-btn, .generate-btn { border-radius: 16px !important; box-shadow: 0 6px 24px rgba(255,60,172,0.3) !important; letter-spacing: 0.02em; transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1) !important; }
+.gen-btn:hover, .generate-btn:hover { opacity: 0.92 !important; transform: translateY(-2px) !important; box-shadow: 0 12px 40px rgba(255,60,172,0.4) !important; }
+
+/* Right panels */
+.right-panel { background: rgba(8,8,18,0.5) !important; border-left: 1px solid rgba(255,255,255,0.05) !important; }
+
+/* Inputs */
+textarea, input[type="text"], input[type="url"], input[type="email"] {
+  border-radius: 14px !important; background: rgba(15,15,28,0.8) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important; transition: all 0.2s !important;
+  color: var(--white) !important; font-family: var(--font-b);
+}
+textarea:focus, input[type="text"]:focus, input[type="url"]:focus, input[type="email"]:focus {
+  border-color: var(--accent2) !important; box-shadow: 0 0 0 3px rgba(120,76,254,0.1) !important; outline: none !important;
+}
+
+/* Modals */
+.modal, .detail-modal, .modal-overlay > div {
+  background: linear-gradient(160deg, rgba(15,15,30,1), rgba(10,10,22,1)) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 28px !important;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.7) !important;
+}
+
+/* Buttons all */
+button, .btn { transition: all 0.2s; }
+.buy-btn, .cta-btn { box-shadow: 0 6px 24px rgba(255,60,172,0.3) !important; border-radius: 14px !important; }
+.buy-btn:hover, .cta-btn:hover { opacity: 0.92 !important; transform: translateY(-2px) !important; box-shadow: 0 12px 40px rgba(255,60,172,0.4) !important; }
+
+/* Status badges */
+.status-done, .badge-done { background: rgba(0,245,212,0.1) !important; color: var(--accent3) !important; border: 1px solid rgba(0,245,212,0.2) !important; }
+.status-proc, .badge-proc { background: rgba(120,76,254,0.1) !important; color: var(--accent2) !important; border: 1px solid rgba(120,76,254,0.2) !important; }
+
+/* Page headers */
+.page-header h1, .section-title-lg { font-family: var(--font-h); font-size: 1.65rem; font-weight: 800; letter-spacing: -0.03em; }
+.page-header p { color: rgba(160,155,200,0.55); font-size: 0.87rem; line-height: 1.6; }
+
+/* Toast */
+.toast { border-radius: 18px !important; backdrop-filter: blur(16px) !important; box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important; }
+
+/* Page tabs (monetize) */
+.page-tabs { background: rgba(6,6,18,0.92) !important; backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.06) !important; }
+.ptab.active { color: var(--white); border-bottom-color: var(--accent2); }
+
+/* Section headings inside pages */
+.section-title { font-size: 1.75rem !important; font-weight: 800 !important; letter-spacing: -0.03em !important; }
+.section-sub { color: rgba(200,195,235,0.6) !important; line-height: 1.75 !important; }
+
+/* Nav (terms page) */
+nav { background: rgba(4,4,10,0.9) !important; backdrop-filter: blur(24px); box-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 4px 20px rgba(0,0,0,0.3); }
+.nav-signup { border-radius: 100px; box-shadow: 0 4px 16px rgba(255,60,172,0.3); transition: all 0.2s; }
+.nav-signup:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(255,60,172,0.4); }
+
+/* Shimmer */
+@keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+.skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 400px 100%; animation: shimmer 1.4s infinite; border-radius: 10px; }
+
 </style>
 </head>
 <body>
