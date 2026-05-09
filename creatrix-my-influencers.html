@@ -161,6 +161,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-
 .toast-t{font-weight:700;color:var(--accent3);display:block;margin-bottom:1px;}
 .toast-s{color:var(--muted);font-size:0.76rem;}
 
+.inf-img-placeholder { width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;background:linear-gradient(135deg,rgba(120,76,254,0.2),rgba(255,60,172,0.15)); }
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
 
 /* ── PREMIUM UX POLISH ── */
@@ -356,28 +357,34 @@ function buildCard(inf) {
   const nicheTag = `<span class="inf-tag niche">${inf.niche}</span>`;
   const ethnicityTag = `<span class="inf-tag">${inf.ethnicity}</span>`;
 
+  // Image with fallback gradient placeholder
+  const imgHtml = inf.img
+    ? `<img src="${inf.img}" alt="${inf.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+       <div class="inf-img-placeholder" style="display:none;">🧑‍🎤</div>`
+    : `<div class="inf-img-placeholder">🧑‍🎤</div>`;
+
   return `
   <div class="inf-card" data-id="${inf.id}" data-gender="${inf.gender}" data-niche="${inf.niche}">
     <div class="inf-card-img">
-      <img src="${inf.img}" alt="${inf.name}" loading="lazy">
+      ${imgHtml}
       <div class="inf-card-overlay"></div>
       ${statusBadge}
       <div class="inf-card-actions">
-        <div class="iab" onclick="event.stopPropagation();openDetail(${inf.id})" title="View">👁️</div>
-        <div class="iab" onclick="event.stopPropagation();editInf(${inf.id})" title="Edit">✏️</div>
-        <div class="iab del" onclick="event.stopPropagation();openDeleteModal(${inf.id})" title="Delete">🗑️</div>
+        <div class="iab" onclick="event.stopPropagation();openDetail('${inf.id}')" title="View">👁️</div>
+        <div class="iab" onclick="event.stopPropagation();editInf('${inf.id}')" title="Edit">✏️</div>
+        <div class="iab del" onclick="event.stopPropagation();openDeleteModal('${inf.id}')" title="Delete">🗑️</div>
       </div>
       <div class="inf-quick-gen">
-        <button class="iqg-btn" onclick="event.stopPropagation();quickGenerate(${inf.id})">🎬 Generate Content</button>
+        <button class="iqg-btn" onclick="event.stopPropagation();quickGenerate('${inf.id}')">🎬 Generate Content</button>
       </div>
     </div>
-    <div class="inf-card-info" onclick="openDetail(${inf.id})">
+    <div class="inf-card-info" onclick="openDetail('${inf.id}')">
       <div class="inf-name">${inf.name}</div>
       <div class="inf-meta">${genderTag}${nicheTag}${ethnicityTag}</div>
       <div class="inf-stats">
         <div class="inf-stat"><div class="inf-stat-val">${inf.creations}</div><div class="inf-stat-lbl">Creations</div></div>
-        <div class="inf-stat"><div class="inf-stat-val">${inf.age}</div><div class="inf-stat-lbl">Age</div></div>
-        <div class="inf-stat"><div class="inf-stat-val">${inf.bodyShape}</div><div class="inf-stat-lbl">Body</div></div>
+        <div class="inf-stat"><div class="inf-stat-val">${inf.age || '—'}</div><div class="inf-stat-lbl">Age</div></div>
+        <div class="inf-stat"><div class="inf-stat-val">${inf.bodyShape || '—'}</div><div class="inf-stat-lbl">Body</div></div>
       </div>
     </div>
   </div>`;
@@ -421,8 +428,8 @@ function searchInfluencers(q) {
 
 // ── DELETE ──
 function openDeleteModal(id) {
-  deleteTargetId = id;
-  const inf = influencers.find(i => i.id === id);
+  deleteTargetId = String(id);
+  const inf = influencers.find(i => String(i.id) === String(id));
   document.getElementById('deleteModalName').textContent = inf?.name || 'this influencer';
   document.getElementById('deleteModal').classList.add('show');
 }
@@ -444,8 +451,8 @@ function confirmDelete() {
 
 // ── DETAIL ──
 function openDetail(id) {
-  currentDetailId = id;
-  const inf = influencers.find(i => i.id === id);
+  currentDetailId = String(id);
+  const inf = influencers.find(i => String(i.id) === String(id));
   if (!inf) return;
   document.getElementById('detailImg').src = inf.img;
   document.getElementById('detailName').textContent = inf.name;
@@ -532,6 +539,9 @@ async function loadInfluencers() {
     const json = await res.json();
     const list = json.influencers || json.data || json || [];
 
+    // Debug — log first item to see exact field names
+    if (list.length > 0) console.log('Backend influencer fields:', Object.keys(list[0]), list[0]);
+
     // Map backend fields to frontend card format
     influencers = list.map(inf => ({
       id:          inf.id || inf._id,
@@ -574,7 +584,7 @@ async function loadInfluencers() {
 
 // Delete from backend too
 async function confirmDelete() {
-  const idx = influencers.findIndex(i => i.id === deleteTargetId);
+  const idx = influencers.findIndex(i => String(i.id) === String(deleteTargetId));
   if (idx === -1) return;
   const name = influencers[idx].name;
 
@@ -592,7 +602,7 @@ async function confirmDelete() {
   } catch(e) { console.warn('Delete API failed, removing locally', e); }
 
   influencers.splice(idx, 1);
-  filtered = filtered.filter(i => i.id !== deleteTargetId);
+  filtered = filtered.filter(i => String(i.id) !== String(deleteTargetId));
   render(filtered);
   closeDeleteModal();
   showToast('🗑️', 'Deleted!', `${name} has been removed.`);
