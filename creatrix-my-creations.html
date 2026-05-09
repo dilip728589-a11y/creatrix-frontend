@@ -322,12 +322,6 @@ async function loadCreations() {
     const data = await res.json();
     const list = Array.isArray(data) ? data : (data?.creations || []);
 
-    // Debug — log to see all field names
-    if (list.length > 0) {
-      console.log('All creations raw:', list);
-      console.log('First item fields:', Object.keys(list[0]), list[0]);
-    }
-
     allCreations = list.map(normalizeCreation);
     filtered = [...allCreations];
 
@@ -348,6 +342,9 @@ function normalizeCreation(c) {
   const date = c.created_at || c.createdAt || '';
   const dateFormatted = date ? formatDate(date) : '';
 
+  const isImage = c.type === 'image';
+  const mediaUrl = c.url || c.result_url || c.thumbnail_url || '';
+
   return {
     id:         c.id,
     title:      c.type ? `${c.type.charAt(0).toUpperCase() + c.type.slice(1)} · ${dateFormatted}` : 'Creation',
@@ -357,8 +354,9 @@ function normalizeCreation(c) {
     dur:        '—',
     format:     'portrait',
     date:       date,
-    img:        c.thumbnail_url || c.url || '',
-    url:        c.url || c.result_url || '',
+    img:        isImage ? mediaUrl : (c.thumbnail_url || ''),
+    url:        mediaUrl,
+    isImage:    isImage,
     status:     c.status || 'done'
   };
 }
@@ -398,12 +396,12 @@ function showError(msg) {
 // ── BUILD CARD ──
 function buildCard(c) {
   const fmtClass = c.format === 'landscape' ? 'landscape' : '';
-  const isVideo = c.url && (c.url.includes('.mp4') || c.url.includes('replicate') || c.url.includes('delivery'));
+  const isVideo = !c.isImage && c.url && c.url.length > 0;
   const thumbSrc = c.url || c.img || '';
   const thumbContent = thumbSrc
-    ? isVideo
-      ? `<video class="cc-thumb-img" src="${thumbSrc}" muted playsinline preload="metadata" style="object-fit:cover;" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video>`
-      : `<img class="cc-thumb-img" src="${thumbSrc}" alt="${c.title}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    ? c.isImage
+      ? `<img class="cc-thumb-img" src="${thumbSrc}" alt="${c.title}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      : `<video class="cc-thumb-img" src="${thumbSrc}" muted playsinline preload="metadata" style="object-fit:cover;" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video>`
     : '';
   const placeholderStyle = thumbSrc ? 'display:none' : 'display:flex';
   const typeEmoji = {video:'🎬',lipsync:'👄',motion:'🕹️',ugc:'🎥',image:'🖼️'}[c.type] || '🎬';
