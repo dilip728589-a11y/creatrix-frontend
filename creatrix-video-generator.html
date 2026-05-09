@@ -1017,10 +1017,15 @@ function generateVideo(type, credits) {
   const script = document.getElementById('scriptBox')?.value?.trim() || type;
   const prompt = script;
 
+  const durationSlider = document.getElementById('durationSlider');
+  const selectedDuration = durationSlider ? parseInt(durationSlider.value) : 5;
+  const hdToggle = document.getElementById('hdToggle');
+  const isHD = hdToggle ? hdToggle.checked : false;
+
   CreatrixAPI.Generate.video(
     prompt,
     selectedInf ? selectedInf.img : null,
-    { model: 'wan_26', duration: 5, influencerId: selectedInf?.id }
+    { model: 'wan_26', duration: selectedDuration, hd: isHD, quality: isHD ? '1080p' : 'standard', influencerId: selectedInf?.id }
   ).then(job => {
     if(job.error){
       overlay.classList.remove('show');
