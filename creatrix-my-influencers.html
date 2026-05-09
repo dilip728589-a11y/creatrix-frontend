@@ -542,26 +542,29 @@ async function loadInfluencers() {
     // Debug — log first item to see exact field names
     if (list.length > 0) console.log('Backend influencer fields:', Object.keys(list[0]), list[0]);
 
-    // Map backend fields to frontend card format
-    influencers = list.map(inf => ({
-      id:          inf.id || inf._id,
-      name:        inf.name || 'Unnamed',
-      gender:      inf.gender || 'female',
-      ethnicity:   inf.ethnicity || inf.race || '',
-      niche:       inf.niche || inf.category || 'Lifestyle',
-      personality: inf.personality || '',
-      voice:       inf.voice || '',
-      age:         inf.age || '',
-      hairColor:   inf.hair_color || inf.hairColor || '',
-      hairStyle:   inf.hair_style || inf.hairStyle || '',
-      eyeColor:    inf.eye_color || inf.eyeColor || '',
-      bodyShape:   inf.body_shape || inf.bodyShape || '',
-      outfit:      inf.outfit || '',
-      img:         inf.image_url || inf.imageUrl || inf.img || '',
-      status:      inf.status || 'active',
-      creations:   inf.creations || 0,
-      createdAt:   inf.created_at || inf.createdAt || new Date().toISOString(),
-    }));
+    influencers = list.map(inf => {
+      // Settings is a nested object
+      const s = inf.settings || {};
+      return {
+        id:          inf.id,
+        name:        inf.name || 'Unnamed',
+        gender:      s.gender || 'female',
+        ethnicity:   s.ethnicity || s.race || '',
+        niche:       inf.niche || s.niche || 'Lifestyle',
+        personality: s.personality || '',
+        voice:       s.voice || '',
+        age:         s.age || '',
+        hairColor:   s.hair_color || s.hairColor || '',
+        hairStyle:   s.hair_style || s.hairStyle || '',
+        eyeColor:    s.eye_color || s.eyeColor || '',
+        bodyShape:   s.body_shape || s.bodyShape || '',
+        outfit:      s.outfit || '',
+        img:         inf.avatar_url || '',
+        status:      'active',
+        creations:   inf.creations || 0,
+        createdAt:   inf.created_at || new Date().toISOString(),
+      };
+    });
 
     filtered = [...influencers];
     render(filtered);
