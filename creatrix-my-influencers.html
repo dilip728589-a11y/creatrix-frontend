@@ -518,6 +518,8 @@ async function loadInfluencers() {
       return;
     }
 
+    const API_BASE = 'https://creatrix-backend-production.up.railway.app';
+
     const res = await fetch(`${API_BASE}/api/influencer/list`, {
       headers: {
         'Authorization': `Bearer ${token}`,
