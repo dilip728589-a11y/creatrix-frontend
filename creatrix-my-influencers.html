@@ -509,22 +509,16 @@ document.getElementById('detailModal').addEventListener('click', function(e) {
 async function loadInfluencers() {
   try {
     // Auth check
-    if (typeof CreatrixAPI === 'undefined') {
-      render(influencers);
-      return;
-    }
-    if (!CreatrixAPI.Auth.isLoggedIn()) {
+    const token = localStorage.getItem('creatrix_access_token') ||
+                  localStorage.getItem('creatrix_token') ||
+                  localStorage.getItem('token') || null;
+
+    if (!token) {
       window.location.href = 'creatrix-auth.html';
       return;
     }
 
-    // Show skeleton loading state
-    document.getElementById('pageCount').textContent = 'Loading...';
-
-    const token = CreatrixAPI.Auth.getToken();
-    const API_BASE = CreatrixAPI.BASE_URL || 'https://creatrix-backend-production.up.railway.app';
-
-    const res = await fetch(`${API_BASE}/api/influencers`, {
+    const res = await fetch(`${API_BASE}/api/influencer/list`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -583,10 +577,12 @@ async function confirmDelete() {
   const name = influencers[idx].name;
 
   try {
-    if (typeof CreatrixAPI !== 'undefined' && CreatrixAPI.Auth.isLoggedIn()) {
-      const token = CreatrixAPI.Auth.getToken();
-      const API_BASE = CreatrixAPI.BASE_URL || 'https://creatrix-backend-production.up.railway.app';
-      await fetch(`${API_BASE}/api/influencers/${deleteTargetId}`, {
+    const token = localStorage.getItem('creatrix_access_token') ||
+                  localStorage.getItem('creatrix_token') ||
+                  localStorage.getItem('token') || null;
+    if (token) {
+      const API_BASE = 'https://creatrix-backend-production.up.railway.app';
+      await fetch(`${API_BASE}/api/influencer/${deleteTargetId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
