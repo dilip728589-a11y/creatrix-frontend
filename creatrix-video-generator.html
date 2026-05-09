@@ -946,7 +946,25 @@ function pickChip(el, group) {
 }
 
 function updateDuration(input) {
-  const v = input.value;
+  const v = parseInt(input.value);
+
+  // Pro plan check for > 5 sec
+  if (v > 5) {
+    const user = JSON.parse(localStorage.getItem('creatrix_user') || '{}');
+    const plan = user?.plan_type || user?.plan || 'free';
+    const isPro = plan === 'paid' || plan === 'pro' || plan === 'creator' || plan === 'premium';
+    if (!isPro) {
+      // Reset slider to 5
+      input.value = 5;
+      input.style.setProperty('--pct', '0%');
+      document.getElementById('durationVal').textContent = '5 seconds';
+      document.getElementById('sv-duration').textContent = '5 sec';
+      // Show pro popup
+      document.getElementById('proDurationModal').style.display = 'flex';
+      return;
+    }
+  }
+
   const pct = ((v-5)/(15-5)*100)+'%';
   input.style.setProperty('--pct', pct);
   document.getElementById('durationVal').textContent = v + ' seconds';
@@ -1140,5 +1158,18 @@ const sl = document.getElementById('durationSlider');
 if (sl) { sl.value=10; const pct = ((10-5)/(15-5)*100)+'%'; sl.style.setProperty('--pct', pct); document.getElementById('durationVal').textContent='10 seconds'; document.getElementById('sv-duration').textContent='10 sec'; }
 </script>
 <script src="api.js"></script>
+<!-- PRO DURATION MODAL -->
+<div id="proDurationModal" style="display:none;position:fixed;inset:0;background:rgba(4,4,10,0.88);backdrop-filter:blur(12px);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:linear-gradient(160deg,#0f0f1e,#0a0a14);border:1px solid rgba(120,76,254,0.3);border-radius:24px;padding:2rem 2rem 1.75rem;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.6);">
+    <div style="font-size:2.5rem;margin-bottom:1rem;">🔒</div>
+    <div style="font-family:'Clash Display',sans-serif;font-size:1.25rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.5rem;color:#F0EEF8;">Pro Feature</div>
+    <p style="font-size:0.88rem;color:rgba(200,195,235,0.65);line-height:1.7;margin-bottom:1.5rem;">Videos longer than 5 seconds are available on <strong style="color:#784CFE;">Creator Pack</strong> and above.<br>Upgrade to unlock 10s & 15s reels.</p>
+    <div style="display:flex;gap:0.75rem;">
+      <button onclick="document.getElementById('proDurationModal').style.display='none'" style="flex:1;padding:0.75rem;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(200,195,235,0.6);font-size:0.88rem;cursor:pointer;">Maybe Later</button>
+      <button onclick="window.location.href='creatrix-payment.html'" style="flex:1;padding:0.75rem;border-radius:12px;border:none;background:linear-gradient(135deg,#FF3CAC,#784CFE);color:#fff;font-family:'Clash Display',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;box-shadow:0 6px 20px rgba(255,60,172,0.35);">Upgrade Now →</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
