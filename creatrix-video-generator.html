@@ -412,7 +412,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
             <div class="ms-arrow" id="msArrow">▾</div>
           </div>
           <div class="model-dropdown" id="modelDropdown">
-            <div class="model-option" onclick="selectModel(this,'Premium · Kling v3.0 Pro','15s · Sound · 4K · Multi-shot · Best quality','PRO','linear-gradient(135deg,var(--accent),var(--accent2))',10)">
+            <div class="model-option" onclick="selectModel(this,'Premium · Kling v3.0 Pro','15s · Sound · 4K · Multi-shot · Best quality','PRO','linear-gradient(135deg,var(--accent),var(--accent2))',25)">
               <div class="mo-icon">⚡</div>
               <div class="mo-info">
                 <div class="mo-name">Premium · Kling v3.0 Pro</div>
@@ -420,7 +420,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
               </div>
               <div class="mo-cost">10 cr</div>
             </div>
-            <div class="model-option sel" onclick="selectModel(this,'Great Quality · Kling v3.0','5–15s · Sound · 1080p · Multi-shot · NSFW OK','HOT','linear-gradient(135deg,#ff6b35,#f7931e)',7)">
+            <div class="model-option sel" onclick="selectModel(this,'Great Quality · Kling v3.0','5–15s · Sound · 1080p · Multi-shot · NSFW OK','HOT','linear-gradient(135deg,#ff6b35,#f7931e)',25)">
               <div class="mo-icon">🔥</div>
               <div class="mo-info">
                 <div class="mo-name">Great Quality · Kling v3.0</div>
@@ -428,7 +428,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
               </div>
               <div class="mo-cost">7 cr</div>
             </div>
-            <div class="model-option" onclick="selectModel(this,'High Quality · Wan 2.6','5–10s · Fast · Affordable · NSFW sometimes','FAST','linear-gradient(135deg,var(--accent2),#4c8aff)',5)">
+            <div class="model-option" onclick="selectModel(this,'High Quality · Wan 2.6','5–10s · Fast · Affordable · NSFW sometimes','FAST','linear-gradient(135deg,var(--accent2),#4c8aff)',25)">
               <div class="mo-icon">🌊</div>
               <div class="mo-info">
                 <div class="mo-name">High Quality · Wan 2.6</div>
@@ -436,7 +436,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
               </div>
               <div class="mo-cost">5 cr</div>
             </div>
-            <div class="model-option" onclick="selectModel(this,'Spicy & Cheap · Wan 2.2','5–10s · Vivid motion · NSFW support','NSFW','linear-gradient(135deg,#8b0000,#cc0044)',4)">
+            <div class="model-option" onclick="selectModel(this,'Spicy & Cheap · Wan 2.2','5–10s · Vivid motion · NSFW support','NSFW','linear-gradient(135deg,#8b0000,#cc0044)',25)">
               <div class="mo-icon">💋</div>
               <div class="mo-info">
                 <div class="mo-name">Spicy & Cheap · Wan 2.2</div>
@@ -444,7 +444,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
               </div>
               <div class="mo-cost">4 cr</div>
             </div>
-            <div class="model-option" onclick="selectModel(this,'High Quality · Kling v2.1','5–10s · Sound · 1080p · Cinematic','HD','linear-gradient(135deg,#1a1a2e,#784cfe)',6)">
+            <div class="model-option" onclick="selectModel(this,'High Quality · Kling v2.1','5–10s · Sound · 1080p · Cinematic','HD','linear-gradient(135deg,#1a1a2e,#784cfe)',25)">
               <div class="mo-icon">🎬</div>
               <div class="mo-info">
                 <div class="mo-name">High Quality · Kling v2.1</div>
@@ -452,7 +452,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
               </div>
               <div class="mo-cost">6 cr</div>
             </div>
-            <div class="model-option" onclick="selectModel(this,'Best Lip Sync · Veo 3.1','5–8s · Native audio · Natural lip sync','NEW','linear-gradient(135deg,#0d4f3c,#00f5d4)',8)">
+            <div class="model-option" onclick="selectModel(this,'Best Lip Sync · Veo 3.1','5–8s · Native audio · Natural lip sync','NEW','linear-gradient(135deg,#0d4f3c,#00f5d4)',25)">
               <div class="mo-icon">🎙️</div>
               <div class="mo-info">
                 <div class="mo-name">Best Lip Sync · Veo 3.1</div>
@@ -790,7 +790,7 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 
     <!-- Generate Button -->
     <button class="gen-btn" id="mainGenBtn" onclick="generateVideo('AI Video',5)">
-      🎬 Generate Video · 5 credits
+      🎬 Generate Video · 25 credits
     </button>
 
   </div><!-- end right-panel -->
@@ -843,7 +843,7 @@ async function loadRealInfluencers() {
 const recentVideos = []; // replaced by loadRecentVideos()
 
 
-let selectedModel = {name:'Great Quality · Kling v3.0', cost:7};
+let selectedModel = {name:'Great Quality · Kling v3.0', cost:25};
 
 function toggleModelDropdown(){
   const dd = document.getElementById('modelDropdown');
@@ -946,25 +946,7 @@ function pickChip(el, group) {
 }
 
 function updateDuration(input) {
-  const v = parseInt(input.value);
-
-  // Pro plan check for > 5 sec
-  if (v > 5) {
-    const user = JSON.parse(localStorage.getItem('creatrix_user') || '{}');
-    const plan = user?.plan_type || user?.plan || 'free';
-    const isPro = plan === 'paid' || plan === 'pro' || plan === 'creator' || plan === 'premium';
-    if (!isPro) {
-      // Reset slider to 5
-      input.value = 5;
-      input.style.setProperty('--pct', '0%');
-      document.getElementById('durationVal').textContent = '5 seconds';
-      document.getElementById('sv-duration').textContent = '5 sec';
-      // Show pro popup
-      document.getElementById('proDurationModal').style.display = 'flex';
-      return;
-    }
-  }
-
+  const v = input.value;
   const pct = ((v-5)/(15-5)*100)+'%';
   input.style.setProperty('--pct', pct);
   document.getElementById('durationVal').textContent = v + ' seconds';
@@ -1158,18 +1140,5 @@ const sl = document.getElementById('durationSlider');
 if (sl) { sl.value=10; const pct = ((10-5)/(15-5)*100)+'%'; sl.style.setProperty('--pct', pct); document.getElementById('durationVal').textContent='10 seconds'; document.getElementById('sv-duration').textContent='10 sec'; }
 </script>
 <script src="api.js"></script>
-<!-- PRO DURATION MODAL -->
-<div id="proDurationModal" style="display:none;position:fixed;inset:0;background:rgba(4,4,10,0.88);backdrop-filter:blur(12px);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
-  <div style="background:linear-gradient(160deg,#0f0f1e,#0a0a14);border:1px solid rgba(120,76,254,0.3);border-radius:24px;padding:2rem 2rem 1.75rem;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.6);">
-    <div style="font-size:2.5rem;margin-bottom:1rem;">🔒</div>
-    <div style="font-family:'Clash Display',sans-serif;font-size:1.25rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.5rem;color:#F0EEF8;">Pro Feature</div>
-    <p style="font-size:0.88rem;color:rgba(200,195,235,0.65);line-height:1.7;margin-bottom:1.5rem;">Videos longer than 5 seconds are available on <strong style="color:#784CFE;">Creator Pack</strong> and above.<br>Upgrade to unlock 10s & 15s reels.</p>
-    <div style="display:flex;gap:0.75rem;">
-      <button onclick="document.getElementById('proDurationModal').style.display='none'" style="flex:1;padding:0.75rem;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(200,195,235,0.6);font-size:0.88rem;cursor:pointer;">Maybe Later</button>
-      <button onclick="window.location.href='creatrix-payment.html'" style="flex:1;padding:0.75rem;border-radius:12px;border:none;background:linear-gradient(135deg,#FF3CAC,#784CFE);color:#fff;font-family:'Clash Display',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;box-shadow:0 6px 20px rgba(255,60,172,0.35);">Upgrade Now →</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
