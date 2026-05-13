@@ -200,6 +200,21 @@ input:focus, textarea:focus { border-color: var(--accent2) !important; box-shado
 .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 400px 100%; animation: shimmer 1.4s infinite; border-radius: 10px; }
 
 @media(max-width:768px){.page-header{padding:2rem 1.5rem 1.25rem;}.filter-bar{padding:0 1.5rem 1.5rem;}.grid-wrap{padding:0 1.5rem;}.detail-modal{grid-template-columns:1fr;}.detail-img{min-height:280px;border-radius:28px 28px 0 0;}}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .topbar { padding: 0 1rem; }
+  .page { padding: 80px 1rem 3rem; }
+  .filter-bar { flex-wrap: wrap; gap: 0.5rem; }
+  .inf-filter-tags { flex-wrap: wrap; gap: 0.5rem; }
+  .search-input { width: 100%; }
+  .influencer-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .sort-wrap { display: none; }
+}
+@media (max-width: 480px) {
+  .influencer-grid { grid-template-columns: 1fr; }
+}
+
 </style>
 <script type="text/javascript">
 (function(c,l,a,r,i,t,y){

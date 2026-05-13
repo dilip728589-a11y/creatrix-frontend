@@ -260,6 +260,24 @@ html { scroll-behavior: smooth; }
 .age-tick.edge{color:var(--muted);}
 
 
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .main { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .topbar { padding: 0 1rem; }
+  .content-area { padding: 1.25rem 1rem; }
+  .gender-cards { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .image-cards { grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; }
+  .personality-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .voice-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .outfit-grid { grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; }
+  .ptitle { font-size: 1.4rem; }
+  .review-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .btn-next, .gen-btn { font-size: 0.9rem; padding: 0.85rem; }
+  input[type="text"] { font-size: 16px !important; }
+}
+
 </style>
 </head>
 <body>

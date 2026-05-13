@@ -175,6 +175,20 @@ input:focus, textarea:focus { border-color: var(--accent2) !important; box-shado
 .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 400px 100%; animation: shimmer 1.4s infinite; border-radius: 10px; }
 
 @media(max-width:768px){.page-header,.filter-bar,.grid-wrap{padding-left:1.5rem;padding-right:1.5rem;}.stats-row{padding:0 1.5rem 1.5rem;}.creations-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .topbar { padding: 0 1rem; }
+  .page { padding: 80px 1rem 3rem; }
+  .stats-bar { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .filter-bar { flex-wrap: wrap; gap: 0.5rem; overflow-x: auto; }
+  .creation-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .view-toggle { display: none; }
+}
+@media (max-width: 480px) {
+  .creation-grid { grid-template-columns: 1fr; }
+}
+
 </style>
 </head>
 <body>

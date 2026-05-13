@@ -532,6 +532,37 @@ body { background: var(--bg); color: var(--white); font-family: var(--font-b); d
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--muted2); border-radius: 2px; }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  body { overflow: auto; }
+  .sidebar { display: none; }
+  .main { width: 100%; }
+  .content { padding: 1rem; overflow-y: auto; }
+  .topbar { padding: 0 1rem; }
+  .topbar-search { display: none; }
+  .topbar-title { font-size: 0.9rem; }
+  .tb-new-btn span { display: none; }
+  .two-col { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .ch-stats { grid-template-columns: 1fr 1fr; }
+  .ch-actions { grid-template-columns: 1fr 1fr; }
+  .ch-headline h2 { font-size: 1.5rem; }
+  .command-hero { padding: 1.5rem 1.25rem; }
+  .tools-page-grid { grid-template-columns: 1fr; }
+  .pack-grid { grid-template-columns: 1fr; }
+  .influencer-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .credits-page-wrap { max-width: 100%; }
+  .credits-hero-card { flex-direction: column; padding: 1.5rem; }
+  .table-head, .table-row { grid-template-columns: 2fr 1fr 1fr; font-size: 0.75rem; padding: 0.75rem 1rem; }
+}
+@media (max-width: 480px) {
+  .ch-stats { grid-template-columns: 1fr 1fr; }
+  .ch-stat-val { font-size: 1.5rem; }
+  .influencer-grid { grid-template-columns: 1fr; }
+  .credits-big { font-size: 3rem; }
+}
+
 </style>
 <script type="text/javascript">
 (function(c,l,a,r,i,t,y){

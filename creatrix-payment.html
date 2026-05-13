@@ -345,6 +345,16 @@ nav { background: rgba(4,4,10,0.9) !important; backdrop-filter: blur(24px); box-
 @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
 .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 400px 100%; animation: shimmer 1.4s infinite; border-radius: 10px; }
 
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .topbar { padding: 0 1rem; }
+  .page { padding: 80px 1rem 3rem; }
+  .plans-grid, .pack-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+  .plan-card, .pack-card { padding: 1.5rem 1.25rem; }
+  .features-compare { display: none; }
+}
+
 </style>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script type="text/javascript">

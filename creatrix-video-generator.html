@@ -357,6 +357,22 @@ nav { background: rgba(4,4,10,0.9) !important; backdrop-filter: blur(24px); box-
 @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
 .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 400px 100%; animation: shimmer 1.4s infinite; border-radius: 10px; }
 
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .page-wrap { grid-template-columns: 1fr; padding: 120px 1rem 2rem; }
+  .right-panel { border-left: none; border-top: 1px solid var(--border); padding: 1.5rem 0 0 0; position: static; height: auto; }
+  .tab-bar { padding: 0 1rem; overflow-x: auto; }
+  .topbar { padding: 0 1rem; }
+  .model-options { grid-template-columns: 1fr; }
+  .style-cards { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .format-btns { flex-wrap: wrap; gap: 0.5rem; }
+  .music-btns { flex-wrap: wrap; gap: 0.5rem; }
+  textarea { font-size: 16px !important; }
+  .gen-btn { font-size: 0.9rem; }
+  .video-preview { aspect-ratio: 9/16; max-height: 50vh; }
+}
+
 </style>
 <script type="text/javascript">
 (function(c,l,a,r,i,t,y){
