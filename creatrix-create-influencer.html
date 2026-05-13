@@ -572,7 +572,7 @@ html { scroll-behavior: smooth; }
     </div>
   </div>
   <button class="gen-btn" onclick="generate()">✨ Generate My AI Influencer &nbsp;·&nbsp; 15 credits</button>
-  <div style="text-align:center;font-size:0.7rem;color:var(--muted2);margin-top:0.6rem;">You have 38 credits · Credits never expire</div>
+  <div style="text-align:center;font-size:0.7rem;color:var(--muted2);margin-top:0.6rem;">You have <span id="genPageCredits">--</span> credits · Credits never expire</div>
   <div class="pnav" style="margin-top:1.5rem;"><button class="btn-back" onclick="goTo(10)">← Back</button><div></div><div></div></div>
 </div>
 
@@ -793,17 +793,6 @@ async function generate(){
   const btn = document.querySelector('.gen-btn');
   btn.disabled = true;
 
-  // ── CREDIT CHECK FIRST ──
-  try {
-    const bal = await CreatrixAPI.Credits.getBalance();
-    const total = (bal?.total ?? bal?.free_credits ?? 0) + (bal?.paid_credits ?? 0);
-    if(total < 15){
-      btn.disabled = false;
-      showToast('❌', 'Not enough credits', `You need 15 credits. You have ${total}.`);
-      return;
-    }
-  } catch(e) { console.warn('Credit check failed:', e); }
-
   // Spinner style
   if(!document.getElementById('sp')){
     const s = document.createElement('style');
@@ -861,17 +850,7 @@ async function generate(){
     const imgJob = await CreatrixAPI.Generate.image(prompt, influencerId);
 
     if(!imgJob || imgJob.error){
-      // Check if it's a credit issue — block user
-      if(imgJob?.error?.toLowerCase().includes('credit') || imgJob?.error?.toLowerCase().includes('insufficient')){
-        setBtn('✨ Generate My AI Influencer &nbsp;·&nbsp; 15 credits');
-        btn.disabled = false;
-        btn.onclick = generate;
-        showToast('❌', 'Not enough credits', 'You need 15 credits. Buy more to continue.');
-        // Delete the saved influencer since image failed due to credits
-        if(influencerId) await CreatrixAPI.Influencer.delete(influencerId).catch(()=>{});
-        return;
-      }
-      // Other error — influencer saved, image failed
+      // Image generation failed but influencer is saved — still success
       console.warn('Image gen failed:', imgJob?.error);
       setBtn('✅ Influencer saved! (Image generating in background)');
       btn.style.background = 'linear-gradient(135deg,var(--accent3),var(--accent2))';
@@ -987,6 +966,8 @@ async function loadCredits(){
     const bal = await CreatrixAPI.Credits.getBalance();
     if(bal?.total !== undefined){
       document.querySelectorAll('.cv, #creditsCount').forEach(el => el.textContent = bal.total);
+      const genEl = document.getElementById('genPageCredits');
+      if(genEl) genEl.textContent = bal.total;
     }
   } catch(e){ console.warn('Credits load failed:', e); }
 }
