@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/creatrix-ai-v3.html" }
+  ]
+}
