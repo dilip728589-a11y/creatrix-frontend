@@ -5,7 +5,7 @@ if (typeof CreatrixAPI === 'undefined') {
 // Save this as: api.js in your frontend folder
 // ═══════════════════════════════════════════════
 
-var API_URL = 'https://creatrix-backend-production.up.railway.app'; // ← Replace with your Railway URL
+var API_URL = 'https://api.creatrixai.live'; // ← Custom domain
 
 // ── TOKEN MANAGEMENT ──
 var getAccessToken = () => localStorage.getItem('creatrix_access_token');
