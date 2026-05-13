@@ -169,7 +169,21 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-b);overflow-
 .loading-bar{height:100%;background:linear-gradient(90deg,var(--gold),var(--accent));border-radius:2px;width:0%;animation:loadProg 5s ease forwards;}
 @keyframes loadProg{0%{width:0%}70%{width:80%}95%{width:95%}100%{width:100%}}
 
-::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:2px;}
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .page-wrap { grid-template-columns: 1fr; padding: 120px 1rem 2rem; }
+  .right-panel { border-left: none; border-top: 1px solid var(--border); padding: 1.5rem 0 0 0; }
+  .tab-bar { padding: 0 1rem; overflow-x: auto; }
+  .topbar { padding: 0 1rem; }
+  .upload-zone { padding: 1.5rem 1rem; }
+  .ugc-style-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .tone-btns { flex-wrap: wrap; gap: 0.5rem; }
+  .lang-btns { flex-wrap: wrap; gap: 0.5rem; }
+  textarea, input[type="text"] { font-size: 16px !important; }
+  .gen-btn { font-size: 0.9rem; }
+}
+
+
 
 /* ── PREMIUM UX POLISH ── */
 html { scroll-behavior: smooth; }
